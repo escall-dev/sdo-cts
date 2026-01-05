@@ -386,7 +386,7 @@ function isChecked($field, $value) {
                         <input type="text" class="form-control" id="typed_signature" name="typed_signature" 
                                value="<?php echo getValue('typed_signature'); ?>"
                                placeholder="Type your full name as digital signature"
-                               style="font-family: 'Brush Script MT', cursive; font-size: 1.5rem;" required>
+                               style="font-family: 'Arial', Times, serif; font-size: 1rem;" required>
                         <small style="color: var(--text-muted);">Your typed name serves as your digital signature</small>
                     </div>
                     

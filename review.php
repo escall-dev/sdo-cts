@@ -89,6 +89,9 @@ $othersText = ($data['referred_to'] === 'Others' && !empty($data['referred_to_ot
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Review Submission - SDO CTS</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <!-- PDF Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         /* Form Container - Fixed size matching the official form */
         .form-container {
@@ -380,9 +383,75 @@ $othersText = ($data['referred_to'] === 'Others' && !empty($data['referred_to_ot
             <a href="index.php?edit=1" class="btn btn-secondary">⬅️ Go Back & Edit</a>
             <div style="display:flex;gap:10px;">
                 <button type="button" class="btn btn-outline" onclick="window.print()">🖨️ Print</button>
+                <button type="button" class="btn btn-outline" onclick="exportToPDF()" id="pdfBtn">📄 Save as PDF</button>
                 <button type="submit" name="confirm_submit" class="btn btn-success btn-lg">✅ Confirm & Submit</button>
             </div>
         </form>
+
+        <script>
+        async function exportToPDF() {
+            const btn = document.getElementById('pdfBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ Generating PDF...';
+            btn.disabled = true;
+
+            try {
+                const { jsPDF } = window.jspdf;
+                const formContainer = document.querySelector('.form-container');
+                
+                // Capture the form as canvas
+                const canvas = await html2canvas(formContainer, {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff'
+                });
+
+                // A4 dimensions in mm
+                const a4Width = 210;
+                const a4Height = 297;
+
+                // Create PDF in A4 portrait
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                // Calculate dimensions to fit A4
+                const imgWidth = a4Width - 20; // 10mm margin on each side
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                // If image is taller than A4, scale down
+                let finalWidth = imgWidth;
+                let finalHeight = imgHeight;
+                
+                if (imgHeight > a4Height - 20) {
+                    finalHeight = a4Height - 20;
+                    finalWidth = (canvas.width * finalHeight) / canvas.height;
+                }
+
+                // Center the image
+                const xOffset = (a4Width - finalWidth) / 2;
+                const yOffset = 10;
+
+                // Add image to PDF
+                const imgData = canvas.toDataURL('image/png');
+                pdf.addImage(imgData, 'PNG', xOffset, yOffset, finalWidth, finalHeight);
+
+                // Save the PDF
+                const fileName = 'Complaint-Form-<?php echo date("Y-m-d"); ?>.pdf';
+                pdf.save(fileName);
+
+            } catch (error) {
+                console.error('PDF generation error:', error);
+                alert('Error generating PDF. Please try again or use Print option.');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+        </script>
 
         <footer class="form-footer no-print">
             <p>SDO CTS - San Pedro Division Office Complaint Tracking System</p>
