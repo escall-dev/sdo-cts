@@ -1,40 +1,41 @@
 -- SDO CTS Database Schema
 -- San Pedro Division Office Complaint Tracking System
+-- Based on Official DepEd Complaint Assisted Form
 
 CREATE DATABASE IF NOT EXISTS sdo_cts CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE sdo_cts;
 
--- Complaints Table
+-- Complaints Table (Fields match Official Complaint Assisted Form)
 CREATE TABLE IF NOT EXISTS complaints (
     id INT AUTO_INCREMENT PRIMARY KEY,
     reference_number VARCHAR(20) UNIQUE NOT NULL,
     
-    -- Routing Fields
+    -- Referred to (indicate unit/section)
     referred_to ENUM('OSDS', 'SGOD', 'CID', 'Others') NOT NULL,
     referred_to_other VARCHAR(255) DEFAULT NULL,
-    date_submitted DATETIME NOT NULL,
+    date_petsa DATETIME NOT NULL,
     
-    -- Complainant Information
-    complainant_name VARCHAR(255) NOT NULL,
-    complainant_address TEXT NOT NULL,
-    complainant_contact VARCHAR(20) NOT NULL,
-    complainant_email VARCHAR(255) NOT NULL,
+    -- Complainant/Requestor Information
+    name_pangalan VARCHAR(255) NOT NULL,
+    address_tirahan TEXT NOT NULL,
+    contact_number VARCHAR(20) NOT NULL,
+    email_address VARCHAR(255) NOT NULL,
     
-    -- Person/Office Involved
-    involved_name VARCHAR(255) NOT NULL,
+    -- Office/School/Person Involved
+    involved_full_name VARCHAR(255) NOT NULL,
     involved_position VARCHAR(255) NOT NULL,
     involved_address TEXT NOT NULL,
-    involved_school_office VARCHAR(255) NOT NULL,
+    involved_school_office_unit VARCHAR(255) NOT NULL,
     
-    -- Complaint Details
-    complaint_narration TEXT NOT NULL,
-    desired_action TEXT NOT NULL,
+    -- Narration of Complaint/Inquiry and Relief
+    narration_complaint TEXT NOT NULL,
+    desired_action_relief TEXT NOT NULL,
     
-    -- Certification
+    -- Certification on Non-Forum Shopping
     certification_agreed TINYINT(1) NOT NULL DEFAULT 0,
     
-    -- Signature
-    printed_name VARCHAR(255) NOT NULL,
+    -- Name and Signature / Pangalan at Lagda
+    printed_name_pangalan VARCHAR(255) NOT NULL,
     signature_type ENUM('digital', 'typed') NOT NULL DEFAULT 'typed',
     signature_data TEXT DEFAULT NULL,
     date_signed DATE NOT NULL,
@@ -49,7 +50,7 @@ CREATE TABLE IF NOT EXISTS complaints (
     
     INDEX idx_reference (reference_number),
     INDEX idx_status (status),
-    INDEX idx_date_submitted (date_submitted)
+    INDEX idx_date_petsa (date_petsa)
 ) ENGINE=InnoDB;
 
 -- Supporting Documents Table
@@ -78,4 +79,3 @@ CREATE TABLE IF NOT EXISTS complaint_history (
     FOREIGN KEY (complaint_id) REFERENCES complaints(id) ON DELETE CASCADE,
     INDEX idx_complaint_id (complaint_id)
 ) ENGINE=InnoDB;
-

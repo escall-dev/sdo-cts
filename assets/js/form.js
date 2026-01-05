@@ -1,12 +1,11 @@
 /**
  * SDO CTS - Form JavaScript
- * Handles form validation, file uploads, and signature functionality
+ * Handles form validation and file uploads
  */
 
 document.addEventListener('DOMContentLoaded', function() {
     initRadioOptions();
     initFileUpload();
-    initSignaturePad();
     initFormValidation();
 });
 
@@ -152,122 +151,6 @@ function initFileUpload() {
 }
 
 /**
- * Initialize signature pad
- */
-function initSignaturePad() {
-    const tabs = document.querySelectorAll('.signature-tab');
-    const typedDiv = document.getElementById('typedSignature');
-    const digitalDiv = document.getElementById('digitalSignature');
-    const signatureType = document.getElementById('signatureType');
-    const signatureData = document.getElementById('signatureData');
-    const canvas = document.getElementById('signaturePad');
-    const clearBtn = document.getElementById('clearSignature');
-    
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    let isDrawing = false;
-    let lastX = 0;
-    let lastY = 0;
-    
-    // Set canvas size
-    function resizeCanvas() {
-        const wrapper = canvas.parentElement;
-        canvas.width = wrapper.offsetWidth;
-        canvas.height = 150;
-        ctx.strokeStyle = '#1a1a2e';
-        ctx.lineWidth = 2;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-    }
-    
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    
-    // Tab switching
-    tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            tabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            
-            const type = this.dataset.type;
-            signatureType.value = type;
-            
-            if (type === 'typed') {
-                typedDiv.classList.add('active');
-                digitalDiv.classList.remove('active');
-            } else {
-                typedDiv.classList.remove('active');
-                digitalDiv.classList.add('active');
-                resizeCanvas();
-            }
-        });
-    });
-    
-    // Drawing functions
-    function startDrawing(e) {
-        isDrawing = true;
-        const pos = getPosition(e);
-        lastX = pos.x;
-        lastY = pos.y;
-    }
-    
-    function draw(e) {
-        if (!isDrawing) return;
-        e.preventDefault();
-        
-        const pos = getPosition(e);
-        
-        ctx.beginPath();
-        ctx.moveTo(lastX, lastY);
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
-        
-        lastX = pos.x;
-        lastY = pos.y;
-        
-        // Update signature data
-        signatureData.value = canvas.toDataURL('image/png');
-    }
-    
-    function stopDrawing() {
-        isDrawing = false;
-    }
-    
-    function getPosition(e) {
-        const rect = canvas.getBoundingClientRect();
-        let x, y;
-        
-        if (e.touches) {
-            x = e.touches[0].clientX - rect.left;
-            y = e.touches[0].clientY - rect.top;
-        } else {
-            x = e.clientX - rect.left;
-            y = e.clientY - rect.top;
-        }
-        
-        return { x, y };
-    }
-    
-    // Mouse events
-    canvas.addEventListener('mousedown', startDrawing);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', stopDrawing);
-    canvas.addEventListener('mouseout', stopDrawing);
-    
-    // Touch events
-    canvas.addEventListener('touchstart', startDrawing);
-    canvas.addEventListener('touchmove', draw);
-    canvas.addEventListener('touchend', stopDrawing);
-    
-    // Clear button
-    clearBtn.addEventListener('click', function() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        signatureData.value = '';
-    });
-}
-
-/**
  * Initialize form validation
  */
 function initFormValidation() {
@@ -276,7 +159,6 @@ function initFormValidation() {
     
     form.addEventListener('submit', function(e) {
         let isValid = true;
-        const errors = [];
         
         // Clear previous errors
         document.querySelectorAll('.form-control.error').forEach(el => {
@@ -289,7 +171,19 @@ function initFormValidation() {
         // Validate required fields
         const requiredFields = form.querySelectorAll('[required]');
         requiredFields.forEach(field => {
-            if (!field.value.trim()) {
+            if (field.type === 'checkbox') {
+                if (!field.checked) {
+                    isValid = false;
+                    showError(field.parentElement.parentElement, 'You must agree to the certification');
+                }
+            } else if (field.type === 'radio') {
+                const radioGroup = form.querySelectorAll(`input[name="${field.name}"]`);
+                const isChecked = Array.from(radioGroup).some(r => r.checked);
+                if (!isChecked) {
+                    isValid = false;
+                    showError(field.closest('.form-group'), 'Please select an option');
+                }
+            } else if (!field.value.trim()) {
                 isValid = false;
                 field.classList.add('error');
                 showError(field, 'This field is required');
@@ -297,7 +191,7 @@ function initFormValidation() {
         });
         
         // Validate email
-        const emailField = document.getElementById('complainant_email');
+        const emailField = document.getElementById('email_address');
         if (emailField && emailField.value) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(emailField.value)) {
@@ -308,7 +202,7 @@ function initFormValidation() {
         }
         
         // Validate contact number
-        const contactField = document.getElementById('complainant_contact');
+        const contactField = document.getElementById('contact_number');
         if (contactField && contactField.value) {
             const phoneRegex = /^[0-9]{10,11}$/;
             if (!phoneRegex.test(contactField.value.replace(/\D/g, ''))) {
@@ -318,28 +212,12 @@ function initFormValidation() {
             }
         }
         
-        // Validate certification checkbox
-        const certCheckbox = form.querySelector('input[name="certification_agreed"]');
-        if (certCheckbox && !certCheckbox.checked) {
+        // Validate typed signature
+        const typedSig = document.getElementById('typed_signature');
+        if (typedSig && !typedSig.value.trim()) {
             isValid = false;
-            showError(certCheckbox.parentElement.parentElement, 'You must agree to the certification');
-        }
-        
-        // Validate signature
-        const signatureType = document.getElementById('signatureType').value;
-        if (signatureType === 'typed') {
-            const typedSig = form.querySelector('input[name="typed_signature"]');
-            if (!typedSig || !typedSig.value.trim()) {
-                isValid = false;
-                typedSig.classList.add('error');
-                showError(typedSig, 'Please type your signature');
-            }
-        } else {
-            const signatureData = document.getElementById('signatureData').value;
-            if (!signatureData) {
-                isValid = false;
-                showError(document.getElementById('digitalSignature'), 'Please draw your signature');
-            }
+            typedSig.classList.add('error');
+            showError(typedSig, 'Please type your signature');
         }
         
         if (!isValid) {
@@ -376,42 +254,43 @@ function showError(element, message) {
 }
 
 /**
- * Reset form
+ * Reset form and clear session
  */
 function resetForm() {
     if (confirm('Are you sure you want to reset the form? All entered data will be lost.')) {
-        document.getElementById('complaintForm').reset();
-        
-        // Clear file list
-        const fileList = document.getElementById('fileList');
-        if (fileList) fileList.innerHTML = '';
-        
-        // Clear signature
-        const canvas = document.getElementById('signaturePad');
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-        document.getElementById('signatureData').value = '';
-        
-        // Clear radio selections
-        document.querySelectorAll('.radio-option').forEach(opt => {
-            opt.classList.remove('selected');
-        });
-        
-        // Hide "Others" input
-        document.getElementById('otherReferredWrapper').classList.remove('visible');
-        
-        // Clear errors
-        document.querySelectorAll('.form-control.error').forEach(el => {
-            el.classList.remove('error');
-        });
-        document.querySelectorAll('.error-message').forEach(el => {
-            el.remove();
-        });
-        
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Clear session data via AJAX
+        fetch('clear_session.php', { method: 'POST' })
+            .then(() => {
+                // Reset the form
+                document.getElementById('complaintForm').reset();
+                
+                // Clear file list
+                const fileList = document.getElementById('fileList');
+                if (fileList) fileList.innerHTML = '';
+                
+                // Clear radio selections
+                document.querySelectorAll('.radio-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Hide "Others" input
+                const otherWrapper = document.getElementById('otherReferredWrapper');
+                if (otherWrapper) otherWrapper.classList.remove('visible');
+                
+                // Clear errors
+                document.querySelectorAll('.form-control.error').forEach(el => {
+                    el.classList.remove('error');
+                });
+                document.querySelectorAll('.error-message').forEach(el => {
+                    el.remove();
+                });
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            })
+            .catch(() => {
+                // Fallback: just reload the page with clear parameter
+                window.location.href = 'index.php?clear=1';
+            });
     }
 }
-

@@ -2,6 +2,7 @@
 /**
  * Complaint Model
  * Handles all complaint-related database operations
+ * Field names match Official DepEd Complaint Assisted Form
  */
 
 require_once __DIR__ . '/../config/database.php';
@@ -38,16 +39,17 @@ class Complaint {
 
     /**
      * Create new complaint
+     * Fields match Official Complaint Assisted Form
      */
     public function create($data) {
         $referenceNumber = $this->generateReferenceNumber();
         
         $sql = "INSERT INTO complaints (
-            reference_number, referred_to, referred_to_other, date_submitted,
-            complainant_name, complainant_address, complainant_contact, complainant_email,
-            involved_name, involved_position, involved_address, involved_school_office,
-            complaint_narration, desired_action, certification_agreed,
-            printed_name, signature_type, signature_data, date_signed,
+            reference_number, referred_to, referred_to_other, date_petsa,
+            name_pangalan, address_tirahan, contact_number, email_address,
+            involved_full_name, involved_position, involved_address, involved_school_office_unit,
+            narration_complaint, desired_action_relief, certification_agreed,
+            printed_name_pangalan, signature_type, signature_data, date_signed,
             status, is_locked
         ) VALUES (
             ?, ?, ?, NOW(),
@@ -62,18 +64,18 @@ class Complaint {
             $referenceNumber,
             $data['referred_to'],
             $data['referred_to_other'] ?? null,
-            $data['complainant_name'],
-            $data['complainant_address'],
-            $data['complainant_contact'],
-            $data['complainant_email'],
-            $data['involved_name'],
+            $data['name_pangalan'],
+            $data['address_tirahan'],
+            $data['contact_number'],
+            $data['email_address'],
+            $data['involved_full_name'],
             $data['involved_position'],
             $data['involved_address'],
-            $data['involved_school_office'],
-            $data['complaint_narration'],
-            $data['desired_action'],
+            $data['involved_school_office_unit'],
+            $data['narration_complaint'],
+            $data['desired_action_relief'],
             $data['certification_agreed'] ? 1 : 0,
-            $data['printed_name'],
+            $data['printed_name_pangalan'],
             $data['signature_type'],
             $data['signature_data'] ?? null,
             date('Y-m-d')
@@ -156,8 +158,7 @@ class Complaint {
      */
     public function track($referenceNumber, $email) {
         $sql = "SELECT * FROM complaints 
-                WHERE reference_number = ? AND complainant_email = ?";
+                WHERE reference_number = ? AND email_address = ?";
         return $this->db->query($sql, [$referenceNumber, $email])->fetch();
     }
 }
-

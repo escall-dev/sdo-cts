@@ -209,7 +209,7 @@ $statusLabels = [
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="email">
-                                Email Address <span class="required">*</span>
+                                E-mail Address <span class="required">*</span>
                             </label>
                             <input type="email" class="form-control" id="email" 
                                    name="email" placeholder="your.email@example.com"
@@ -288,8 +288,8 @@ $statusLabels = [
             </div>
             <div class="section-content">
                 <div class="review-field">
-                    <label>Date Submitted</label>
-                    <div class="value"><?php echo date('F j, Y \a\t g:i A', strtotime($complaint['date_submitted'])); ?></div>
+                    <label>Date/Petsa Submitted</label>
+                    <div class="value"><?php echo date('F j, Y \a\t g:i A', strtotime($complaint['date_petsa'])); ?></div>
                 </div>
                 
                 <div class="review-field">
@@ -305,23 +305,23 @@ $statusLabels = [
                 </div>
                 
                 <div class="review-field">
-                    <label>Complainant Name</label>
-                    <div class="value"><?php echo htmlspecialchars($complaint['complainant_name']); ?></div>
+                    <label>Name/Pangalan</label>
+                    <div class="value"><?php echo htmlspecialchars($complaint['name_pangalan']); ?></div>
                 </div>
                 
                 <div class="review-field">
-                    <label>Person/Office Involved</label>
+                    <label>Office/School/Person Involved</label>
                     <div class="value">
-                        <?php echo htmlspecialchars($complaint['involved_name']); ?> 
+                        <?php echo htmlspecialchars($complaint['involved_full_name']); ?> 
                         (<?php echo htmlspecialchars($complaint['involved_position']); ?>)
                         <br>
-                        <small><?php echo htmlspecialchars($complaint['involved_school_office']); ?></small>
+                        <small><?php echo htmlspecialchars($complaint['involved_school_office_unit']); ?></small>
                     </div>
                 </div>
                 
                 <div class="review-field">
-                    <label>Complaint Summary</label>
-                    <div class="value long-text"><?php echo nl2br(htmlspecialchars(substr($complaint['complaint_narration'], 0, 500))); ?><?php echo strlen($complaint['complaint_narration']) > 500 ? '...' : ''; ?></div>
+                    <label>Narration of Complaint/Inquiry</label>
+                    <div class="value long-text"><?php echo nl2br(htmlspecialchars(substr($complaint['narration_complaint'], 0, 500))); ?><?php echo strlen($complaint['narration_complaint']) > 500 ? '...' : ''; ?></div>
                 </div>
                 
                 <?php if (!empty($documents)): ?>
@@ -390,4 +390,3 @@ $statusLabels = [
     </div>
 </body>
 </html>
-

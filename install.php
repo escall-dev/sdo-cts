@@ -2,6 +2,7 @@
 /**
  * SDO CTS - Database Installation Script
  * Run this script once to create the database and tables
+ * Based on Official DepEd Complaint Assisted Form
  */
 
 $host = 'localhost';
@@ -25,6 +26,7 @@ echo "</style>";
 echo "</head><body>";
 echo "<div class='card'>";
 echo "<h1>🏛️ SDO CTS Installation</h1>";
+echo "<p style='color: #666; margin-bottom: 20px;'>San Pedro Division Office Complaint Tracking System<br><small>Based on Official DepEd Complaint Assisted Form</small></p>";
 
 $success = true;
 $messages = [];
@@ -43,39 +45,60 @@ try {
     // Select database
     $pdo->exec("USE sdo_cts");
 
-    // Create complaints table
+    // Drop existing tables if needed (for fresh install)
+    // Uncomment if you want to reset the database
+    // $pdo->exec("DROP TABLE IF EXISTS complaint_history, complaint_documents, complaints");
+
+    // Create complaints table with Official Form field names
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS complaints (
             id INT AUTO_INCREMENT PRIMARY KEY,
             reference_number VARCHAR(20) UNIQUE NOT NULL,
+            
+            -- Referred to (indicate unit/section)
             referred_to ENUM('OSDS', 'SGOD', 'CID', 'Others') NOT NULL,
             referred_to_other VARCHAR(255) DEFAULT NULL,
-            date_submitted DATETIME NOT NULL,
-            complainant_name VARCHAR(255) NOT NULL,
-            complainant_address TEXT NOT NULL,
-            complainant_contact VARCHAR(20) NOT NULL,
-            complainant_email VARCHAR(255) NOT NULL,
-            involved_name VARCHAR(255) NOT NULL,
+            date_petsa DATETIME NOT NULL,
+            
+            -- Complainant/Requestor Information
+            name_pangalan VARCHAR(255) NOT NULL,
+            address_tirahan TEXT NOT NULL,
+            contact_number VARCHAR(20) NOT NULL,
+            email_address VARCHAR(255) NOT NULL,
+            
+            -- Office/School/Person Involved
+            involved_full_name VARCHAR(255) NOT NULL,
             involved_position VARCHAR(255) NOT NULL,
             involved_address TEXT NOT NULL,
-            involved_school_office VARCHAR(255) NOT NULL,
-            complaint_narration TEXT NOT NULL,
-            desired_action TEXT NOT NULL,
+            involved_school_office_unit VARCHAR(255) NOT NULL,
+            
+            -- Narration of Complaint/Inquiry and Relief
+            narration_complaint TEXT NOT NULL,
+            desired_action_relief TEXT NOT NULL,
+            
+            -- Certification on Non-Forum Shopping
             certification_agreed TINYINT(1) NOT NULL DEFAULT 0,
-            printed_name VARCHAR(255) NOT NULL,
+            
+            -- Name and Signature / Pangalan at Lagda
+            printed_name_pangalan VARCHAR(255) NOT NULL,
             signature_type ENUM('digital', 'typed') NOT NULL DEFAULT 'typed',
             signature_data TEXT DEFAULT NULL,
             date_signed DATE NOT NULL,
+            
+            -- Status Tracking
             status ENUM('pending', 'under_review', 'in_progress', 'resolved', 'closed') NOT NULL DEFAULT 'pending',
             is_locked TINYINT(1) NOT NULL DEFAULT 1,
+            
+            -- Timestamps
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            
             INDEX idx_reference (reference_number),
             INDEX idx_status (status),
-            INDEX idx_date_submitted (date_submitted)
+            INDEX idx_date_petsa (date_petsa)
         ) ENGINE=InnoDB
     ");
-    $messages[] = ['type' => 'success', 'text' => '✅ Table "complaints" created'];
+    $messages[] = ['type' => 'success', 'text' => '✅ Table "complaints" created (with Official Form fields)'];
 
     // Create documents table
     $pdo->exec("
@@ -143,7 +166,15 @@ if ($success) {
     echo "<div class='info'>";
     echo "<strong>📌 Installation Complete!</strong><br><br>";
     echo "Your SDO CTS system is now ready to use.<br>";
-    echo "Make sure your XAMPP MySQL service is running.";
+    echo "Database tables are aligned with the Official DepEd Complaint Assisted Form.<br><br>";
+    echo "<strong>Form Fields Created:</strong><br>";
+    echo "• Referred to (indicate unit/section): OSDS, SGOD, CID, Others<br>";
+    echo "• Date/Petsa<br>";
+    echo "• Complainant/Requestor Information: Name/Pangalan, Address/Tirahan, Contact Number, E-mail address<br>";
+    echo "• Office/School/Person Involved: Full Name, Position, Address, School/Office/Unit<br>";
+    echo "• Narration of Complaint/Inquiry and Relief<br>";
+    echo "• Certification on Non-Forum Shopping<br>";
+    echo "• Name and Signature / Pangalan at Lagda<br>";
     echo "</div>";
     echo "<a href='index.php' class='btn'>🚀 Launch SDO CTS</a>";
 } else {
@@ -155,4 +186,3 @@ if ($success) {
 
 echo "</div></body></html>";
 ?>
-
