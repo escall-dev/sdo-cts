@@ -448,7 +448,7 @@ if ($googleConfigured) {
             </a>
 
             <div class="login-footer">
-                <a href="/SDO-cts/"><i class="fas fa-arrow-left"></i> Back to Public Site</a>
+                <a href="/SDO-cts/"><i class="fas fa-arrow-left"></i> Back to CTS</a>
             </div>
         </div>
 
