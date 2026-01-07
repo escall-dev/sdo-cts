@@ -16,17 +16,23 @@ function initRadioOptions() {
     const radioOptions = document.querySelectorAll('.radio-option');
     const otherWrapper = document.getElementById('otherReferredWrapper');
     const otherInput = document.querySelector('input[name="referred_to_other"]');
-    
+
+    // If the routing section is not present (public form without unit selection),
+    // skip initializing radio option behavior.
+    if (!radioOptions.length || !otherWrapper || !otherInput) {
+        return;
+    }
+
     radioOptions.forEach(option => {
         const input = option.querySelector('input[type="radio"]');
-        
+
         input.addEventListener('change', function() {
             // Update selected state
             radioOptions.forEach(opt => opt.classList.remove('selected'));
             if (this.checked) {
                 option.classList.add('selected');
             }
-            
+
             // Toggle "Others" input
             if (this.value === 'Others') {
                 otherWrapper.classList.add('visible');
@@ -48,6 +54,7 @@ function initFileUpload() {
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
     const fileList = document.getElementById('fileList');
+    const form = document.getElementById('complaintForm');
     
     if (!dropZone || !fileInput) return;
     
@@ -148,6 +155,189 @@ function initFileUpload() {
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
+
+    // --- Handwritten completed form upload (single file, same visual style) ---
+    const hwDropZone = document.getElementById('handwrittenDropZone');
+    const hwInput = document.getElementById('handwritten_form');
+    const hwFileList = document.getElementById('handwrittenFileList');
+
+    if (hwDropZone && hwInput && hwFileList) {
+        let handwrittenFile = null;
+
+        hwDropZone.addEventListener('click', () => hwInput.click());
+
+        hwDropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            hwDropZone.classList.add('dragover');
+        });
+
+        hwDropZone.addEventListener('dragleave', () => {
+            hwDropZone.classList.remove('dragover');
+        });
+
+        hwDropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            hwDropZone.classList.remove('dragover');
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                handleHandwrittenFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        hwInput.addEventListener('change', () => {
+            if (hwInput.files && hwInput.files.length > 0) {
+                handleHandwrittenFile(hwInput.files[0]);
+            }
+        });
+
+        function handleHandwrittenFile(file) {
+            // Validate type
+            if (!allowedTypes.includes(file.type)) {
+                alert(`Invalid file type: ${file.name}. Only PDF, JPG, and PNG files are allowed.`);
+                hwInput.value = '';
+                handwrittenFile = null;
+                updateHandwrittenList();
+                return;
+            }
+
+            // Validate size
+            if (file.size > maxFileSize) {
+                alert(`File too large: ${file.name}. Maximum size is 10MB.`);
+                hwInput.value = '';
+                handwrittenFile = null;
+                updateHandwrittenList();
+                return;
+            }
+
+            handwrittenFile = file;
+            updateHandwrittenList();
+
+            // Automatically proceed to review when a valid handwritten form is attached
+            // (bypass all other fields – Option B). Let the existing submit handler
+            // handle validation/redirect logic.
+            if (form) {
+                form.submit();
+            }
+        }
+
+        function updateHandwrittenList() {
+            hwFileList.innerHTML = '';
+
+            if (!handwrittenFile) return;
+
+            const item = document.createElement('div');
+            item.className = 'file-item';
+
+            const icon = handwrittenFile.type === 'application/pdf' ? '📄' : '🖼️';
+            const size = formatFileSize(handwrittenFile.size);
+
+            item.innerHTML = `
+                <span class="file-name">${icon} ${handwrittenFile.name} <small>(${size})</small></span>
+                <span class="remove-file" data-role="remove-handwritten">✕ Remove</span>
+            `;
+
+            hwFileList.appendChild(item);
+
+            const removeBtn = item.querySelector('[data-role="remove-handwritten"]');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', () => {
+                    handwrittenFile = null;
+                    hwInput.value = '';
+                    updateHandwrittenList();
+                });
+            }
+        }
+    }
+
+    // --- Valid ID / Credentials upload (multiple files) ---
+    const validIdDropZone = document.getElementById('validIdDropZone');
+    const validIdInput = document.getElementById('validIdInput');
+    const validIdFileList = document.getElementById('validIdFileList');
+
+    if (validIdDropZone && validIdInput && validIdFileList) {
+        let selectedValidIdFiles = [];
+
+        validIdDropZone.addEventListener('click', () => validIdInput.click());
+
+        validIdDropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            validIdDropZone.classList.add('dragover');
+        });
+
+        validIdDropZone.addEventListener('dragleave', () => {
+            validIdDropZone.classList.remove('dragover');
+        });
+
+        validIdDropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            validIdDropZone.classList.remove('dragover');
+            handleValidIdFiles(e.dataTransfer.files);
+        });
+
+        validIdInput.addEventListener('change', () => {
+            handleValidIdFiles(validIdInput.files);
+        });
+
+        function handleValidIdFiles(files) {
+            Array.from(files).forEach(file => {
+                // Validate file type
+                if (!allowedTypes.includes(file.type)) {
+                    alert(`Invalid file type: ${file.name}. Only PDF, JPG, and PNG files are allowed.`);
+                    return;
+                }
+
+                // Validate file size
+                if (file.size > maxFileSize) {
+                    alert(`File too large: ${file.name}. Maximum size is 10MB.`);
+                    return;
+                }
+
+                // Check for duplicates
+                if (selectedValidIdFiles.some(f => f.name === file.name && f.size === file.size)) {
+                    return;
+                }
+
+                selectedValidIdFiles.push(file);
+            });
+
+            updateValidIdFileList();
+            updateValidIdInput();
+        }
+
+        function updateValidIdFileList() {
+            validIdFileList.innerHTML = '';
+
+            selectedValidIdFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+
+                const icon = file.type === 'application/pdf' ? '📄' : '🖼️';
+                const size = formatFileSize(file.size);
+
+                fileItem.innerHTML = `
+                    <span class="file-name">${icon} ${file.name} <small>(${size})</small></span>
+                    <span class="remove-file" data-validid-index="${index}">✕ Remove</span>
+                `;
+
+                validIdFileList.appendChild(fileItem);
+            });
+
+            // Add remove handlers
+            validIdFileList.querySelectorAll('.remove-file[data-validid-index]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.dataset.validIdIndex || this.dataset.validIndex || this.getAttribute('data-validid-index'));
+                    selectedValidIdFiles.splice(index, 1);
+                    updateValidIdFileList();
+                    updateValidIdInput();
+                });
+            });
+        }
+
+        function updateValidIdInput() {
+            const dt = new DataTransfer();
+            selectedValidIdFiles.forEach(file => dt.items.add(file));
+            validIdInput.files = dt.files;
+        }
+    }
 }
 
 /**
@@ -156,9 +346,14 @@ function initFileUpload() {
 function initFormValidation() {
     const form = document.getElementById('complaintForm');
     if (!form) return;
+    const handwrittenInput = document.getElementById('handwritten_form');
     
     form.addEventListener('submit', function(e) {
         let isValid = true;
+        const hasHandwritten =
+            handwrittenInput &&
+            handwrittenInput.files &&
+            handwrittenInput.files.length > 0;
         
         // Clear previous errors
         document.querySelectorAll('.form-control.error').forEach(el => {
@@ -167,57 +362,60 @@ function initFormValidation() {
         document.querySelectorAll('.error-message').forEach(el => {
             el.remove();
         });
-        
-        // Validate required fields
-        const requiredFields = form.querySelectorAll('[required]');
-        requiredFields.forEach(field => {
-            if (field.type === 'checkbox') {
-                if (!field.checked) {
+
+        // If a completed handwritten form is uploaded, bypass all other field validations (Option B)
+        if (!hasHandwritten) {
+            // Validate required fields
+            const requiredFields = form.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                if (field.type === 'checkbox') {
+                    if (!field.checked) {
+                        isValid = false;
+                        showError(field.parentElement.parentElement, 'You must agree to the certification');
+                    }
+                } else if (field.type === 'radio') {
+                    const radioGroup = form.querySelectorAll(`input[name="${field.name}"]`);
+                    const isChecked = Array.from(radioGroup).some(r => r.checked);
+                    if (!isChecked) {
+                        isValid = false;
+                        showError(field.closest('.form-group'), 'Please select an option');
+                    }
+                } else if (!field.value.trim()) {
                     isValid = false;
-                    showError(field.parentElement.parentElement, 'You must agree to the certification');
+                    field.classList.add('error');
+                    showError(field, 'This field is required');
                 }
-            } else if (field.type === 'radio') {
-                const radioGroup = form.querySelectorAll(`input[name="${field.name}"]`);
-                const isChecked = Array.from(radioGroup).some(r => r.checked);
-                if (!isChecked) {
+            });
+            
+            // Validate email
+            const emailField = document.getElementById('email_address');
+            if (emailField && emailField.value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailField.value)) {
                     isValid = false;
-                    showError(field.closest('.form-group'), 'Please select an option');
+                    emailField.classList.add('error');
+                    showError(emailField, 'Please enter a valid email address');
                 }
-            } else if (!field.value.trim()) {
-                isValid = false;
-                field.classList.add('error');
-                showError(field, 'This field is required');
             }
-        });
-        
-        // Validate email
-        const emailField = document.getElementById('email_address');
-        if (emailField && emailField.value) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(emailField.value)) {
-                isValid = false;
-                emailField.classList.add('error');
-                showError(emailField, 'Please enter a valid email address');
+            
+            // Validate contact number
+            const contactField = document.getElementById('contact_number');
+            if (contactField && contactField.value) {
+                const phoneRegex = /^[0-9]{10,11}$/;
+                if (!phoneRegex.test(contactField.value.replace(/\D/g, ''))) {
+                    isValid = false;
+                    contactField.classList.add('error');
+                    showError(contactField, 'Please enter a valid 10-11 digit phone number');
+                }
             }
-        }
-        
-        // Validate contact number
-        const contactField = document.getElementById('contact_number');
-        if (contactField && contactField.value) {
-            const phoneRegex = /^[0-9]{10,11}$/;
-            if (!phoneRegex.test(contactField.value.replace(/\D/g, ''))) {
+            
+            // Validate typed signature
+            const typedSig = document.getElementById('typed_signature');
+            if (typedSig && !typedSig.value.trim()) {
                 isValid = false;
-                contactField.classList.add('error');
-                showError(contactField, 'Please enter a valid 10-11 digit phone number');
+                typedSig.classList.add('error');
+                showError(typedSig, 'Please type your signature');
             }
-        }
-        
-        // Validate typed signature
-        const typedSig = document.getElementById('typed_signature');
-        if (typedSig && !typedSig.value.trim()) {
-            isValid = false;
-            typedSig.classList.add('error');
-            showError(typedSig, 'Please type your signature');
         }
         
         if (!isValid) {
@@ -314,32 +512,10 @@ function performReset() {
     // Clear session data via AJAX
     fetch('clear_session.php', { method: 'POST' })
         .then(() => {
-            // Reset the form
-            document.getElementById('complaintForm').reset();
-            
-            // Clear file list
-            const fileList = document.getElementById('fileList');
-            if (fileList) fileList.innerHTML = '';
-            
-            // Clear radio selections
-            document.querySelectorAll('.radio-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            
-            // Hide "Others" input
-            const otherWrapper = document.getElementById('otherReferredWrapper');
-            if (otherWrapper) otherWrapper.classList.remove('visible');
-            
-            // Clear errors
-            document.querySelectorAll('.form-control.error').forEach(el => {
-                el.classList.remove('error');
-            });
-            document.querySelectorAll('.error-message').forEach(el => {
-                el.remove();
-            });
-            
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // After clearing session, reload the page with clear flag
+            // so that ALL fields (including file inputs and any client-side state)
+            // are fully reset to their initial empty state.
+            window.location.href = 'index.php?clear=1';
         })
         .catch(() => {
             // Fallback: just reload the page with clear parameter

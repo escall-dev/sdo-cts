@@ -110,7 +110,7 @@ include __DIR__ . '/includes/header.php';
                     <th>Reference</th>
                     <th>Complainant</th>
                     <th>Subject/Involved</th>
-                    <th>Unit</th>
+                   
                     <th>Status</th>
                     <th>Date Filed</th>
                     <th>Actions</th>
@@ -118,6 +118,33 @@ include __DIR__ . '/includes/header.php';
             </thead>
             <tbody>
                 <?php foreach ($complaints as $complaint): ?>
+                <?php
+                    $isUploadedForm   = ($complaint['signature_type'] ?? '') === 'uploaded_form';
+                    $complainantName  = $complaint['name_pangalan'] ?? '';
+                    $complainantEmail = $complaint['email_address'] ?? '';
+                    $involvedName     = $complaint['involved_full_name'] ?? '';
+                    $docCount         = isset($complaint['doc_count']) ? (int)$complaint['doc_count'] : 0;
+
+                    // Fallback detection for older uploaded-form submissions:
+                    // if core fields are blank and there are documents, mark as uploaded.
+                    $blankCore = 
+                        empty(trim($complainantName)) &&
+                        empty(trim($complaint['address_tirahan'] ?? '')) &&
+                        empty(trim($complaint['contact_number'] ?? '')) &&
+                        empty(trim($complainantEmail)) &&
+                        empty(trim($complaint['narration_complaint'] ?? '')) &&
+                        empty(trim($involvedName));
+
+                    if ($blankCore && $docCount > 0) {
+                        $isUploadedForm = true;
+                    }
+
+                    if ($isUploadedForm) {
+                        $complainantName = 'Document uploaded';
+                        $involvedName = 'Document uploaded';
+                        $complainantEmail = '';
+                    }
+                ?>
                 <tr>
                     <td>
                         <a href="/SDO-cts/admin/complaint-view.php?id=<?php echo $complaint['id']; ?>" class="ref-link">
@@ -125,16 +152,15 @@ include __DIR__ . '/includes/header.php';
                         </a>
                     </td>
                     <td>
-                        <div class="cell-primary"><?php echo htmlspecialchars($complaint['name_pangalan']); ?></div>
-                        <div class="cell-secondary"><?php echo htmlspecialchars($complaint['email_address']); ?></div>
+                        <div class="cell-primary"><?php echo htmlspecialchars($complainantName); ?></div>
+                        <?php if ($complainantEmail): ?>
+                        <div class="cell-secondary"><?php echo htmlspecialchars($complainantEmail); ?></div>
+                        <?php endif; ?>
                     </td>
                     <td>
-                        <div class="cell-primary"><?php echo htmlspecialchars($complaint['involved_full_name']); ?></div>
-                        <div class="cell-secondary"><?php echo htmlspecialchars($complaint['involved_school_office_unit']); ?></div>
+                        <div class="cell-primary"><?php echo htmlspecialchars($involvedName); ?></div>
                     </td>
-                    <td>
-                        <span class="unit-badge"><?php echo htmlspecialchars($complaint['referred_to']); ?></span>
-                    </td>
+                   
                     <td>
                         <span class="status-badge status-<?php echo $complaint['status']; ?>">
                             <?php echo $statusConfig[$complaint['status']]['icon'] . ' ' . $statusConfig[$complaint['status']]['label']; ?>

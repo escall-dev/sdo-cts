@@ -13,6 +13,7 @@ if (!isset($_SESSION['form_data']) || empty($_SESSION['form_data'])) {
 
 $data = $_SESSION['form_data'];
 $files = $_SESSION['form_files'] ?? [];
+$isHandwritten = !empty($data['handwritten_mode']);
 
 // Handle final submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_submit'])) {
@@ -22,23 +23,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_submit'])) {
         $complaint = new Complaint();
         
         $complaintData = [
-            'referred_to' => $data['referred_to'],
+            'referred_to' => $data['referred_to'] ?? 'OSDS',
             'referred_to_other' => $data['referred_to_other'] ?? null,
-            'name_pangalan' => $data['name_pangalan'],
-            'address_tirahan' => $data['address_tirahan'],
-            'contact_number' => $data['contact_number'],
-            'email_address' => $data['email_address'],
-            'involved_full_name' => $data['involved_full_name'],
-            'involved_position' => $data['involved_position'],
-            'involved_address' => $data['involved_address'],
-            'involved_school_office_unit' => $data['involved_school_office_unit'],
-            'narration_complaint' => $data['narration_complaint'],
+            'name_pangalan' => $data['name_pangalan'] ?? null,
+            'address_tirahan' => $data['address_tirahan'] ?? null,
+            'contact_number' => $data['contact_number'] ?? null,
+            'email_address' => $data['email_address'] ?? null,
+            'involved_full_name' => $data['involved_full_name'] ?? null,
+            'involved_position' => $data['involved_position'] ?? null,
+            'involved_address' => $data['involved_address'] ?? null,
+            'involved_school_office_unit' => $data['involved_school_office_unit'] ?? null,
+            'narration_complaint' => $data['narration_complaint'] ?? null,
             'narration_complaint_page2' => $data['narration_complaint_page2'] ?? null,
-            'desired_action_relief' => $data['desired_action_relief'],
-            'certification_agreed' => isset($data['certification_agreed']),
-            'printed_name_pangalan' => $data['typed_signature'] ?? $data['name_pangalan'],
-            'signature_type' => 'typed',
-            'signature_data' => $data['typed_signature'] ?? $data['name_pangalan']
+            'desired_action_relief' => $data['desired_action_relief'] ?? null,
+            'certification_agreed' => !empty($data['certification_agreed']),
+            'printed_name_pangalan' => $data['typed_signature'] ?? ($data['name_pangalan'] ?? null),
+            'signature_type' => $isHandwritten ? 'uploaded_form' : 'typed',
+            'signature_data' => $isHandwritten ? null : ($data['typed_signature'] ?? ($data['name_pangalan'] ?? null))
         ];
         
         $result = $complaint->create($complaintData);
@@ -77,10 +78,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_submit'])) {
 }
 
 // Checkmarks for referred to section
-$checkOSDS = $data['referred_to'] === 'OSDS' ? '✓' : '';
-$checkSGOD = $data['referred_to'] === 'SGOD' ? '✓' : '';
-$checkCID = $data['referred_to'] === 'CID' ? '✓' : '';
-$checkOthers = $data['referred_to'] === 'Others' ? '✓' : '';
+// Public form no longer asks the complainant to select the routing unit,
+// so leave all checkboxes blank on the review/printable form.
+$checkOSDS = '';
+$checkSGOD = '';
+$checkCID = '';
+$checkOthers = '';
 $othersText = ($data['referred_to'] === 'Others' && !empty($data['referred_to_other'])) ? $data['referred_to_other'] : '';
 ?>
 <!DOCTYPE html>
@@ -398,83 +401,158 @@ $othersText = ($data['referred_to'] === 'Others' && !empty($data['referred_to_ot
         </div>
         <?php endif; ?>
 
+        <?php if ($isHandwritten): ?>
+        <div class="no-print" style="background:#e3f2fd;color:#0d47a1;padding:15px;border-radius:8px;margin-bottom:20px;border:1px solid #90caf9;">
+            <strong>Handwritten Form Attached:</strong>
+            This submission includes an uploaded photo or scan of a fully accomplished Complaints-Assisted Form.
+            On-page fields may appear blank because the official details are contained in the attached form.
+        </div>
+        <?php endif; ?>
+
         <div class="review-banner no-print" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
             <span class="icon" style="font-size: 1.5rem; margin-bottom: 1px;"><i class="fas fa-clipboard-list"></i></span>
             <div>
-                <h3 style="margin: 5 0 7px;">Review Your Complaint Assisted Form</h3>
-                <p style="margin: 0;">Verify all the information below are correct.</p>
+                <h3 style="margin: 5 0 7px;">
+                    <?php echo $isHandwritten ? 'Review Your Uploaded Complaint-Assisted Form' : 'Review Your Complaint Assisted Form'; ?>
+                </h3>
+                <p style="margin: 0;">
+                    <?php echo $isHandwritten
+                        ? 'Please review the uploaded file(s) below before submitting.'
+                        : 'Verify all the information below are correct.'; ?>
+                </p>
             </div>
         </div>
+        
+        <?php if ($isHandwritten): ?>
+            <!-- Handwritten mode: show uploaded file(s) instead of blank official form -->
+            <?php
+            $tempDirUrl = 'uploads/temp/';
+            $handwrittenFiles = array_filter($files, function($f) {
+                return isset($f['category']) && $f['category'] === 'handwritten_form';
+            });
+            $supportingFiles = array_filter($files, function($f) {
+                return !isset($f['category']) || $f['category'] !== 'handwritten_form';
+            });
+            ?>
+            <?php if (!empty($handwrittenFiles)): ?>
+            <section class="form-section no-print" style="margin-top:10px;">
+                <div class="section-header">
+                    <span class="section-icon"><i class="fas fa-file-signature"></i></span>
+                    Uploaded Completed Complaint-Assisted Form
+                </div>
+                <div class="section-content">
+                    <?php foreach ($handwrittenFiles as $file): ?>
+                        <?php
+                        $url = $tempDirUrl . rawurlencode($file['temp_name']);
+                        $isImage = in_array(strtolower(pathinfo($file['original_name'], PATHINFO_EXTENSION)), ['jpg','jpeg','png']);
+                        ?>
+                        <div style="margin-bottom:1.25rem;">
+                            <p style="margin-bottom:0.5rem;font-weight:500;">
+                                <?php echo htmlspecialchars($file['original_name']); ?>
+                                <a href="<?php echo htmlspecialchars($url); ?>" target="_blank" style="margin-left:10px;font-weight:400;">Open in new tab</a>
+                            </p>
+                            <?php if ($isImage): ?>
+                                <div style="border:1px solid #ddd;border-radius:6px;overflow:hidden;max-height:600px;">
+                                    <img src="<?php echo htmlspecialchars($url); ?>" alt="Uploaded form preview" style="width:100%;height:auto;display:block;">
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+            <?php endif; ?>
 
-        <!-- PAGE 1: FORM WITH IMAGE BACKGROUND AND TEXT OVERLAY -->
-        <div class="form-container">
-            <!-- Background Image (Official Form) -->
-            <img src="reference/COMPLAINT-ASSISTED-FORM_1.jpg" 
-                 alt="Complaint Assisted Form" 
-                 class="form-background">
-            
-            <!-- Text Overlay Layer with Positioned Field Boxes -->
-            <div class="form-overlay">
+            <?php if (!empty($supportingFiles)): ?>
+            <section class="form-section no-print">
+                <div class="section-header">
+                    <span class="section-icon"><i class="fas fa-paperclip"></i></span>
+                    Additional Attached Documents
+                </div>
+                <div class="section-content">
+                    <ul style="margin:0 0 0 20px;padding:0;">
+                        <?php foreach ($supportingFiles as $file): ?>
+                        <?php $url = $tempDirUrl . rawurlencode($file['temp_name']); ?>
+                        <li style="margin-bottom:0.5rem;">
+                            <?php echo htmlspecialchars($file['original_name']); ?>
+                            <a href="<?php echo htmlspecialchars($url); ?>" target="_blank" style="margin-left:8px;">Open</a>
+                        </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </section>
+            <?php endif; ?>
+        <?php else: ?>
+            <!-- STANDARD MODE: Official form preview -->
+            <!-- PAGE 1: FORM WITH IMAGE BACKGROUND AND TEXT OVERLAY -->
+            <div class="form-container">
+                <!-- Background Image (Official Form) -->
+                <img src="reference/COMPLAINT-ASSISTED-FORM_1.jpg" 
+                     alt="Complaint Assisted Form" 
+                     class="form-background">
                 
-                <!-- Routing Checkmarks -->
-                <div class="field-box check-osds"><?php echo $checkOSDS; ?></div>
-                <div class="field-box check-sgod"><?php echo $checkSGOD; ?></div>
-                <div class="field-box check-cid"><?php echo $checkCID; ?></div>
-                <div class="field-box check-others"><?php echo $checkOthers; ?></div>
-                
-                <!-- Others Text -->
-                <div class="field-box others-text-box"><?php echo htmlspecialchars($othersText); ?></div>
-                
-                <!-- Date -->
-                <div class="field-box date-box"><?php echo date('F j, Y'); ?></div>
-                
-                <!-- Complainant Information -->
-                <div class="field-box complainant-name-box"><?php echo htmlspecialchars($data['name_pangalan']); ?></div>
-                <div class="field-box complainant-address-box"><?php echo htmlspecialchars($data['address_tirahan']); ?></div>
-                <div class="field-box complainant-contact-box"><?php echo htmlspecialchars($data['contact_number']); ?></div>
-                <div class="field-box complainant-email-box"><?php echo htmlspecialchars($data['email_address']); ?></div>
-                
-                <!-- Involved Person/Office -->
-                <div class="field-box involved-name-box"><?php echo htmlspecialchars($data['involved_full_name']); ?></div>
-                <div class="field-box involved-position-box"><?php echo htmlspecialchars($data['involved_position']); ?></div>
-                <div class="field-box involved-address-box"><?php echo htmlspecialchars($data['involved_address']); ?></div>
-                <div class="field-box involved-school-box"><?php echo htmlspecialchars($data['involved_school_office_unit']); ?></div>
-                
-                <!-- Narration (Multi-line, Controlled) -->
-                <div class="field-box narration-box"><?php echo htmlspecialchars($data['narration_complaint']); ?></div>
-                
-                <!-- Signature -->
-                <div class="field-box signature-box"><?php echo htmlspecialchars($data['typed_signature'] ?? $data['name_pangalan']); ?></div>
-                
+                <!-- Text Overlay Layer with Positioned Field Boxes -->
+                <div class="form-overlay">
+                    
+                    <!-- Routing Checkmarks -->
+                    <div class="field-box check-osds"><?php echo $checkOSDS; ?></div>
+                    <div class="field-box check-sgod"><?php echo $checkSGOD; ?></div>
+                    <div class="field-box check-cid"><?php echo $checkCID; ?></div>
+                    <div class="field-box check-others"><?php echo $checkOthers; ?></div>
+                    
+                    <!-- Others Text -->
+                    <div class="field-box others-text-box"><?php echo htmlspecialchars($othersText); ?></div>
+                    
+                    <!-- Date -->
+                    <div class="field-box date-box"><?php echo date('F j, Y'); ?></div>
+                    
+                    <!-- Complainant Information -->
+                    <div class="field-box complainant-name-box"><?php echo htmlspecialchars($data['name_pangalan'] ?? ''); ?></div>
+                    <div class="field-box complainant-address-box"><?php echo htmlspecialchars($data['address_tirahan'] ?? ''); ?></div>
+                    <div class="field-box complainant-contact-box"><?php echo htmlspecialchars($data['contact_number'] ?? ''); ?></div>
+                    <div class="field-box complainant-email-box"><?php echo htmlspecialchars($data['email_address'] ?? ''); ?></div>
+                    
+                    <!-- Involved Person/Office -->
+                    <div class="field-box involved-name-box"><?php echo htmlspecialchars($data['involved_full_name'] ?? ''); ?></div>
+                    <div class="field-box involved-position-box"><?php echo htmlspecialchars($data['involved_position'] ?? ''); ?></div>
+                    <div class="field-box involved-address-box"><?php echo htmlspecialchars($data['involved_address'] ?? ''); ?></div>
+                    <div class="field-box involved-school-box"><?php echo htmlspecialchars($data['involved_school_office_unit'] ?? ''); ?></div>
+                    
+                    <!-- Narration (Multi-line, Controlled) -->
+                    <div class="field-box narration-box"><?php echo htmlspecialchars($data['narration_complaint'] ?? ''); ?></div>
+                    
+                    <!-- Signature -->
+                    <div class="field-box signature-box"><?php echo htmlspecialchars($data['typed_signature'] ?? ($data['name_pangalan'] ?? '')); ?></div>
+                    
+                </div>
             </div>
-        </div>
-        <div class="page-indicator no-print">Page 1 of <?php echo !empty($data['narration_complaint_page2']) ? '2' : '1'; ?></div>
+            <div class="page-indicator no-print">Page 1 of <?php echo !empty($data['narration_complaint_page2']) ? '2' : '1'; ?></div>
 
-        <!-- PAGE 2: ADDITIONAL PAGE FOR NARRATION CONTINUATION (Only if content exists) -->
-        <?php if (!empty($data['narration_complaint_page2'])): ?>
-        <div class="additional-page">
-            <div class="page-number-label"></div>
-            
-            <div class="additional-page-header">
-                <h2>CONTINUATION OF NARRATION OF COMPLAINT / INQUIRY AND RELIEF</h2>
-                <p>(Ano ang iyong reklamo, tanong, request o suhestiyon? Ano ang gusto mong aksiyon?)</p>
+            <!-- PAGE 2: ADDITIONAL PAGE FOR NARRATION CONTINUATION (Only if content exists) -->
+            <?php if (!empty($data['narration_complaint_page2'])): ?>
+            <div class="additional-page">
+                <div class="page-number-label"></div>
+                
+                <div class="additional-page-header">
+                    <h2>CONTINUATION OF NARRATION OF COMPLAINT / INQUIRY AND RELIEF</h2>
+                    <p>(Ano ang iyong reklamo, tanong, request o suhestiyon? Ano ang gusto mong aksiyon?)</p>
+                </div>
+                
+                <div class="additional-page-content"><?php echo htmlspecialchars($data['narration_complaint_page2']); ?></div>
             </div>
-            
-            <div class="additional-page-content"><?php echo htmlspecialchars($data['narration_complaint_page2']); ?></div>
-        </div>
-        <div class="page-indicator no-print">Page 2 of 2</div>
-        <?php endif; ?>
+            <div class="page-indicator no-print">Page 2 of 2</div>
+            <?php endif; ?>
 
-        <!-- Attached Files (Below Form) -->
-        <?php if (!empty($files)): ?>
-        <div class="attached-notice no-print">
-            <strong>📎 Attached Supporting Documents:</strong>
-            <ul style="margin:8px 0 0 20px;padding:0;">
-                <?php foreach ($files as $file): ?>
-                <li><?php echo htmlspecialchars($file['original_name']); ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
+            <!-- Attached Files (Below Form) -->
+            <?php if (!empty($files)): ?>
+            <div class="attached-notice no-print">
+                <strong>📎 Attached Supporting Documents:</strong>
+                <ul style="margin:8px 0 0 20px;padding:0;">
+                    <?php foreach ($files as $file): ?>
+                    <li><?php echo htmlspecialchars($file['original_name']); ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <?php endif; ?>
         <?php endif; ?>
 
         <!-- Action Buttons -->

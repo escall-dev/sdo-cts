@@ -21,9 +21,15 @@ class ComplaintAdmin {
         $offset = ($page - 1) * $perPage;
         
         $sql = "SELECT c.*, 
-                       au.full_name as handled_by_name
+                       au.full_name as handled_by_name,
+                       docs.doc_count
                 FROM complaints c
                 LEFT JOIN admin_users au ON c.handled_by = au.id
+                LEFT JOIN (
+                    SELECT complaint_id, COUNT(*) AS doc_count
+                    FROM complaint_documents
+                    GROUP BY complaint_id
+                ) docs ON docs.complaint_id = c.id
                 WHERE 1=1";
         $params = [];
 

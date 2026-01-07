@@ -34,16 +34,44 @@ $documents = $complaintModel->getDocuments($id);
 $history = $complaintModel->getStatusHistory($id);
 $assignments = $complaintModel->getAssignments($id);
 
+// Primary uploaded document (first attachment), used for uploaded-form complaints
+$primaryDoc = null;
+$primaryUrl = null;
+$primaryExt = null;
+$primaryOriginalName = null;
+if (!empty($documents)) {
+    $primaryDoc = $documents[0];
+    $primaryUrl = "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $primaryDoc['file_name'];
+    $primaryExt = strtolower(pathinfo($primaryDoc['file_name'], PATHINFO_EXTENSION));
+    $primaryOriginalName = $primaryDoc['original_name'] ?? null;
+}
+
 // Status config
 $statusConfig = STATUS_CONFIG;
 $units = UNITS;
 $statusWorkflow = STATUS_WORKFLOW;
 
-// Prepare checkmarks for referred to section
-$checkOSDS = $complaint['referred_to'] === 'OSDS' ? '✓' : '';
-$checkSGOD = $complaint['referred_to'] === 'SGOD' ? '✓' : '';
-$checkCID = $complaint['referred_to'] === 'CID' ? '✓' : '';
-$checkOthers = $complaint['referred_to'] === 'Others' ? '✓' : '';
+// Determine if this complaint came from an uploaded completed form
+// Primary flag is signature_type = 'uploaded_form' (new flow).
+// As a safety net for older/edge records, also treat it as uploaded-form
+// when core complainant fields are blank but there is at least one document.
+$hasCoreFieldsEmpty = 
+    empty(trim($complaint['name_pangalan'] ?? '')) &&
+    empty(trim($complaint['address_tirahan'] ?? '')) &&
+    empty(trim($complaint['contact_number'] ?? '')) &&
+    empty(trim($complaint['email_address'] ?? '')) &&
+    empty(trim($complaint['narration_complaint'] ?? ''));
+
+$isUploadedForm = (($complaint['signature_type'] ?? '') === 'uploaded_form')
+    || ($hasCoreFieldsEmpty && !empty($documents));
+
+// Prepare checkmarks for referred to section (for standard typed submissions)
+// Public form no longer captures routing information, so we leave
+// all checkboxes on the printed form blank by default.
+$checkOSDS = '';
+$checkSGOD = '';
+$checkCID = '';
+$checkOthers = '';
 $othersText = ($complaint['referred_to'] === 'Others' && !empty($complaint['referred_to_other'])) ? $complaint['referred_to_other'] : '';
 
 include __DIR__ . '/includes/header.php';
@@ -472,11 +500,11 @@ include __DIR__ . '/includes/header.php';
         <span class="status-badge status-<?php echo $complaint['status']; ?> large">
             <?php echo $statusConfig[$complaint['status']]['icon'] . ' ' . $statusConfig[$complaint['status']]['label']; ?>
         </span>
-        <button type="button" class="btn btn-outline" onclick="window.print()">
-            <i class="fas fa-print"></i> Print
+                    <button type="button" class="btn btn-outline" onclick="printDocument()">
+                        <i class="fas fa-print"></i> Print
         </button>
         <button type="button" class="btn btn-primary" onclick="saveAsPDF(this)">
-            <i class="fas fa-file"></i> Save as PDF
+            <i class="fas fa-file-download"></i> Save Document
         </button>
     </div>
 </div>
@@ -484,83 +512,185 @@ include __DIR__ . '/includes/header.php';
 <div class="complaint-detail-grid">
     <!-- Main Content -->
     <div class="complaint-main">
-        <!-- FORM WITH IMAGE BACKGROUND AND TEXT OVERLAY -->
-        <div class="form-container">
-            <!-- Background Image (Official Form) -->
-            <img src="/SDO-cts/reference/COMPLAINT-ASSISTED-FORM_1.jpg" 
-                 alt="Complaint Assisted Form" 
-                 class="form-background">
-            
-            <!-- Text Overlay Layer with Positioned Field Boxes -->
-            <div class="form-overlay">
-                
-                <!-- CTS Ticket Number -->
-                <div class="field-box cts-ticket-box">CTS No: <?php echo htmlspecialchars($complaint['reference_number']); ?></div>
-                
-                <!-- Routing Checkmarks -->
-                <div class="field-box check-osds"><?php echo $checkOSDS; ?></div>
-                <div class="field-box check-sgod"><?php echo $checkSGOD; ?></div>
-                <div class="field-box check-cid"><?php echo $checkCID; ?></div>
-                <div class="field-box check-others"><?php echo $checkOthers; ?></div>
-                
-                <!-- Others Text -->
-                <div class="field-box others-text-box"><?php echo htmlspecialchars($othersText); ?></div>
-                
-                <!-- Date -->
-                <div class="field-box date-box"><?php echo date('F j, Y', strtotime($complaint['date_petsa'])); ?></div>
-                
-                <!-- Complainant Information -->
-                <div class="field-box complainant-name-box"><?php echo htmlspecialchars($complaint['name_pangalan']); ?></div>
-                <div class="field-box complainant-address-box"><?php echo htmlspecialchars($complaint['address_tirahan']); ?></div>
-                <div class="field-box complainant-contact-box"><?php echo htmlspecialchars($complaint['contact_number']); ?></div>
-                <div class="field-box complainant-email-box"><?php echo htmlspecialchars($complaint['email_address']); ?></div>
-                
-                <!-- Involved Person/Office -->
-                <div class="field-box involved-name-box"><?php echo htmlspecialchars($complaint['involved_full_name']); ?></div>
-                <div class="field-box involved-position-box"><?php echo htmlspecialchars($complaint['involved_position']); ?></div>
-                <div class="field-box involved-address-box"><?php echo htmlspecialchars($complaint['involved_address']); ?></div>
-                <div class="field-box involved-school-box"><?php echo htmlspecialchars($complaint['involved_school_office_unit']); ?></div>
-                
-                <!-- Narration (Multi-line, Controlled) -->
-                <div class="field-box narration-box"><?php echo htmlspecialchars($complaint['narration_complaint']); ?></div>
-                
-                <!-- Signature -->
-                <div class="field-box signature-box"><?php echo htmlspecialchars($complaint['signature_data'] ?? $complaint['printed_name_pangalan']); ?></div>
-                
-            </div>
-        </div>
-        <div class="page-indicator no-print">Page 1 of <?php echo !empty($complaint['narration_complaint_page2']) ? '2' : '1'; ?></div>
+        <?php if ($isUploadedForm): ?>
+            <!-- UPLOADED FORM MODE: show uploaded document(s) instead of blank template -->
+            <?php if (!empty($documents)): ?>
+            <?php
+                // Use the first document as the primary uploaded complaint form for inline viewing
+                $primaryDoc = $documents[0];
+                $primaryUrl = "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $primaryDoc['file_name'];
+                $primaryExt = strtolower(pathinfo($primaryDoc['file_name'], PATHINFO_EXTENSION));
+                $primaryIsImage = in_array($primaryExt, ['jpg','jpeg','png']);
+                $primaryIsPdf = ($primaryExt === 'pdf');
+            ?>
+            <div class="form-container" style="box-shadow:none;padding:20px 0;">
+                <div style="padding:0 20px 20px;">
+                    <h3 style="margin-bottom:10px;">Uploaded Complaint-Assisted Form</h3>
+                    <p style="margin:0 0 10px;color:#555;">
+                        This complaint was filed via an uploaded completed form. You can zoom and scroll the full document below.
+                    </p>
 
-        <!-- PAGE 2: ADDITIONAL PAGE FOR NARRATION CONTINUATION (Only if content exists) -->
-        <?php if (!empty($complaint['narration_complaint_page2'])): ?>
-        <div class="additional-page">
-            <div class="page-number-label">CTS No: <?php echo htmlspecialchars($complaint['reference_number']); ?> | Page 2</div>
-            
-            <div class="additional-page-header">
-                <h2>NARRATION OF COMPLAINT/INQUIRY AND RELIEF</h2>
-                <p>(Ano ang iyong reklamo, tanong, request o suhestiyon? Ano ang gusto mong aksiyon?)</p>
-            </div>
-            
-            <div class="additional-page-content"><?php echo htmlspecialchars($complaint['narration_complaint_page2']); ?></div>
-        </div>
-        <div class="page-indicator no-print">Page 2 of 2</div>
-        <?php endif; ?>
+                    <!-- Zoom toolbar for primary uploaded form -->
+                    <div id="uploadedZoomToolbar" style="margin-bottom:8px;display:flex;align-items:center;gap:8px;font-size:12px;color:#444;">
+                        <span>Zoom:</span>
+                        <button type="button" class="btn btn-sm btn-outline" data-zoom="out">−</button>
+                        <button type="button" class="btn btn-sm btn-outline" data-zoom="in">+</button>
+                        <button type="button" class="btn btn-sm btn-secondary" data-zoom="reset">Reset</button>
+                        <span id="uploadedZoomLabel" style="margin-left:4px;">100%</span>
+                    </div>
 
-        <!-- Attached Files (Below Form) -->
-        <?php if (!empty($documents)): ?>
-        <div class="attached-notice no-print">
-            <strong>📎 Attached Supporting Documents:</strong>
-            <ul>
-                <?php foreach ($documents as $doc): ?>
-                <li>
-                    <a href="/SDO-cts/uploads/complaints/<?php echo $complaint['id'] . '/' . $doc['file_name']; ?>" target="_blank">
-                        <?php echo htmlspecialchars($doc['original_name']); ?>
-                    </a>
-                    <span style="color:#666;font-size:12px;">(<?php echo number_format($doc['file_size'] / 1024, 1); ?> KB)</span>
-                </li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
+                    <div id="uploadedDocContainer"
+                         style="width:100%;height:90vh;border:1px solid #ddd;border-radius:6px;background:#fafafa;overflow:auto;display:flex;align-items:center;justify-content:center;padding:10px;box-sizing:border-box;">
+                        <div class="uploaded-preview-inner" style="transform-origin:top left; width:100%; height:100%; max-width:100%; max-height:100%; display:flex; align-items:center; justify-content:center;">
+                            <?php if ($primaryIsImage): ?>
+                                <img src="<?php echo htmlspecialchars($primaryUrl); ?>"
+                                     alt="<?php echo htmlspecialchars($primaryDoc['original_name']); ?>"
+                                     style="max-width:100%;max-height:100%;width:auto;height:auto;display:block;margin:0 auto;object-fit:contain;">
+                            <?php elseif ($primaryIsPdf): ?>
+                                <embed src="<?php echo htmlspecialchars($primaryUrl); ?>" type="application/pdf"
+                                       style="width:100%;height:100%;border:none;" />
+                            <?php else: ?>
+                                <div style="text-align:center;padding:20px;">
+                                    <p style="margin-bottom:10px;">Preview not available for this file type.</p>
+                                    <a href="<?php echo htmlspecialchars($primaryUrl); ?>" target="_blank" class="btn btn-outline btn-sm">
+                                        Open / Download
+                                    </a>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <?php if (count($documents) > 1): ?>
+                    <p style="margin-top:10px;font-size:12px;color:#555;">
+                        Other attached documents:
+                    </p>
+                    <ul style="margin-top:4px;margin-left:18px;">
+                        <?php foreach ($documents as $index => $doc): ?>
+                            <?php if ($index === 0) continue; ?>
+                            <?php $url = "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name']; ?>
+                            <li style="margin-bottom:4px;">
+                                <a href="<?php echo htmlspecialchars($url); ?>" target="_blank">
+                                    <?php echo htmlspecialchars($doc['original_name']); ?>
+                                </a>
+                                <span style="color:#666;font-size:12px;">(<?php echo number_format($doc['file_size'] / 1024, 1); ?> KB)</span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php else: ?>
+            <p>No uploaded documents found for this complaint.</p>
+            <?php endif; ?>
+        <?php else: ?>
+            <!-- STANDARD TYPED FORM MODE: show official template with overlay -->
+            <!-- FORM WITH IMAGE BACKGROUND AND TEXT OVERLAY -->
+            <div class="form-container">
+                <!-- Background Image (Official Form) -->
+                <img src="/SDO-cts/reference/COMPLAINT-ASSISTED-FORM_1.jpg" 
+                     alt="Complaint Assisted Form" 
+                     class="form-background">
+                
+                <!-- Text Overlay Layer with Positioned Field Boxes -->
+                <div class="form-overlay">
+                    
+                    <!-- CTS Ticket Number -->
+                    <div class="field-box cts-ticket-box">CTS No: <?php echo htmlspecialchars($complaint['reference_number']); ?></div>
+                    
+                    <!-- Routing Checkmarks -->
+                    <div class="field-box check-osds"><?php echo $checkOSDS; ?></div>
+                    <div class="field-box check-sgod"><?php echo $checkSGOD; ?></div>
+                    <div class="field-box check-cid"><?php echo $checkCID; ?></div>
+                    <div class="field-box check-others"><?php echo $checkOthers; ?></div>
+                    
+                    <!-- Others Text -->
+                    <div class="field-box others-text-box"><?php echo htmlspecialchars($othersText); ?></div>
+                    
+                    <!-- Date -->
+                    <div class="field-box date-box"><?php echo date('F j, Y', strtotime($complaint['date_petsa'])); ?></div>
+                    
+                    <!-- Complainant Information -->
+                    <div class="field-box complainant-name-box"><?php echo htmlspecialchars($complaint['name_pangalan']); ?></div>
+                    <div class="field-box complainant-address-box"><?php echo htmlspecialchars($complaint['address_tirahan']); ?></div>
+                    <div class="field-box complainant-contact-box"><?php echo htmlspecialchars($complaint['contact_number']); ?></div>
+                    <div class="field-box complainant-email-box"><?php echo htmlspecialchars($complaint['email_address']); ?></div>
+                    
+                    <!-- Involved Person/Office -->
+                    <div class="field-box involved-name-box"><?php echo htmlspecialchars($complaint['involved_full_name']); ?></div>
+                    <div class="field-box involved-position-box"><?php echo htmlspecialchars($complaint['involved_position']); ?></div>
+                    <div class="field-box involved-address-box"><?php echo htmlspecialchars($complaint['involved_address']); ?></div>
+                    <div class="field-box involved-school-box"><?php echo htmlspecialchars($complaint['involved_school_office_unit']); ?></div>
+                    
+                    <!-- Narration (Multi-line, Controlled) -->
+                    <div class="field-box narration-box"><?php echo htmlspecialchars($complaint['narration_complaint']); ?></div>
+                    
+                    <!-- Signature -->
+                    <div class="field-box signature-box"><?php echo htmlspecialchars($complaint['signature_data'] ?? $complaint['printed_name_pangalan']); ?></div>
+                    
+                </div>
+            </div>
+            <div class="page-indicator no-print">Page 1 of <?php echo !empty($complaint['narration_complaint_page2']) ? '2' : '1'; ?></div>
+
+            <!-- PAGE 2: ADDITIONAL PAGE FOR NARRATION CONTINUATION (Only if content exists) -->
+            <?php if (!empty($complaint['narration_complaint_page2'])): ?>
+            <div class="additional-page">
+                <div class="page-number-label">CTS No: <?php echo htmlspecialchars($complaint['reference_number']); ?> | Page 2</div>
+                
+                <div class="additional-page-header">
+                    <h2>NARRATION OF COMPLAINT/INQUIRY AND RELIEF</h2>
+                    <p>(Ano ang iyong reklamo, tanong, request o suhestiyon? Ano ang gusto mong aksiyon?)</p>
+                </div>
+                
+                <div class="additional-page-content"><?php echo htmlspecialchars($complaint['narration_complaint_page2']); ?></div>
+            </div>
+            <div class="page-indicator no-print">Page 2 of 2</div>
+            <?php endif; ?>
+
+            <!-- Attached Files (Below Form) -->
+            <?php if (!empty($documents)): ?>
+            <div class="attached-notice no-print">
+                <strong>📎 Attached Supporting Documents:</strong>
+                <ul style="margin-top:8px;">
+                    <?php foreach ($documents as $index => $doc): ?>
+                    <?php
+                        $fileUrl = "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
+                        $ext = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
+                        $isImage = in_array($ext, ['jpg','jpeg','png','gif']);
+                        $isPdf = ($ext === 'pdf');
+                        $type = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
+                    ?>
+                    <li style="margin-bottom:6px;">
+                        <a href="javascript:void(0)"
+                           class="doc-link"
+                           data-url="<?php echo htmlspecialchars($fileUrl); ?>"
+                           data-type="<?php echo $type; ?>"
+                           data-name="<?php echo htmlspecialchars($doc['original_name']); ?>"
+                           <?php echo $index === 0 ? 'data-default="1"' : ''; ?>>
+                            <?php echo htmlspecialchars($doc['original_name']); ?>
+                        </a>
+                        <span style="color:#666;font-size:12px;">(<?php echo number_format($doc['file_size'] / 1024, 1); ?> KB)</span>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+                <p style="margin-top:8px;font-size:12px;color:#666;">
+                    Click a file name to view the <strong>full document</strong> in the viewer below.
+                    The viewer will scale the content to fit the screen (scroll if there are multiple pages).
+                </p>
+                <div id="docZoomToolbar" style="margin-top:8px;display:flex;align-items:center;gap:8px;font-size:12px;color:#444;">
+                    <span>Zoom:</span>
+                    <button type="button" class="btn btn-sm btn-outline" data-zoom="out">−</button>
+                    <button type="button" class="btn btn-sm btn-outline" data-zoom="in">+</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-zoom="reset">Reset</button>
+                    <span id="docZoomLabel" style="margin-left:4px;">100%</span>
+                </div>
+                <div id="docPreviewContainer"
+                     style="margin-top:12px;width:100%;height:80vh;border:1px solid #ddd;border-radius:6px;background:#fafafa;display:flex;align-items:center;justify-content:center;overflow:auto;">
+                    <div style="text-align:center;color:#777;font-size:14px;padding:20px;">
+                        Select a document above to view it here as a full page.
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
         <?php endif; ?>
     </div>
 
@@ -806,6 +936,11 @@ include __DIR__ . '/includes/header.php';
 </div>
 
 <script>
+// Global flags for Save Document behavior
+const IS_UPLOADED_FORM   = <?php echo $isUploadedForm ? 'true' : 'false'; ?>;
+const PRIMARY_DOC_URL    = <?php echo json_encode($primaryUrl); ?>;
+const PRIMARY_DOC_EXT    = <?php echo json_encode($primaryExt); ?>;
+const PRIMARY_DOC_NAME   = <?php echo json_encode($primaryOriginalName); ?>;
 function openActionModal(action) {
     const modal = document.getElementById('actionModal');
     const title = document.getElementById('actionModalTitle');
@@ -870,9 +1005,43 @@ function saveAsPDF(button) {
     
     // Create filename: ComplainantName_ReferenceNumber.pdf
     const filename = (sanitizedName || 'Complaint') + '_' + refNumber + '.pdf';
+
+    // If this is an uploaded-form complaint, always download the original
+    // uploaded file (PDF/image/etc.) instead of screenshotting the view.
+    if (IS_UPLOADED_FORM && PRIMARY_DOC_URL) {
+        const downloadName = PRIMARY_DOC_NAME || (filename + (PRIMARY_DOC_EXT ? '.' + PRIMARY_DOC_EXT : ''));
+        // Fetch as blob to force download (avoids browser opening a new tab for PDF)
+        fetch(PRIMARY_DOC_URL)
+            .then(res => res.blob())
+            .then(blob => {
+                const blobUrl = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = downloadName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(blobUrl);
+            })
+            .catch(() => {
+                // Fallback to direct link if blob download fails
+                const link = document.createElement('a');
+                link.href = PRIMARY_DOC_URL;
+                link.download = downloadName;
+                link.target = '_self';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        return;
+    }
     
-    // Get the element to convert (form container and additional pages)
-    const element = document.querySelector('.complaint-main');
+    // Get the element to convert
+    // - For uploaded image/other docs: capture only the uploaded document container
+    // - For standard typed complaints: capture the entire complaint-main section
+    const element = (IS_UPLOADED_FORM && document.getElementById('uploadedDocContainer'))
+        ? document.getElementById('uploadedDocContainer')
+        : document.querySelector('.complaint-main');
     
     // Show loading indicator
     const originalBtn = button || document.querySelector('button[onclick*="saveAsPDF"]');
@@ -880,10 +1049,12 @@ function saveAsPDF(button) {
     originalBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
     originalBtn.disabled = true;
     
-    // Hide page indicators and attached notice before PDF generation
-    const pageIndicators = element.querySelectorAll('.page-indicator');
-    const attachedNotice = element.querySelector('.attached-notice');
-    pageIndicators.forEach(indicator => indicator.style.display = 'none');
+    // Hide page indicators and attached notice before PDF generation (typed complaints only)
+    const pageIndicators = element.querySelectorAll ? element.querySelectorAll('.page-indicator') : [];
+    const attachedNotice = element.querySelector ? element.querySelector('.attached-notice') : null;
+    if (pageIndicators.forEach) {
+        pageIndicators.forEach(indicator => indicator.style.display = 'none');
+    }
     if (attachedNotice) attachedNotice.style.display = 'none';
     
     // Wait for images to load, then generate PDF
@@ -1007,6 +1178,165 @@ function saveAsPDF(button) {
         });
     }
 }
+
+// Print document (uploaded-form: print the original file; typed: print the page)
+function printDocument() {
+    if (IS_UPLOADED_FORM && PRIMARY_DOC_URL) {
+        // If PDF, open a new window with the PDF and trigger print after load
+        if (PRIMARY_DOC_EXT === 'pdf') {
+            const win = window.open(PRIMARY_DOC_URL, '_blank');
+            if (win) {
+                win.addEventListener('load', () => {
+                    win.focus();
+                    win.print();
+                });
+            } else {
+                // Fallback: direct navigation
+                window.location.href = PRIMARY_DOC_URL;
+            }
+            return;
+        }
+
+        // If image/other: open a minimal window with the image and print
+        const win = window.open('', '_blank');
+        if (win) {
+            const safeUrl = PRIMARY_DOC_URL.replace(/"/g, '&quot;');
+            win.document.write(`
+                <html><head><title>Print</title></head>
+                <body style="margin:0;padding:0;display:flex;align-items:flex-start;justify-content:center;">
+                    <img src="${safeUrl}" style="max-width:100%;height:auto;">
+                    <script>
+                window.onload = function(){ window.focus(); window.print(); };
+                    <\/script>
+                </body></html>
+            `);
+            win.document.close();
+        } else {
+            // Fallback: direct navigation
+            window.location.href = PRIMARY_DOC_URL;
+        }
+        return;
+    }
+
+    // Default behavior for typed complaints
+    window.print();
+}
+
+// Inline document preview for attached supporting documents with zoom controls
+document.addEventListener('DOMContentLoaded', function () {
+    // --- Uploaded main form zoom ---
+    const uploadedContainer = document.getElementById('uploadedDocContainer');
+    const uploadedToolbar = document.getElementById('uploadedZoomToolbar');
+    const uploadedLabel = document.getElementById('uploadedZoomLabel');
+
+    if (uploadedContainer && uploadedToolbar) {
+        let upScale = 1;
+        const MIN_ZOOM = 0.5;
+        const MAX_ZOOM = 3;
+        const ZOOM_STEP = 0.25;
+
+        function applyUploadedZoom() {
+            const inner = uploadedContainer.querySelector('.uploaded-preview-inner');
+            if (inner) {
+                inner.style.transform = 'scale(' + upScale + ')';
+                inner.style.transformOrigin = 'top left';
+            }
+            if (uploadedLabel) {
+                uploadedLabel.textContent = Math.round(upScale * 100) + '%';
+            }
+        }
+
+        uploadedToolbar.addEventListener('click', function (e) {
+            const btn = e.target.closest('button[data-zoom]');
+            if (!btn) return;
+            const action = btn.getAttribute('data-zoom');
+            if (action === 'in') {
+                upScale = Math.min(MAX_ZOOM, upScale + ZOOM_STEP);
+            } else if (action === 'out') {
+                upScale = Math.max(MIN_ZOOM, upScale - ZOOM_STEP);
+            } else if (action === 'reset') {
+                upScale = 1;
+            }
+            applyUploadedZoom();
+        });
+
+        // Initialize
+        applyUploadedZoom();
+    }
+
+    // --- Supporting documents viewer with zoom ---
+    const container = document.getElementById('docPreviewContainer');
+    const links = document.querySelectorAll('.doc-link');
+    const zoomToolbar = document.getElementById('docZoomToolbar');
+    const zoomLabel = document.getElementById('docZoomLabel');
+
+    if (!container || !links.length) return;
+
+    let zoomScale = 1;
+    const MIN_ZOOM = 0.5;
+    const MAX_ZOOM = 3;
+    const ZOOM_STEP = 0.25;
+
+    function applyZoom() {
+        const inner = container.querySelector('.doc-preview-inner');
+        if (inner) {
+            inner.style.transform = 'scale(' + zoomScale + ')';
+            inner.style.transformOrigin = 'top left';
+        }
+        if (zoomLabel) {
+            zoomLabel.textContent = Math.round(zoomScale * 100) + '%';
+        }
+    }
+
+    function renderPreview(url, type, name) {
+        if (!url) return;
+        let contentHtml = '';
+        if (type === 'image') {
+            contentHtml = '<img src="' + url + '" alt="' + (name || 'Document image') + '" style="max-width:100%;height:auto;display:block;">';
+        } else if (type === 'pdf') {
+            contentHtml = '<embed src="' + url + '" type="application/pdf" style="width:100%;height:100%;border:none;" />';
+        } else {
+            contentHtml = '<div style="text-align:center;padding:20px;">' +
+                '<p style="margin-bottom:10px;">Preview not available for this file type.</p>' +
+                '<a href="' + url + '" target="_blank" class="btn btn-outline btn-sm">Open / Download</a>' +
+                '</div>';
+        }
+        container.innerHTML = '<div class="doc-preview-inner" style="transform-origin:top left;">' + contentHtml + '</div>';
+        zoomScale = 1;
+        applyZoom();
+    }
+
+    links.forEach(link => {
+        link.addEventListener('click', function () {
+            const url = this.getAttribute('data-url');
+            const type = this.getAttribute('data-type');
+            const name = this.getAttribute('data-name');
+            renderPreview(url, type, name);
+        });
+    });
+
+    if (zoomToolbar) {
+        zoomToolbar.addEventListener('click', function (e) {
+            const btn = e.target.closest('button[data-zoom]');
+            if (!btn) return;
+            const action = btn.getAttribute('data-zoom');
+            if (action === 'in') {
+                zoomScale = Math.min(MAX_ZOOM, zoomScale + ZOOM_STEP);
+            } else if (action === 'out') {
+                zoomScale = Math.max(MIN_ZOOM, zoomScale - ZOOM_STEP);
+            } else if (action === 'reset') {
+                zoomScale = 1;
+            }
+            applyZoom();
+        });
+    }
+
+    // Auto-load first document
+    const first = document.querySelector('.doc-link[data-default="1"]');
+    if (first) {
+        renderPreview(first.getAttribute('data-url'), first.getAttribute('data-type'), first.getAttribute('data-name'));
+    }
+});
 </script>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>

@@ -1,7 +1,7 @@
 <?php
 /**
- * SDO CTS - San Pedro Division Office Complaint Tracking System
- * Main Intake Form
+ * SDO CTS - San Pedro Division Office Complaint Tracking Systemm
+ * Main Intake Form of the Complaint-Assisted Filing System
  */
 
 session_start();
@@ -17,18 +17,16 @@ if (isset($_GET['clear']) && $_GET['clear'] == '1') {
 // Store form data in session for review
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['form_data'] = $_POST;
-    $_SESSION['form_files'] = [];
-    
-    // Handle file uploads
-    if (!empty($_FILES['documents']['name'][0])) {
-        $uploadDir = __DIR__ . '/uploads/temp/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-        
-        $sessionId = session_id();
-        $tempFiles = [];
-        
+
+    $tempFiles = [];
+    $uploadDir = __DIR__ . '/uploads/temp/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+    $sessionId = session_id();
+
+    // Handle supporting documents (multiple)
+    if (isset($_FILES['documents']) && !empty($_FILES['documents']['name'][0])) {
         foreach ($_FILES['documents']['name'] as $key => $name) {
             if ($_FILES['documents']['error'][$key] === UPLOAD_ERR_OK) {
                 $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
@@ -38,17 +36,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     if (move_uploaded_file($_FILES['documents']['tmp_name'][$key], $tempPath)) {
                         $tempFiles[] = [
-                            'temp_name' => $tempName,
-                            'original_name' => $name,
-                            'type' => $_FILES['documents']['type'][$key],
-                            'size' => $_FILES['documents']['size'][$key]
+                            'temp_name'      => $tempName,
+                            'original_name'  => $name,
+                            'type'           => $_FILES['documents']['type'][$key],
+                            'size'           => $_FILES['documents']['size'][$key],
+                            'category'       => 'supporting'
                         ];
                     }
                 }
             }
         }
-        $_SESSION['form_files'] = $tempFiles;
     }
+
+    // Handle valid ID/credentials (multiple)
+    if (isset($_FILES['valid_ids']) && !empty($_FILES['valid_ids']['name'][0])) {
+        foreach ($_FILES['valid_ids']['name'] as $key => $name) {
+            if ($_FILES['valid_ids']['error'][$key] === UPLOAD_ERR_OK) {
+                $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+                if (in_array($ext, ['pdf', 'jpg', 'jpeg', 'png'])) {
+                    $tempName = $sessionId . '_' . uniqid() . '.' . $ext;
+                    $tempPath = $uploadDir . $tempName;
+                    
+                    if (move_uploaded_file($_FILES['valid_ids']['tmp_name'][$key], $tempPath)) {
+                        $tempFiles[] = [
+                            'temp_name'      => $tempName,
+                            'original_name'  => $name,
+                            'type'           => $_FILES['valid_ids']['type'][$key],
+                            'size'           => $_FILES['valid_ids']['size'][$key],
+                            'category'       => 'valid_id'
+                        ];
+                    }
+                }
+            }
+        }
+    }
+
+    // Handle single handwritten completed form (bypass mode)
+    $handwrittenAdded = false;
+    if (isset($_FILES['handwritten_form']) && !empty($_FILES['handwritten_form']['name'])) {
+        if ($_FILES['handwritten_form']['error'] === UPLOAD_ERR_OK) {
+            $name = $_FILES['handwritten_form']['name'];
+            $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+            if (in_array($ext, ['pdf', 'jpg', 'jpeg', 'png'])) {
+                $tempName = $sessionId . '_' . uniqid() . '.' . $ext;
+                $tempPath = $uploadDir . $tempName;
+
+                if (move_uploaded_file($_FILES['handwritten_form']['tmp_name'], $tempPath)) {
+                    $tempFiles[] = [
+                        'temp_name'      => $tempName,
+                        'original_name'  => $name,
+                        'type'           => $_FILES['handwritten_form']['type'],
+                        'size'           => $_FILES['handwritten_form']['size'],
+                        'category'       => 'handwritten_form'
+                    ];
+                    $handwrittenAdded = true;
+                }
+            }
+        }
+    }
+
+    // Flag in form data that this submission used a handwritten completed form (Option B)
+    if ($handwrittenAdded) {
+        $_SESSION['form_data']['handwritten_mode'] = 1;
+    }
+
+    $_SESSION['form_files'] = $tempFiles;
     
     header('Location: review.php');
     exit;
@@ -64,7 +116,7 @@ function getValue($field, $default = '') {
     return htmlspecialchars($formData[$field] ?? $default);
 }
 
-// Check if a radio is selected
+// Check if a radio is selected upon filling up
 function isChecked($field, $value) {
     global $formData;
     return (isset($formData[$field]) && $formData[$field] === $value) ? 'checked' : '';
@@ -102,74 +154,64 @@ function isChecked($field, $value) {
             <p class="subtitle">Region IVA - CALABARZON | Schools Division Office of San Pedro City</p>
         </header>
 
-        <!-- Privacy Notice -->
-        <section class="form-section">
-            <div class="section-header">
-                <span class="section-icon"><i class="fas fa-lock"></i></span>
-                Privacy Notice
-            </div>
-            <div class="section-content">
-                <div class="certification-box" style="font-size: 0.9rem; line-height: 1.7;">
-                    <p><strong>PRIVACY NOTICE:</strong> We collect the following personal information from you when you manually or electronically submit to us your inquiry/ies: Name, Address, E-mail address, Contact Number, ID information. The collected personal information will be utilized solely for documentation and processing of your request within DepEd and, when appropriate, endorsement to other government agency/ies that has/have jurisdiction over the subject of your inquiry. Only authorized DepEd personnel have access to this personal information, the exchange of which will be facilitated through email and/or hard copy. DepEd will only retain personal data as long as necessary for the fulfillment of the purpose.</p>
-                </div>
-            </div>
-        </section>
-
         <form action="" method="POST" enctype="multipart/form-data" id="complaintForm" novalidate>
-            <!-- Section 1: Routing and Reference -->
+            <!-- Privacy Notice -->
             <section class="form-section">
                 <div class="section-header">
-                    <span class="section-icon"><i class="fas fa-clipboard-list"></i></span>
-                    Referred to (indicate unit/section)
+                    <span class="section-icon"><i class="fas fa-lock"></i></span>
+                    Privacy Notice
                 </div>
                 <div class="section-content">
-                    <div class="form-group">
-                        <label class="form-label">
-                            Select Unit/Section <span class="required">*</span>
-                        </label>
-                        <div class="radio-group">
-                            <label class="radio-option <?php echo isChecked('referred_to', 'OSDS') ? 'selected' : ''; ?>">
-                                <input type="radio" name="referred_to" value="OSDS" <?php echo isChecked('referred_to', 'OSDS'); ?> required>
-                                <span class="radio-label">
-                                    <strong>OSDS</strong> - Office of the Schools Division Superintendent
-                                </span>
-                            </label>
-                            <label class="radio-option <?php echo isChecked('referred_to', 'SGOD') ? 'selected' : ''; ?>">
-                                <input type="radio" name="referred_to" value="SGOD" <?php echo isChecked('referred_to', 'SGOD'); ?> required>
-                                <span class="radio-label">
-                                    <strong>SGOD</strong> - School Governance and Operations Division
-                                </span>
-                            </label>
-                            <label class="radio-option <?php echo isChecked('referred_to', 'CID') ? 'selected' : ''; ?>">
-                                <input type="radio" name="referred_to" value="CID" <?php echo isChecked('referred_to', 'CID'); ?> required>
-                                <span class="radio-label">
-                                    <strong>CID</strong> - Curriculum Implementation Division
-                                </span>
-                            </label>
-                            <label class="radio-option <?php echo isChecked('referred_to', 'Others') ? 'selected' : ''; ?>">
-                                <input type="radio" name="referred_to" value="Others" <?php echo isChecked('referred_to', 'Others'); ?> required>
-                                <span class="radio-label">
-                                    <strong>Others:</strong> Please specify below
-                                </span>
-                            </label>
-                        </div>
-                        <div class="other-input-wrapper <?php echo isChecked('referred_to', 'Others') ? 'visible' : ''; ?>" id="otherReferredWrapper">
-                            <input type="text" class="form-control" name="referred_to_other" 
-                                   value="<?php echo getValue('referred_to_other'); ?>"
-                                   placeholder="Please specify the office or unit">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Date/Petsa</label>
-                        <input type="text" class="form-control" value="<?php echo date('F j, Y'); ?>" readonly 
-                               style="background: #e9ecef; cursor: not-allowed;">
-                        <input type="hidden" name="date_submitted" value="<?php echo date('Y-m-d H:i:s'); ?>">
+                    <div class="certification-box" style="font-size: 0.9rem; line-height: 1.7;">
+                        <p><strong>PRIVACY NOTICE:</strong> We collect the following personal information from you when you manually or electronically submit to us your inquiry/ies: Name, Address, E-mail address, Contact Number, ID information. The collected personal information will be utilized solely for documentation and processing of your request within DepEd and, when appropriate, endorsement to other government agency/ies that has/have jurisdiction over the subject of your inquiry. Only authorized DepEd personnel have access to this personal information, the exchange of which will be facilitated through email and/or hard copy. DepEd will only retain personal data as long as necessary for the fulfillment of the purpose.</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Section 2: Complainant Information -->
+            <!-- Handwritten Form Upload (Bypass Mode) -->
+            <section class="form-section">
+                <div class="section-header">
+                    <span class="section-icon"><i class="fas fa-file-signature"></i></span>
+                    Upload Completed Complaint-Assisted Form (Photo / Scan)
+                </div>
+                <div class="section-content">
+                    <div class="certification-box" style="font-size: 0.9rem; line-height: 1.7; margin-bottom: 1.25rem;">
+                        <p>
+                            If you already have a <strong>fully accomplished Complaints-Assisted Form</strong> on paper,
+                            you may upload a <strong>clear photo or scanned copy</strong> of that form here.
+                            When a file is uploaded in this section, you may <strong>skip filling out all the fields below</strong>.
+                        </p>
+                        <p style="margin-top: 0.75rem; color: var(--text-muted);">
+                            Accepted formats: PDF, JPG, PNG (Max 10MB). Make sure all details and signatures on the
+                            form are <strong>readable</strong>.
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="handwritten_form">
+                            Upload Completed Form <span class="optional">(Optional)</span>
+                        </label>
+                        <div class="file-upload-area" id="handwrittenDropZone">
+                            <div class="upload-icon"><i class="fas fa-folder-open"></i></div>
+                            <p><strong>Click to upload</strong> or drag and drop your completed form here</p>
+                            <p class="file-types">Accepted formats: PDF, JPG, PNG (Max 10MB)</p>
+                            <input
+                                type="file"
+                                id="handwritten_form"
+                                name="handwritten_form"
+                                accept=".pdf,.jpg,.jpeg,.png"
+                            >
+                        </div>
+                        <div class="file-list" id="handwrittenFileList"></div>
+                    </div>
+                </div>
+            </section>
+            <!-- Routing fields are for admin use only; set defaults via hidden inputs -->
+            <input type="hidden" name="referred_to" value="OSDS">
+            <input type="hidden" name="referred_to_other" value="">
+            <input type="hidden" name="date_submitted" value="<?php echo date('Y-m-d H:i:s'); ?>">
+
+            <!-- Section 1: Complainant Information -->
             <section class="form-section">
                 <div class="section-header">
                     <span class="section-icon"><i class="fas fa-user"></i></span>
@@ -339,6 +381,52 @@ function isChecked($field, $value) {
                                    accept=".pdf,.jpg,.jpeg,.png" multiple>
                         </div>
                         <div class="file-list" id="fileList"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5.1: Valid ID / Credentials -->
+            <section class="form-section">
+                <div class="section-header">
+                    <span class="section-icon"><i class="fas fa-id-card"></i></span>
+                    Valid ID / Credentials
+                </div>
+                <div class="section-content">
+                    <div class="certification-box" style="font-size: 0.9rem; margin-bottom: 1.5rem; padding: 1rem;">
+                        <p>• Please attach a copy of your valid government-issued ID or credentials for verification purposes.</p>
+                        <p style="font-style: italic; color: var(--text-muted); margin-top: 0.5rem;">
+                            (Maaaring ilakip ang kopya ng inyong valid na ID na ibinigay ng gobyerno o mga kredensyal para sa beripikasyon)
+                        </p>
+                    </div>
+                    
+                    <?php 
+                    $validIdFiles = array_filter($formFiles, function($file) {
+                        return $file['category'] === 'valid_id';
+                    });
+                    if (!empty($validIdFiles)): ?>
+                    <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                        <strong><i class="fas fa-id-card"></i> Previously uploaded ID/Credentials:</strong>
+                        <ul style="margin: 10px 0 0 20px;">
+                            <?php foreach ($validIdFiles as $file): ?>
+                            <li><?php echo htmlspecialchars($file['original_name']); ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <small style="color: #155724;">These files will be included unless you upload new ones.</small>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            Upload Valid ID / Credentials <span class="optional">(Optional but recommended)</span>
+                        </label>
+                        <div class="file-upload-area" id="validIdDropZone">
+                            <div class="upload-icon"><i class="fas fa-id-card"></i></div>
+                            <p><strong>Click to upload</strong> or drag and drop your ID here</p>
+                            <p class="file-types">Accepted formats: PDF, JPG, PNG (Max 10MB each)</p>
+                            <input type="file" name="valid_ids[]" id="validIdInput" 
+                                   accept=".pdf,.jpg,.jpeg,.png" multiple>
+                        </div>
+                        <div class="file-list" id="validIdFileList"></div>
                     </div>
                 </div>
             </section>
