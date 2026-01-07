@@ -6,7 +6,38 @@ document.addEventListener('DOMContentLoaded', function() {
     initSidebar();
     initFlashMessages();
     initFormValidation();
+    initFilterEnterSubmit();
 });
+
+/**
+ * Initialize Enter key submit for filter forms
+ * Allows users to press Enter in any filter input to submit the form
+ */
+function initFilterEnterSubmit() {
+    const filterForms = document.querySelectorAll('.filter-form');
+    
+    filterForms.forEach(function(form) {
+        // Handle Enter key on the entire form
+        form.addEventListener('keypress', function(e) {
+            // Check if Enter key was pressed and not in a textarea
+            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                form.submit();
+            }
+        });
+        
+        // Also handle keydown for select elements (keypress doesn't always fire for selects)
+        const filterSelects = form.querySelectorAll('.filter-select');
+        filterSelects.forEach(function(select) {
+            select.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    form.submit();
+                }
+            });
+        });
+    });
+}
 
 /**
  * Sidebar Toggle

@@ -95,6 +95,10 @@ $othersText = ($data['referred_to'] === 'Others' && !empty($data['referred_to_ot
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Remove background pattern effect */
+        body::before {
+            display: none !important;
+        }
         /* Form Container - Fixed size matching the official form */
         .form-container {
             position: relative;

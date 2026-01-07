@@ -72,7 +72,7 @@ include __DIR__ . '/includes/header.php';
     <!-- Main Content Grid -->
     <div class="dashboard-content">
         <!-- Recent Complaints -->
-        <div class="dashboard-card recent-complaints">
+        <div class="dashboard-card recent-complaints" id="recent-complaints-card">
             <div class="card-header">
                 <h2><i class="fas fa-clipboard-list"></i> Recent Complaints</h2>
                 <a href="/SDO-cts/admin/complaints.php" class="btn btn-sm btn-outline">View All →</a>
@@ -180,6 +180,50 @@ include __DIR__ . '/includes/header.php';
         </div>
     </div>
 </div>
+
+<script>
+// Dashboard-specific: Auto-refresh recent complaints on new arrival
+(function() {
+    let lastTotal = <?php echo $stats['total']; ?>;
+    const REFRESH_INTERVAL = 15000;
+    
+    function checkDashboardUpdates() {
+        fetch('/SDO-cts/admin/api/notification-count.php', {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.counts.total > lastTotal) {
+                // Highlight the recent complaints card
+                const card = document.getElementById('recent-complaints-card');
+                if (card) {
+                    card.classList.add('card-highlight');
+                    setTimeout(() => card.classList.remove('card-highlight'), 3000);
+                }
+                
+                // Show refresh button on card header
+                showDashboardRefresh(data.counts.total - lastTotal);
+            }
+        })
+        .catch(error => console.log('Dashboard update check error:', error));
+    }
+    
+    function showDashboardRefresh(newCount) {
+        const cardHeader = document.querySelector('#recent-complaints-card .card-header');
+        if (cardHeader && !cardHeader.querySelector('.refresh-link')) {
+            const refreshLink = document.createElement('button');
+            refreshLink.className = 'btn btn-sm btn-primary refresh-link';
+            refreshLink.innerHTML = '<i class="fas fa-sync-alt"></i> ' + newCount + ' new';
+            refreshLink.onclick = function() { location.reload(); };
+            cardHeader.insertBefore(refreshLink, cardHeader.querySelector('a'));
+        }
+    }
+    
+    setInterval(checkDashboardUpdates, REFRESH_INTERVAL);
+})();
+</script>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>
 

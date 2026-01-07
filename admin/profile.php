@@ -240,6 +240,7 @@ include __DIR__ . '/includes/header.php';
     border-radius: var(--radius-lg);
     padding: 32px;
     border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .profile-header {
@@ -314,6 +315,7 @@ include __DIR__ . '/includes/header.php';
     padding: 20px;
     border-radius: var(--radius-md);
     text-align: center;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 .info-box p {

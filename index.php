@@ -79,7 +79,7 @@ function isChecked($field, $value) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -96,7 +96,7 @@ function isChecked($field, $value) {
         <!-- Header -->
         <header class="form-header">
             <div class="deped-badge">
-                <i class="fas fa-landmark"></i> Department of Education
+                <i class="fas fa-landmark"></i> Department of Education Schools Division Office of San Pedro City
             </div>
             <h1>Complaints-Assisted Form</h1>
             <p class="subtitle">Region IVA - CALABARZON | Schools Division Office of San Pedro City</p>
@@ -424,6 +424,28 @@ function isChecked($field, $value) {
         </footer>
     </div>
 
-    <script src="assets/js/form.js"></script>
+    <!-- Reset Confirmation Modal -->
+    <div class="custom-modal" id="resetModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Reset Form</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to reset the form? All entered data will be lost.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelResetBtn">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmResetBtn">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/form.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 <?php
 /**
  * API: Activate/Deactivate User
+ * Only Super Admin can activate/deactivate users
  */
 
 require_once __DIR__ . '/../includes/auth.php';
@@ -8,14 +9,16 @@ require_once __DIR__ . '/../../models/AdminUser.php';
 
 $auth = auth();
 
-// Check authentication and permission
+// Check authentication
 if (!$auth->isLoggedIn()) {
     header('Location: /SDO-cts/admin/login.php');
     exit;
 }
 
-if (!$auth->hasPermission('users.update')) {
-    header('HTTP/1.1 403 Forbidden');
+// Only Super Admin can manage user status
+if (!$auth->isSuperAdmin()) {
+    $_SESSION['flash_error'] = 'Access denied. Only Super Admin can manage users.';
+    header('Location: /SDO-cts/admin/users.php');
     exit;
 }
 

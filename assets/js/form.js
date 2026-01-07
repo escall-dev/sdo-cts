@@ -257,40 +257,92 @@ function showError(element, message) {
  * Reset form and clear session
  */
 function resetForm() {
-    if (confirm('Are you sure you want to reset the form? All entered data will be lost.')) {
-        // Clear session data via AJAX
-        fetch('clear_session.php', { method: 'POST' })
-            .then(() => {
-                // Reset the form
-                document.getElementById('complaintForm').reset();
-                
-                // Clear file list
-                const fileList = document.getElementById('fileList');
-                if (fileList) fileList.innerHTML = '';
-                
-                // Clear radio selections
-                document.querySelectorAll('.radio-option').forEach(opt => {
-                    opt.classList.remove('selected');
-                });
-                
-                // Hide "Others" input
-                const otherWrapper = document.getElementById('otherReferredWrapper');
-                if (otherWrapper) otherWrapper.classList.remove('visible');
-                
-                // Clear errors
-                document.querySelectorAll('.form-control.error').forEach(el => {
-                    el.classList.remove('error');
-                });
-                document.querySelectorAll('.error-message').forEach(el => {
-                    el.remove();
-                });
-                
-                // Scroll to top
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            })
-            .catch(() => {
-                // Fallback: just reload the page with clear parameter
-                window.location.href = 'index.php?clear=1';
-            });
+    const modal = document.getElementById('resetModal');
+    if (!modal) {
+        // Fallback to confirm if modal doesn't exist
+        if (confirm('Are you sure you want to reset the form? All entered data will be lost.')) {
+            performReset();
+        }
+        return;
     }
+    
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+    
+    // Show modal
+    modal.classList.add('active');
+    
+    // Handle confirm button
+    const confirmBtn = document.getElementById('confirmResetBtn');
+    const cancelBtn = document.getElementById('cancelResetBtn');
+    const overlay = modal.querySelector('.modal-overlay');
+    
+    const closeModal = () => {
+        modal.classList.remove('active');
+        // Restore body scroll
+        document.body.style.overflow = '';
+        // Clean up event listeners
+        confirmBtn.onclick = null;
+        cancelBtn.onclick = null;
+        overlay.onclick = null;
+    };
+    
+    const handleConfirm = () => {
+        closeModal();
+        performReset();
+    };
+    
+    // Set up event listeners
+    confirmBtn.onclick = handleConfirm;
+    cancelBtn.onclick = closeModal;
+    overlay.onclick = closeModal;
+    
+    // Close on Escape key
+    const handleEscape = (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+            document.removeEventListener('keydown', handleEscape);
+        }
+    };
+    document.addEventListener('keydown', handleEscape);
+}
+
+/**
+ * Perform the actual form reset
+ */
+function performReset() {
+    // Clear session data via AJAX
+    fetch('clear_session.php', { method: 'POST' })
+        .then(() => {
+            // Reset the form
+            document.getElementById('complaintForm').reset();
+            
+            // Clear file list
+            const fileList = document.getElementById('fileList');
+            if (fileList) fileList.innerHTML = '';
+            
+            // Clear radio selections
+            document.querySelectorAll('.radio-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Hide "Others" input
+            const otherWrapper = document.getElementById('otherReferredWrapper');
+            if (otherWrapper) otherWrapper.classList.remove('visible');
+            
+            // Clear errors
+            document.querySelectorAll('.form-control.error').forEach(el => {
+                el.classList.remove('error');
+            });
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.remove();
+            });
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        })
+        .catch(() => {
+            // Fallback: just reload the page with clear parameter
+            window.location.href = 'index.php?clear=1';
+        });
 }

@@ -28,38 +28,8 @@ unset($_SESSION['submission_success']);
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .success-animation {
-            animation: scaleIn 0.5s ease-out;
-        }
-        @keyframes scaleIn {
-            from {
-                transform: scale(0);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: var(--accent-color);
-            animation: confetti-fall 3s ease-out forwards;
-            pointer-events: none;
-        }
-        @keyframes confetti-fall {
-            0% {
-                transform: translateY(-100vh) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(720deg);
-                opacity: 0;
-            }
-        }
         .copy-btn {
             background: none;
             border: 2px solid var(--primary-color);
@@ -116,14 +86,15 @@ unset($_SESSION['submission_success']);
         <!-- Navigation -->
         <nav class="nav-bar no-print">
             <div class="nav-links">
-                <a href="index.php">📝 File Complaint</a>
-                <a href="track.php">🔍 Track Complaint</a>
+                <a href="index.php"><i class="fas fa-file-alt"></i> File Complaint</a>
+                <a href="track.php"><i class="fas fa-search"></i> Track Complaint</a>
+                <a href="contact.php"><i class="fas fa-phone-alt"></i> Contact Us</a>
             </div>
         </nav>
 
         <!-- Success Card -->
         <div class="success-card">
-            <div class="success-icon success-animation">✓</div>
+            <div class="success-icon">✓</div>
             <h2>Complaint Submitted Successfully!</h2>
             <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto;">
                 Your complaint has been received and recorded in our system. 
@@ -162,10 +133,10 @@ unset($_SESSION['submission_success']);
             
             <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
                 <a href="track.php" class="btn btn-primary">
-                    🔍 Track Your Complaint
+                    <i class="fas fa-search"></i> Track Your Complaint
                 </a>
                 <a href="index.php" class="btn btn-outline">
-                    📝 File Another Complaint
+                    <i class="fas fa-file-alt"></i> File Another Complaint
                 </a>
             </div>
         </div>
@@ -178,28 +149,6 @@ unset($_SESSION['submission_success']);
     </div>
 
     <script>
-        // Create confetti
-        function createConfetti() {
-            const colors = ['#1a5f7a', '#f9a825', '#198754', '#2c8fbb', '#ffc107'];
-            for (let i = 0; i < 50; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = Math.random() * 100 + 'vw';
-                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
-                    confetti.style.width = (Math.random() * 10 + 5) + 'px';
-                    confetti.style.height = confetti.style.width;
-                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-                    document.body.appendChild(confetti);
-                    
-                    setTimeout(() => confetti.remove(), 3500);
-                }, i * 50);
-            }
-        }
-        
-        createConfetti();
-        
         // Copy reference number
         function copyReference() {
             const refNumber = document.getElementById('refNumber').textContent;

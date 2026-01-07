@@ -1,6 +1,7 @@
 <?php
 /**
  * API: Save User (Create/Update)
+ * Only Super Admin can create or update users
  */
 
 require_once __DIR__ . '/../includes/auth.php';
@@ -14,6 +15,13 @@ if (!$auth->isLoggedIn()) {
     exit;
 }
 
+// Only Super Admin can create/update users
+if (!$auth->isSuperAdmin()) {
+    $_SESSION['flash_error'] = 'Access denied. Only Super Admin can manage users.';
+    header('Location: /SDO-cts/admin/users.php');
+    exit;
+}
+
 // Verify CSRF token
 if (!$auth->verifyCsrfToken($_POST['csrf_token'] ?? '')) {
     $_SESSION['flash_error'] = 'Invalid security token. Please try again.';
@@ -23,13 +31,6 @@ if (!$auth->verifyCsrfToken($_POST['csrf_token'] ?? '')) {
 
 $userId = intval($_POST['user_id'] ?? 0);
 $isEdit = $userId > 0;
-
-// Check permission
-$requiredPermission = $isEdit ? 'users.update' : 'users.create';
-if (!$auth->hasPermission($requiredPermission)) {
-    header('HTTP/1.1 403 Forbidden');
-    exit;
-}
 
 // Validate input
 $fullName = trim($_POST['full_name'] ?? '');

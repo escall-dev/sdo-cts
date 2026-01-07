@@ -60,7 +60,7 @@ include __DIR__ . '/includes/header.php';
                 <option value="">All Status</option>
                 <?php foreach ($statusConfig as $key => $config): ?>
                 <option value="<?php echo $key; ?>" <?php echo $filters['status'] === $key ? 'selected' : ''; ?>>
-                    <?php echo $config['icon'] . ' ' . $config['label']; ?>
+                    <?php echo $config['label']; ?>
                 </option>
                 <?php endforeach; ?>
             </select>
@@ -237,7 +237,8 @@ function openStatusModal(complaintId, currentStatus) {
     allowedStatuses.forEach(status => {
         const option = document.createElement('option');
         option.value = status;
-        option.textContent = statusConfig[status].icon + ' ' + statusConfig[status].label;
+        // Only show label - HTML icons don't render in select options
+        option.textContent = statusConfig[status].label;
         select.appendChild(option);
     });
     
@@ -260,6 +261,52 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
         }
     });
 });
+
+// Auto-refresh complaints table when new complaints arrive
+(function() {
+    let lastTotalCount = <?php echo $totalCount; ?>;
+    const REFRESH_INTERVAL = 15000; // Check every 15 seconds
+    
+    function checkForNewComplaints() {
+        fetch('/SDO-cts/admin/api/notification-count.php', {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.counts.total > lastTotalCount) {
+                // New complaints detected - show refresh prompt
+                showRefreshPrompt(data.counts.total - lastTotalCount);
+            }
+        })
+        .catch(error => console.log('Check error:', error));
+    }
+    
+    function showRefreshPrompt(newCount) {
+        // Check if prompt already exists
+        if (document.querySelector('.refresh-prompt')) return;
+        
+        const prompt = document.createElement('div');
+        prompt.className = 'refresh-prompt';
+        prompt.innerHTML = `
+            <i class="fas fa-sync-alt"></i>
+            <span>${newCount} new complaint${newCount > 1 ? 's' : ''} received</span>
+            <button onclick="location.reload()" class="btn btn-sm btn-primary">Refresh</button>
+            <button onclick="this.parentElement.remove()" class="btn btn-sm btn-outline">Dismiss</button>
+        `;
+        
+        const pageHeader = document.querySelector('.page-header');
+        if (pageHeader) {
+            pageHeader.parentNode.insertBefore(prompt, pageHeader.nextSibling);
+        }
+    }
+    
+    // Start checking
+    setInterval(checkForNewComplaints, REFRESH_INTERVAL);
+})();
 </script>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>

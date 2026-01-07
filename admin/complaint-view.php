@@ -49,6 +49,8 @@ $othersText = ($complaint['referred_to'] === 'Others' && !empty($complaint['refe
 include __DIR__ . '/includes/header.php';
 ?>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <style>
     /* Form Container - Fixed size matching the official form */
     .form-container {
@@ -58,6 +60,10 @@ include __DIR__ . '/includes/header.php';
         margin: 0 auto;
         background: #fff;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        page-break-after: always;
+        page-break-inside: avoid;
+        break-after: page;
+        break-inside: avoid;
     }
     
     /* Background Image Layer */
@@ -93,16 +99,16 @@ include __DIR__ . '/includes/header.php';
         left: 10%;
         width: 35%;
         height: 2%;
-        font-size: 12px;
+        font-size: 16px;
         font-weight: bold;
         color: #c00;
     }
 
     /* Checkmark Fields - precisely positioned in checkbox squares */
-    .check-osds    { top: 5.65%; left: 52.8%; font-size: 14px; font-weight: bold; letter-spacing: 0.03em; }
-    .check-sgod    { top: 5.65%; left: 62.05%; font-size: 14px; font-weight: bold; letter-spacing: 0.03em; }
-    .check-cid     { top: 7.85%; left: 52.6%; font-size: 14px; font-weight: bold; letter-spacing: 0.03em; }
-    .check-others  { top: 7.65%; left: 62.10%; font-size: 14px; font-weight: bold; letter-spacing: 0.03em; }
+    .check-osds    { top: 5.65%; left: 52.8%; font-size: 18px; font-weight: bold; letter-spacing: 0.03em; }
+    .check-sgod    { top: 5.65%; left: 62.05%; font-size: 18px; font-weight: bold; letter-spacing: 0.03em; }
+    .check-cid     { top: 7.85%; left: 52.6%; font-size: 18px; font-weight: bold; letter-spacing: 0.03em; }
+    .check-others  { top: 7.65%; left: 62.10%; font-size: 18px; font-weight: bold; letter-spacing: 0.03em; }
 
     /* Others Text Field */
     .others-text-box {
@@ -110,7 +116,7 @@ include __DIR__ . '/includes/header.php';
         left: 80%;
         width: 29%;
         height: 2%;
-        font-size: 11px;
+        font-size: 15px;
     }
     
     /* Date Field - on the Date/Petsa line */
@@ -119,7 +125,7 @@ include __DIR__ . '/includes/header.php';
         left: 67%;
         width: 38%;
         height: 1.8%;
-        font-size: 12px;
+        font-size: 16px;
     }
     
     /* Complainant Name */
@@ -127,8 +133,8 @@ include __DIR__ . '/includes/header.php';
         top: 31.5%;
         left: 24%;
         width: 66%;
-        height: 1.2%;
-        font-size: 10px;
+        height: 1.5%;
+        font-size: 15px;
     }
     
     /* Complainant Address */
@@ -136,8 +142,8 @@ include __DIR__ . '/includes/header.php';
         top: 33.2%;
         left: 24%;
         width: 66%;
-        height: 1.2%;
-        font-size: 10px;
+        height: 1.5%;
+        font-size: 15px;
     }
     
     /* Complainant Contact */
@@ -145,8 +151,8 @@ include __DIR__ . '/includes/header.php';
         top: 34.9%;
         left: 24%;
         width: 66%;
-        height: 1.2%;
-        font-size: 10px;
+        height: 1.5%;
+        font-size: 15px;
     }
     
     /* Complainant Email */
@@ -154,8 +160,8 @@ include __DIR__ . '/includes/header.php';
         top: 36.6%;
         left: 24%;
         width: 66%;
-        height: 1.2%;
-        font-size: 10px;
+        height: 1.5%;
+        font-size: 15px;
     }
     
     /* Involved Person Name */
@@ -163,8 +169,8 @@ include __DIR__ . '/includes/header.php';
         top: 42.1%;
         left: 24%;
         width: 73%;
-        height: 1.2%;
-        font-size: 10px;
+        height: 1.5%;
+        font-size: 15px;
     }
     
     /* Involved Position */
@@ -172,8 +178,8 @@ include __DIR__ . '/includes/header.php';
         top: 44.0%;
         left: 24%;
         width: 73%;
-        height: 1.2%;
-        font-size: 10px;
+        height: 1.5%;
+        font-size: 15px;
     }
     
     /* Involved Address */
@@ -181,8 +187,8 @@ include __DIR__ . '/includes/header.php';
         top: 45.7%;
         left: 24%;
         width: 73%;
-        height: 1.2%;
-        font-size: 10px;
+        height: 1.5%;
+        font-size: 15px;
     }
     
     /* Involved School/Office */
@@ -190,8 +196,8 @@ include __DIR__ . '/includes/header.php';
         top: 47.4%;
         left: 24%;
         width: 69%;
-        height: 1.2%;
-        font-size: 10px;
+        height: 1.5%;
+        font-size: 15px;
     }
     
     /* Narration Box - Multi-line with controlled height */
@@ -200,7 +206,7 @@ include __DIR__ . '/includes/header.php';
         left: 10%;
         width: 80%;
         height: 15%;
-        font-size: 9.5px;
+        font-size: 14px;
         line-height: 2.05;
         overflow: hidden;
         white-space: pre-wrap;
@@ -214,7 +220,7 @@ include __DIR__ . '/includes/header.php';
         width: 44%;
         height: 2%;
         font-family: 'Times New Roman', Times, serif;
-        font-size: 16px;
+        font-size: 20px;
         text-align: center;
         text-transform: uppercase;
         display: flex;
@@ -291,6 +297,10 @@ include __DIR__ . '/includes/header.php';
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         padding: 30px 40px;
         min-height: 1100px;
+        page-break-before: always;
+        page-break-inside: avoid;
+        break-before: page;
+        break-inside: avoid;
     }
     
     .additional-page-header {
@@ -324,7 +334,7 @@ include __DIR__ . '/includes/header.php';
     
     .additional-page-content {
         font-family: 'Times New Roman', Times, serif;
-        font-size: 11px;
+        font-size: 15px;
         line-height: 28px;
         white-space: pre-wrap;
         word-break: break-word;
@@ -444,13 +454,13 @@ include __DIR__ . '/includes/header.php';
             width: 100%;
         }
         .field-box {
-            font-size: 9px;
+            font-size: 13px;
         }
         .narration-box {
-            font-size: 8px;
+            font-size: 12px;
         }
         .signature-box {
-            font-size: 14px;
+            font-size: 18px;
         }
     }
 </style>
@@ -462,8 +472,12 @@ include __DIR__ . '/includes/header.php';
         <span class="status-badge status-<?php echo $complaint['status']; ?> large">
             <?php echo $statusConfig[$complaint['status']]['icon'] . ' ' . $statusConfig[$complaint['status']]['label']; ?>
         </span>
-        <button type="button" class="btn btn-outline" onclick="window.print()">🖨️ Print</button>
-        <button type="button" class="btn btn-primary" onclick="saveAsPDF()">📄 Save as PDF</button>
+        <button type="button" class="btn btn-outline" onclick="window.print()">
+            <i class="fas fa-print"></i> Print
+        </button>
+        <button type="button" class="btn btn-primary" onclick="saveAsPDF(this)">
+            <i class="fas fa-file"></i> Save as PDF
+        </button>
     </div>
 </div>
 
@@ -738,7 +752,7 @@ include __DIR__ . '/includes/header.php';
                     <select name="status" class="form-control" required>
                         <?php foreach ($allowedTransitions as $status): ?>
                         <option value="<?php echo $status; ?>">
-                            <?php echo $statusConfig[$status]['icon'] . ' ' . $statusConfig[$status]['label']; ?>
+                            <?php echo $statusConfig[$status]['label']; ?>
                         </option>
                         <?php endforeach; ?>
                     </select>
@@ -843,14 +857,155 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 });
 
 // Save as PDF function
-function saveAsPDF() {
-    // Show instruction alert
+function saveAsPDF(button) {
+    // Get complainant name and sanitize it for filename
+    const complainantName = '<?php echo addslashes($complaint['name_pangalan']); ?>';
     const refNumber = '<?php echo htmlspecialchars($complaint['reference_number']); ?>';
     
-    alert('To save as PDF:\n\n1. In the print dialog, select "Save as PDF" or "Microsoft Print to PDF" as the destination\n2. Uncheck "Headers and footers" in More settings\n3. Set margins to "None" for best results\n4. Click Save and name your file: ' + refNumber + '.pdf');
+    // Sanitize filename: remove special characters, replace spaces with underscores
+    const sanitizedName = complainantName
+        .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters
+        .replace(/\s+/g, '_') // Replace spaces with underscores
+        .substring(0, 50); // Limit length
     
-    // Trigger print dialog (user can choose Save as PDF)
-    window.print();
+    // Create filename: ComplainantName_ReferenceNumber.pdf
+    const filename = (sanitizedName || 'Complaint') + '_' + refNumber + '.pdf';
+    
+    // Get the element to convert (form container and additional pages)
+    const element = document.querySelector('.complaint-main');
+    
+    // Show loading indicator
+    const originalBtn = button || document.querySelector('button[onclick*="saveAsPDF"]');
+    const originalText = originalBtn.innerHTML;
+    originalBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
+    originalBtn.disabled = true;
+    
+    // Hide page indicators and attached notice before PDF generation
+    const pageIndicators = element.querySelectorAll('.page-indicator');
+    const attachedNotice = element.querySelector('.attached-notice');
+    pageIndicators.forEach(indicator => indicator.style.display = 'none');
+    if (attachedNotice) attachedNotice.style.display = 'none';
+    
+    // Wait for images to load, then generate PDF
+    const images = element.querySelectorAll('img');
+    let imagesLoaded = 0;
+    const totalImages = images.length;
+    
+    const generatePDF = () => {
+        // Use the original visible elements directly
+        // html2pdf works best with visible, rendered elements
+        const formContainer = element.querySelector('.form-container');
+        const additionalPage = element.querySelector('.additional-page');
+        
+        if (!formContainer) {
+            alert('No content to generate PDF');
+            originalBtn.innerHTML = originalText;
+            originalBtn.disabled = false;
+            return;
+        }
+        
+        // Temporarily hide sidebar and other non-essential elements
+        const sidebar = document.querySelector('.complaint-sidebar');
+        const adminHeader = document.querySelector('.admin-view-header');
+        const originalSidebarDisplay = sidebar ? sidebar.style.display : '';
+        const originalHeaderDisplay = adminHeader ? adminHeader.style.display : '';
+        
+        if (sidebar) sidebar.style.display = 'none';
+        if (adminHeader) adminHeader.style.display = 'none';
+        
+        // Create a container that wraps just the content we want
+        const pdfContent = document.createElement('div');
+        pdfContent.style.width = '850px';
+        pdfContent.style.margin = '0 auto';
+        pdfContent.style.backgroundColor = '#fff';
+        
+        // Use the original elements - they're already visible and rendered
+        // We'll capture the complaint-main div which contains both pages
+        const contentToCapture = element; // Use the entire complaint-main element
+        
+        // Configure html2pdf options
+        const opt = {
+            margin: [0, 0, 0, 0],
+            filename: filename,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                letterRendering: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                windowWidth: window.innerWidth,
+                windowHeight: window.innerHeight
+            },
+            jsPDF: { 
+                unit: 'mm', 
+                format: 'a4', 
+                orientation: 'portrait',
+                compress: true
+            },
+            pagebreak: { 
+                mode: ['avoid-all', 'css'],
+                avoid: '.form-container, .additional-page'
+            }
+        };
+        
+        // Generate and download PDF from the visible element
+        html2pdf().set(opt).from(contentToCapture).save().then(() => {
+            // Restore hidden elements
+            if (sidebar) sidebar.style.display = originalSidebarDisplay;
+            if (adminHeader) adminHeader.style.display = originalHeaderDisplay;
+            
+            // Restore page indicators
+            pageIndicators.forEach(indicator => indicator.style.display = '');
+            if (attachedNotice) attachedNotice.style.display = '';
+            
+            // Restore button
+            originalBtn.innerHTML = originalText;
+            originalBtn.disabled = false;
+        }).catch((error) => {
+            console.error('PDF generation error:', error);
+            
+            // Restore hidden elements on error
+            if (sidebar) sidebar.style.display = originalSidebarDisplay;
+            if (adminHeader) adminHeader.style.display = originalHeaderDisplay;
+            
+            // Restore page indicators
+            pageIndicators.forEach(indicator => indicator.style.display = '');
+            if (attachedNotice) attachedNotice.style.display = '';
+            
+            alert('Error generating PDF. Please try using the Print button instead.');
+            originalBtn.innerHTML = originalText;
+            originalBtn.disabled = false;
+        });
+    };
+    
+    // Wait for all images to load
+    if (totalImages === 0) {
+        setTimeout(generatePDF, 100); // Small delay to ensure DOM is ready
+    } else {
+        images.forEach(img => {
+            if (img.complete) {
+                imagesLoaded++;
+                if (imagesLoaded === totalImages) {
+                    setTimeout(generatePDF, 100);
+                }
+            } else {
+                img.onload = () => {
+                    imagesLoaded++;
+                    if (imagesLoaded === totalImages) {
+                        setTimeout(generatePDF, 100);
+                    }
+                };
+                img.onerror = () => {
+                    imagesLoaded++;
+                    if (imagesLoaded === totalImages) {
+                        setTimeout(generatePDF, 100);
+                    }
+                };
+            }
+        });
+    }
 }
 </script>
 

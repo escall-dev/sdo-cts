@@ -159,6 +159,16 @@ class AdminAuth {
     }
 
     /**
+     * Check if current user is Super Admin
+     */
+    public function isSuperAdmin() {
+        if (!$this->user) {
+            return false;
+        }
+        return strtolower($this->user['role_name']) === 'super admin';
+    }
+
+    /**
      * Require login - redirect to login page if not authenticated
      */
     public function requireLogin() {

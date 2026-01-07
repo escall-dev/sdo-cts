@@ -315,5 +315,23 @@ class ComplaintAdmin {
                 LIMIT ?";
         return $this->db->query($sql, [$limit])->fetchAll();
     }
+
+    /**
+     * Get count of new complaints since a given timestamp
+     */
+    public function getNewComplaintsSince($timestamp) {
+        $sql = "SELECT COUNT(*) as count FROM complaints WHERE created_at > ?";
+        $result = $this->db->query($sql, [$timestamp])->fetch();
+        return $result['count'] ?? 0;
+    }
+
+    /**
+     * Get the latest complaint timestamp
+     */
+    public function getLatestComplaintTime() {
+        $sql = "SELECT MAX(created_at) as latest FROM complaints";
+        $result = $this->db->query($sql)->fetch();
+        return $result['latest'];
+    }
 }
 

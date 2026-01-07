@@ -60,8 +60,8 @@
                 <div class="review-field">
                     <label>Website</label>
                     <div class="value">
-                        <a href="https://depedsanpedrocity.com/" target="_blank" rel="noopener">
-                            https://depedsanpedrocity.com/
+                        <a href="https://depedsanpedrocity.com/" target="_blank" rel="noopener" style="color: inherit; text-decoration: none;">
+                           DepEd San Pedro City Official Website
                         </a>
                     </div>
                 </div>
@@ -69,15 +69,15 @@
                 <div class="review-field">
                     <label>Email</label>
                     <div class="value">
-                        <a href="mailto:division.sanpedro@deped.gov.ph">division.sanpedro@deped.gov.ph</a>
+                        <a href="mailto:division.sanpedro@deped.gov.ph" style="color: inherit; text-decoration: none;">DepEd Tayo San Pedro City Official Email</a>
                     </div>
                 </div>
 
                 <div class="review-field">
                     <label>Facebook Page</label>
                     <div class="value">
-                        <a href="https://www.facebook.com/sdocityofsanpedro" target="_blank" rel="noopener">
-                            DepEd Tayo SDO San Pedro City
+                        <a href="https://www.facebook.com/sdocityofsanpedro" target="_blank" rel="noopener" style="color: inherit; text-decoration: none;">
+                           DepEd Tayo SDO San Pedro City Official Facebook Page
                         </a>
                     </div>
                 </div>

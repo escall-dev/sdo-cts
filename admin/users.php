@@ -2,13 +2,21 @@
 /**
  * User Management Page
  * SDO CTS - San Pedro Division Office Complaint Tracking System
+ * Access restricted to Super Admin only
  */
 
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/../models/AdminUser.php';
 
 $auth = auth();
-$auth->requirePermission('users.view');
+$auth->requireLogin();
+
+// Only Super Admin can access User Management
+if (!$auth->isSuperAdmin()) {
+    header('HTTP/1.1 403 Forbidden');
+    include __DIR__ . '/403.php';
+    exit;
+}
 
 $userModel = new AdminUser();
 
@@ -39,7 +47,7 @@ include __DIR__ . '/includes/header.php';
         <p class="page-subtitle">Manage admin users and their access levels</p>
     </div>
     <div class="page-header-right">
-        <?php if ($auth->hasPermission('users.create')): ?>
+        <?php if ($auth->isSuperAdmin()): ?>
         <button type="button" class="btn btn-primary" onclick="openUserModal()">
             <i class="fas fa-user-plus"></i> Add User
         </button>
@@ -148,29 +156,31 @@ include __DIR__ . '/includes/header.php';
                     </td>
                     <td>
                         <div class="action-buttons">
-                            <?php if ($auth->hasPermission('users.update')): ?>
-                            <button type="button" class="btn btn-sm btn-icon" 
+                            <?php if ($auth->isSuperAdmin()): ?>
+                            <button type="button" class="btn btn-sm btn-outline" 
                                     onclick='openEditModal(<?php echo json_encode($user); ?>)'
-                                    title="Edit User">✏️</button>
-                            <?php endif; ?>
+                                    title="Edit User">Edit</button>
                             
-                            <?php if ($auth->hasPermission('users.update') && $user['id'] !== $auth->getUserId()): ?>
+                            <?php if ($user['id'] !== $auth->getUserId()): ?>
                                 <?php if ($user['is_active']): ?>
                                 <form method="POST" action="/SDO-cts/admin/api/user-status.php" style="display:inline;">
                                     <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
                                     <input type="hidden" name="action" value="deactivate">
                                     <input type="hidden" name="csrf_token" value="<?php echo $auth->generateCsrfToken(); ?>">
-                                    <button type="submit" class="btn btn-sm btn-icon" title="Deactivate" 
-                                            onclick="return confirm('Deactivate this user?')">🚫</button>
+                                    <button type="submit" class="btn btn-sm btn-outline" title="Deactivate" 
+                                            onclick="return confirm('Deactivate this user?')">Deactivate</button>
                                 </form>
                                 <?php else: ?>
                                 <form method="POST" action="/SDO-cts/admin/api/user-status.php" style="display:inline;">
                                     <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
                                     <input type="hidden" name="action" value="activate">
                                     <input type="hidden" name="csrf_token" value="<?php echo $auth->generateCsrfToken(); ?>">
-                                    <button type="submit" class="btn btn-sm btn-icon" title="Activate"><i class="fas fa-check"></i></button>
+                                    <button type="submit" class="btn btn-sm btn-outline" title="Activate">Activate</button>
                                 </form>
                                 <?php endif; ?>
+                            <?php endif; ?>
+                            <?php else: ?>
+                            <span class="text-muted">—</span>
                             <?php endif; ?>
                         </div>
                     </td>
@@ -182,6 +192,7 @@ include __DIR__ . '/includes/header.php';
     <?php endif; ?>
 </div>
 
+<?php if ($auth->isSuperAdmin()): ?>
 <!-- Add/Edit User Modal -->
 <div class="modal-overlay" id="userModal">
     <div class="modal modal-lg">
@@ -305,6 +316,7 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
     });
 });
 </script>
+<?php endif; ?>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>
 

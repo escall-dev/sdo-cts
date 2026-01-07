@@ -58,7 +58,7 @@ $pageTitle = $pageTitles[$currentPage] ?? 'Admin Panel';
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
-                    <img src="/SDO-cts/img/sdo logo.jpg" alt="SDO Logo" class="logo-img">
+                    <img src="/SDO-cts/assets/img/sdo-logo.jpg" alt="SDO Logo" class="logo-img">
                     <div class="logo-text">
                         <span class="logo-title">SDO CTS</span>
                         <span class="logo-subtitle">ADMIN PANEL</span>
@@ -79,18 +79,16 @@ $pageTitle = $pageTitles[$currentPage] ?? 'Admin Panel';
                 </a>
                 
                 <?php if ($auth->hasPermission('complaints.view')): ?>
-                <a href="/SDO-cts/admin/complaints.php" class="nav-item <?php echo in_array($currentPage, ['complaints', 'complaint-view']) ? 'active' : ''; ?>" data-tooltip="Complaints">
+                <a href="/SDO-cts/admin/complaints.php" class="nav-item <?php echo in_array($currentPage, ['complaints', 'complaint-view']) ? 'active' : ''; ?>" data-tooltip="Complaints" id="nav-complaints">
                     <span class="nav-icon">
                         <i class="fas fa-clipboard-list"></i>
-                        <?php if ($notificationCounts['complaints'] > 0): ?>
-                        <span class="nav-badge" title="<?php echo $notificationCounts['complaints']; ?> pending"><?php echo $notificationCounts['complaints'] > 99 ? '99+' : $notificationCounts['complaints']; ?></span>
-                        <?php endif; ?>
+                        <span class="nav-badge" id="complaints-badge" title="<?php echo $notificationCounts['complaints']; ?> pending" style="<?php echo $notificationCounts['complaints'] > 0 ? '' : 'display:none;'; ?>"><?php echo $notificationCounts['complaints'] > 99 ? '99+' : $notificationCounts['complaints']; ?></span>
                     </span>
                     <span class="nav-text">Complaints</span>
                 </a>
                 <?php endif; ?>
                 
-                <?php if ($auth->hasPermission('users.view')): ?>
+                <?php if ($auth->isSuperAdmin()): ?>
                 <a href="/SDO-cts/admin/users.php" class="nav-item <?php echo $currentPage === 'users' ? 'active' : ''; ?>" data-tooltip="Users">
                     <span class="nav-icon"><i class="fas fa-users"></i></span>
                     <span class="nav-text">Users</span>
@@ -111,7 +109,7 @@ $pageTitle = $pageTitles[$currentPage] ?? 'Admin Panel';
                 
                 <a href="/SDO-cts/" class="nav-item" target="_blank" data-tooltip="View Public Site">
                     <span class="nav-icon"><i class="fas fa-globe"></i></span>
-                    <span class="nav-text">View Public Site</span>
+                    <span class="nav-text">View CTS</span>
                 </a>
             </nav>
             
