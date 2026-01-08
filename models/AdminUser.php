@@ -142,6 +142,11 @@ class AdminUser {
             $params[] = $filters['is_active'];
         }
 
+        if (!empty($filters['unit'])) {
+            $sql .= " AND au.unit = ?";
+            $params[] = $filters['unit'];
+        }
+
         if (!empty($filters['search'])) {
             $sql .= " AND (au.full_name LIKE ? OR au.email LIKE ?)";
             $params[] = '%' . $filters['search'] . '%';
@@ -278,6 +283,25 @@ class AdminUser {
     public function getRoleById($id) {
         $sql = "SELECT * FROM admin_roles WHERE id = ?";
         return $this->db->query($sql, [$id])->fetch();
+    }
+
+    /**
+     * Get distinct units from registered users
+     * Returns only units that are actually assigned to users in the system
+     */
+    public function getRegisteredUnits() {
+        $sql = "SELECT DISTINCT unit 
+                FROM admin_users 
+                WHERE unit IS NOT NULL AND unit != '' 
+                ORDER BY unit ASC";
+        $results = $this->db->query($sql)->fetchAll();
+        
+        $units = [];
+        foreach ($results as $row) {
+            $units[] = $row['unit'];
+        }
+        
+        return $units;
     }
 
     /**

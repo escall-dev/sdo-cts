@@ -15,7 +15,6 @@ $complaintModel = new ComplaintAdmin();
 // Get filter parameters
 $filters = [
     'status' => $_GET['status'] ?? '',
-    'referred_to' => $_GET['referred_to'] ?? '',
     'date_from' => $_GET['date_from'] ?? '',
     'date_to' => $_GET['date_to'] ?? '',
     'search' => $_GET['search'] ?? ''
@@ -31,7 +30,6 @@ $totalPages = ceil($totalCount / $perPage);
 
 // Status config
 $statusConfig = STATUS_CONFIG;
-$units = UNITS;
 
 include __DIR__ . '/includes/header.php';
 ?>
@@ -61,18 +59,6 @@ include __DIR__ . '/includes/header.php';
                 <?php foreach ($statusConfig as $key => $config): ?>
                 <option value="<?php echo $key; ?>" <?php echo $filters['status'] === $key ? 'selected' : ''; ?>>
                     <?php echo $config['label']; ?>
-                </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        
-        <div class="filter-group">
-            <label>Referred To</label>
-            <select name="referred_to" class="filter-select">
-                <option value="">All Units</option>
-                <?php foreach ($units as $key => $name): ?>
-                <option value="<?php echo $key; ?>" <?php echo $filters['referred_to'] === $key ? 'selected' : ''; ?>>
-                    <?php echo $key; ?>
                 </option>
                 <?php endforeach; ?>
             </select>

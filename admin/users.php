@@ -24,12 +24,14 @@ $userModel = new AdminUser();
 $filters = [
     'role_id' => $_GET['role_id'] ?? '',
     'is_active' => isset($_GET['is_active']) ? $_GET['is_active'] : '',
+    'unit' => $_GET['unit'] ?? '',
     'search' => $_GET['search'] ?? ''
 ];
 
 // Get users
 $users = $userModel->getAll($filters);
 $roles = $userModel->getRoles();
+$registeredUnits = $userModel->getRegisteredUnits();
 
 // Create role lookup
 $rolesLookup = [];
@@ -82,6 +84,18 @@ include __DIR__ . '/includes/header.php';
                 <option value="">All Status</option>
                 <option value="1" <?php echo $filters['is_active'] === '1' ? 'selected' : ''; ?>>Active</option>
                 <option value="0" <?php echo $filters['is_active'] === '0' ? 'selected' : ''; ?>>Inactive</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label>Unit</label>
+            <select name="unit" class="filter-select">
+                <option value="">All Units</option>
+                <?php foreach ($registeredUnits as $unit): ?>
+                <option value="<?php echo htmlspecialchars($unit); ?>" <?php echo $filters['unit'] === $unit ? 'selected' : ''; ?>>
+                    <?php echo htmlspecialchars($unit); ?><?php echo isset(UNITS[$unit]) ? ' - ' . htmlspecialchars(UNITS[$unit]) : ''; ?>
+                </option>
+                <?php endforeach; ?>
             </select>
         </div>
         

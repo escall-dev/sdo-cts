@@ -96,7 +96,6 @@ include __DIR__ . '/includes/header.php';
                             <span class="status-badge status-<?php echo $complaint['status']; ?>">
                                 <?php echo $statusConfig[$complaint['status']]['icon'] . ' ' . $statusConfig[$complaint['status']]['label']; ?>
                             </span>
-                            <span class="complaint-unit"><?php echo htmlspecialchars($complaint['referred_to']); ?></span>
                             <span class="complaint-date"><?php echo date('M j, Y', strtotime($complaint['created_at'])); ?></span>
                         </div>
                     </a>
@@ -121,16 +120,6 @@ include __DIR__ . '/includes/header.php';
                     <div class="quick-stat-item">
                         <span class="quick-stat-label">This Month</span>
                         <span class="quick-stat-value"><?php echo number_format($stats['this_month']); ?></span>
-                    </div>
-                    
-                    <div class="unit-breakdown">
-                        <h4>By Unit</h4>
-                        <?php foreach ($stats['by_unit'] as $unit): ?>
-                        <div class="unit-item">
-                            <span class="unit-name"><?php echo htmlspecialchars($unit['referred_to']); ?></span>
-                            <span class="unit-count"><?php echo number_format($unit['count']); ?></span>
-                        </div>
-                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>

@@ -39,11 +39,6 @@ class ComplaintAdmin {
             $params[] = $filters['status'];
         }
 
-        if (!empty($filters['referred_to'])) {
-            $sql .= " AND c.referred_to = ?";
-            $params[] = $filters['referred_to'];
-        }
-
         if (!empty($filters['assigned_unit'])) {
             $sql .= " AND c.assigned_unit = ?";
             $params[] = $filters['assigned_unit'];
@@ -85,11 +80,6 @@ class ComplaintAdmin {
         if (!empty($filters['status'])) {
             $sql .= " AND c.status = ?";
             $params[] = $filters['status'];
-        }
-
-        if (!empty($filters['referred_to'])) {
-            $sql .= " AND c.referred_to = ?";
-            $params[] = $filters['referred_to'];
         }
 
         if (!empty($filters['assigned_unit'])) {
@@ -293,10 +283,6 @@ class ComplaintAdmin {
         $result = $this->db->query("SELECT COUNT(*) as total FROM complaints WHERE YEARWEEK(created_at) = YEARWEEK(CURRENT_DATE())")->fetch();
         $stats['this_week'] = $result['total'];
 
-        // By referred unit
-        $result = $this->db->query("SELECT referred_to, COUNT(*) as count FROM complaints GROUP BY referred_to ORDER BY count DESC")->fetchAll();
-        $stats['by_unit'] = $result;
-
         // Recent trends (last 7 days)
         $result = $this->db->query("
             SELECT DATE(created_at) as date, COUNT(*) as count 
@@ -314,7 +300,7 @@ class ComplaintAdmin {
      * Get recent complaints for dashboard
      */
     public function getRecent($limit = 5) {
-        $sql = "SELECT c.id, c.reference_number, c.name_pangalan, c.referred_to, 
+        $sql = "SELECT c.id, c.reference_number, c.name_pangalan, 
                        c.status, c.created_at, c.narration_complaint
                 FROM complaints c
                 ORDER BY c.created_at DESC

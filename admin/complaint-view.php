@@ -48,7 +48,6 @@ if (!empty($documents)) {
 
 // Status config
 $statusConfig = STATUS_CONFIG;
-$units = UNITS;
 $statusWorkflow = STATUS_WORKFLOW;
 
 // Determine if this complaint came from an uploaded completed form
@@ -65,14 +64,6 @@ $hasCoreFieldsEmpty =
 $isUploadedForm = (($complaint['signature_type'] ?? '') === 'uploaded_form')
     || ($hasCoreFieldsEmpty && !empty($documents));
 
-// Prepare checkmarks for referred to section (for standard typed submissions)
-// Public form no longer captures routing information, so we leave
-// all checkboxes on the printed form blank by default.
-$checkOSDS = '';
-$checkSGOD = '';
-$checkCID = '';
-$checkOthers = '';
-$othersText = ($complaint['referred_to'] === 'Others' && !empty($complaint['referred_to_other'])) ? $complaint['referred_to_other'] : '';
 
 include __DIR__ . '/includes/header.php';
 ?>
@@ -597,15 +588,6 @@ include __DIR__ . '/includes/header.php';
                     <!-- CTS Ticket Number -->
                     <div class="field-box cts-ticket-box">CTS No: <?php echo htmlspecialchars($complaint['reference_number']); ?></div>
                     
-                    <!-- Routing Checkmarks -->
-                    <div class="field-box check-osds"><?php echo $checkOSDS; ?></div>
-                    <div class="field-box check-sgod"><?php echo $checkSGOD; ?></div>
-                    <div class="field-box check-cid"><?php echo $checkCID; ?></div>
-                    <div class="field-box check-others"><?php echo $checkOthers; ?></div>
-                    
-                    <!-- Others Text -->
-                    <div class="field-box others-text-box"><?php echo htmlspecialchars($othersText); ?></div>
-                    
                     <!-- Date -->
                     <div class="field-box date-box"><?php echo date('F j, Y', strtotime($complaint['date_petsa'])); ?></div>
                     
@@ -720,12 +702,6 @@ include __DIR__ . '/includes/header.php';
                 </button>
                 <?php endif; ?>
                 
-                <?php if ($auth->hasPermission('complaints.forward') && in_array($complaint['status'], ['accepted', 'in_progress'])): ?>
-                <button type="button" class="btn btn-outline btn-block" onclick="openForwardModal()">
-                    <i class="></i> Forward to Unit
-                </button>
-                <?php endif; ?>
-                
                 <?php if (empty($allowedTransitions) && $complaint['status'] !== 'pending'): ?>
                 <p class="action-note">No further actions available for this status.</p>
                 <?php endif; ?>
@@ -812,28 +788,6 @@ include __DIR__ . '/includes/header.php';
             </div>
         </div>
 
-        <!-- Assignment History -->
-        <?php if (!empty($assignments)): ?>
-        <div class="detail-card">
-            <div class="detail-card-header">
-                <h3><i class="fas fa-exchange-alt"></i> Assignment History</h3>
-            </div>
-            <div class="detail-card-body">
-                <div class="assignments-list">
-                    <?php foreach ($assignments as $assignment): ?>
-                    <div class="assignment-item">
-                        <div class="assignment-unit"><?php echo htmlspecialchars($assignment['assigned_to_unit']); ?></div>
-                        <div class="assignment-notes"><?php echo htmlspecialchars($assignment['notes']); ?></div>
-                        <div class="assignment-meta">
-                            By <?php echo htmlspecialchars($assignment['assigned_by_name']); ?> •
-                            <?php echo date('M j, Y', strtotime($assignment['created_at'])); ?>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </div>
-        <?php endif; ?>
     </div>
 </div>
 
@@ -901,40 +855,6 @@ include __DIR__ . '/includes/header.php';
     </div>
 </div>
 
-<!-- Forward Modal -->
-<div class="modal-overlay" id="forwardModal">
-    <div class="modal">
-        <div class="modal-header">
-            <h3>Forward to Unit</h3>
-            <button type="button" class="modal-close" onclick="closeModal('forwardModal')">&times;</button>
-        </div>
-        <form method="POST" action="/SDO-cts/admin/api/forward-complaint.php">
-            <div class="modal-body">
-                <input type="hidden" name="complaint_id" value="<?php echo $complaint['id']; ?>">
-                <input type="hidden" name="csrf_token" value="<?php echo $auth->generateCsrfToken(); ?>">
-                
-                <div class="form-group">
-                    <label class="form-label">Select Unit</label>
-                    <select name="unit" class="form-control" required>
-                        <?php foreach ($units as $key => $name): ?>
-                        <option value="<?php echo $key; ?>"><?php echo $key; ?> - <?php echo $name; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Notes</label>
-                    <textarea name="notes" class="form-control" rows="3" placeholder="Reason for forwarding..."></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline" onclick="closeModal('forwardModal')">Cancel</button>
-                <button type="submit" class="btn btn-primary">Forward</button>
-            </div>
-        </form>
-    </div>
-</div>
-
 <script>
 // Global flags for Save Document behavior
 const IS_UPLOADED_FORM   = <?php echo $isUploadedForm ? 'true' : 'false'; ?>;
@@ -972,10 +892,6 @@ function openActionModal(action) {
 
 function openStatusModal() {
     document.getElementById('statusModal').classList.add('active');
-}
-
-function openForwardModal() {
-    document.getElementById('forwardModal').classList.add('active');
 }
 
 function closeModal(modalId) {
@@ -1181,45 +1097,89 @@ function saveAsPDF(button) {
 
 // Print document (uploaded-form: print the original file; typed: print the page)
 function printDocument() {
+    console.log('printDocument called');
+    console.log('IS_UPLOADED_FORM:', IS_UPLOADED_FORM);
+    
     if (IS_UPLOADED_FORM && PRIMARY_DOC_URL) {
-        // If PDF, open a new window with the PDF and trigger print after load
+        // For uploaded forms, open the document in a new window for printing
         if (PRIMARY_DOC_EXT === 'pdf') {
-            const win = window.open(PRIMARY_DOC_URL, '_blank');
-            if (win) {
-                win.addEventListener('load', () => {
-                    win.focus();
-                    win.print();
-                });
-            } else {
-                // Fallback: direct navigation
-                window.location.href = PRIMARY_DOC_URL;
-            }
+            window.open(PRIMARY_DOC_URL, '_blank');
+            alert('The PDF has been opened in a new tab. Please use Ctrl+P (or Cmd+P on Mac) to print it.');
             return;
         }
 
-        // If image/other: open a minimal window with the image and print
-        const win = window.open('', '_blank');
-        if (win) {
-            const safeUrl = PRIMARY_DOC_URL.replace(/"/g, '&quot;');
-            win.document.write(`
-                <html><head><title>Print</title></head>
-                <body style="margin:0;padding:0;display:flex;align-items:flex-start;justify-content:center;">
-                    <img src="${safeUrl}" style="max-width:100%;height:auto;">
-                    <script>
-                window.onload = function(){ window.focus(); window.print(); };
-                    <\/script>
-                </body></html>
-            `);
-            win.document.close();
+        // For images: create a printable page
+        var printWin = window.open('', '_blank');
+        if (printWin) {
+            printWin.document.write('<!DOCTYPE html><html><head><title>Print</title>');
+            printWin.document.write('<style>body{margin:0;padding:20px;text-align:center;}img{max-width:100%;height:auto;}</style>');
+            printWin.document.write('</head><body>');
+            printWin.document.write('<img src="' + PRIMARY_DOC_URL + '" onload="window.print();">');
+            printWin.document.write('</body></html>');
+            printWin.document.close();
         } else {
-            // Fallback: direct navigation
-            window.location.href = PRIMARY_DOC_URL;
+            alert('Pop-up blocked. Please allow pop-ups and try again.');
         }
         return;
     }
 
-    // Default behavior for typed complaints
-    window.print();
+    // For typed complaints: create a clean print window with just the form content
+    var formContainers = document.querySelectorAll('.complaint-main .form-container');
+    var additionalPage = document.querySelector('.complaint-main .additional-page');
+    
+    if (formContainers.length === 0) {
+        alert('No printable form found.');
+        return;
+    }
+    
+    // Clone the content for printing
+    var printContent = '';
+    formContainers.forEach(function(container) {
+        printContent += container.outerHTML;
+    });
+    if (additionalPage) {
+        printContent += additionalPage.outerHTML;
+    }
+    
+    // Get the styles from the current page
+    var styles = '';
+    document.querySelectorAll('style').forEach(function(style) {
+        styles += style.outerHTML;
+    });
+    
+    // Create print window
+    var printWin = window.open('', '_blank', 'width=900,height=700');
+    if (printWin) {
+        printWin.document.write('<!DOCTYPE html>');
+        printWin.document.write('<html><head><title>Print Complaint Form</title>');
+        printWin.document.write(styles);
+        printWin.document.write('<style>');
+        printWin.document.write('body { margin: 0; padding: 20px; background: #fff; }');
+        printWin.document.write('.form-container { margin: 0 auto 20px; }');
+        printWin.document.write('.additional-page { margin: 20px auto; }');
+        printWin.document.write('@media print { body { padding: 0; } .form-container, .additional-page { box-shadow: none !important; } }');
+        printWin.document.write('</style>');
+        printWin.document.write('</head><body>');
+        printWin.document.write(printContent);
+        printWin.document.write('</body></html>');
+        printWin.document.close();
+        
+        // Wait for content to load then print
+        printWin.onload = function() {
+            setTimeout(function() {
+                printWin.focus();
+                printWin.print();
+            }, 500);
+        };
+        
+        // Fallback if onload doesn't fire (for some browsers)
+        setTimeout(function() {
+            printWin.focus();
+            printWin.print();
+        }, 1000);
+    } else {
+        alert('Pop-up blocked. Please allow pop-ups for this site to print.');
+    }
 }
 
 // Inline document preview for attached supporting documents with zoom controls

@@ -299,18 +299,6 @@ $statusLabels = [
                 </div>
                 
                 <div class="review-field">
-                    <label>Referred To</label>
-                    <div class="value">
-                        <?php 
-                        echo htmlspecialchars($complaint['referred_to']);
-                        if ($complaint['referred_to'] === 'Others' && !empty($complaint['referred_to_other'])) {
-                            echo ' - ' . htmlspecialchars($complaint['referred_to_other']);
-                        }
-                        ?>
-                    </div>
-                </div>
-                
-                <div class="review-field">
                     <label>Name/Pangalan</label>
                     <div class="value"><?php echo htmlspecialchars($complaint['name_pangalan']); ?></div>
                 </div>

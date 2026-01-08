@@ -24,6 +24,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         mkdir($uploadDir, 0755, true);
     }
     $sessionId = session_id();
+    
+    // Get existing files from session
+    $existingFiles = $_SESSION['form_files'] ?? [];
+    
+    // Check if new handwritten form is being uploaded
+    $hasNewHandwrittenForm = isset($_FILES['handwritten_form']) && !empty($_FILES['handwritten_form']['name']) && $_FILES['handwritten_form']['error'] === UPLOAD_ERR_OK;
+    
+    // Handle exclusion of previously uploaded handwritten form
+    // Only exclude if checkbox is checked AND no new handwritten form is uploaded
+    $excludeHandwritten = isset($_POST['exclude_handwritten_form']) && $_POST['exclude_handwritten_form'] == '1' && !$hasNewHandwrittenForm;
+    
+    if (!$excludeHandwritten && !$hasNewHandwrittenForm) {
+        // Keep existing handwritten_form files if not excluded and no new upload
+        $existingHandwrittenFiles = array_filter($existingFiles, function($file) {
+            return isset($file['category']) && $file['category'] === 'handwritten_form';
+        });
+        $tempFiles = array_merge($tempFiles, array_values($existingHandwrittenFiles));
+    }
+    
+    // Reset handwritten_mode if excluded
+    if ($excludeHandwritten) {
+        if (isset($_SESSION['form_data']['handwritten_mode'])) {
+            unset($_SESSION['form_data']['handwritten_mode']);
+        }
+    }
+    
+    // Keep other existing files (supporting docs and valid IDs) if no new uploads replace them
+    if (!isset($_FILES['documents']) || empty($_FILES['documents']['name'][0])) {
+        $existingSupportingFiles = array_filter($existingFiles, function($file) {
+            return (!isset($file['category']) || $file['category'] === 'supporting');
+        });
+        $tempFiles = array_merge($tempFiles, array_values($existingSupportingFiles));
+    }
+    
+    if (!isset($_FILES['valid_ids']) || empty($_FILES['valid_ids']['name'][0])) {
+        $existingValidIdFiles = array_filter($existingFiles, function($file) {
+            return isset($file['category']) && $file['category'] === 'valid_id';
+        });
+        $tempFiles = array_merge($tempFiles, array_values($existingValidIdFiles));
+    }
 
     // Handle supporting documents (multiple)
     if (isset($_FILES['documents']) && !empty($_FILES['documents']['name'][0])) {
@@ -100,6 +140,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['form_data']['handwritten_mode'] = 1;
     }
 
+    // Validate that at least one valid ID/credential file is present (required)
+    $validIdFilesInSubmission = array_filter($tempFiles, function($file) {
+        return isset($file['category']) && $file['category'] === 'valid_id';
+    });
+    
+    if (empty($validIdFilesInSubmission)) {
+        $_SESSION['form_error'] = 'Please upload at least one valid ID or credential. This field is required.';
+        header('Location: index.php');
+        exit;
+    }
+
     $_SESSION['form_files'] = $tempFiles;
     
     header('Location: review.php');
@@ -109,6 +160,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Get existing form data from session (for editing)
 $formData = $_SESSION['form_data'] ?? [];
 $formFiles = $_SESSION['form_files'] ?? [];
+$formError = $_SESSION['form_error'] ?? null;
+if (isset($_SESSION['form_error'])) {
+    unset($_SESSION['form_error']);
+}
 
 // Helper function to get form value
 function getValue($field, $default = '') {
@@ -154,6 +209,12 @@ function isChecked($field, $value) {
             <p class="subtitle">Region IVA - CALABARZON | Schools Division Office of San Pedro City</p>
         </header>
 
+        <?php if ($formError): ?>
+        <div style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <strong><i class="fas fa-exclamation-circle"></i> Error:</strong> <?php echo htmlspecialchars($formError); ?>
+        </div>
+        <?php endif; ?>
+
         <form action="" method="POST" enctype="multipart/form-data" id="complaintForm" novalidate>
             <!-- Privacy Notice -->
             <section class="form-section">
@@ -186,6 +247,30 @@ function isChecked($field, $value) {
                             form are <strong>readable</strong>.
                         </p>
                     </div>
+
+                    <?php 
+                    $handwrittenFiles = array_filter($formFiles, function($file) {
+                        return isset($file['category']) && $file['category'] === 'handwritten_form';
+                    });
+                    if (!empty($handwrittenFiles)): ?>
+                    <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin-bottom: 15px;" id="handwrittenFileSection">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                            <div style="flex: 1;">
+                                <strong><i class="fas fa-file-signature"></i> Previously uploaded completed form:</strong>
+                                <ul style="margin: 10px 0 0 20px;">
+                                    <?php foreach ($handwrittenFiles as $file): ?>
+                                    <li><?php echo htmlspecialchars($file['original_name']); ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-danger-outline" id="removeHandwrittenBtn" style="margin-left: 10px; flex-shrink: 0;">
+                                <i class="fas fa-trash-alt"></i> Remove
+                            </button>
+                        </div>
+                        <input type="hidden" name="exclude_handwritten_form" value="0" id="exclude_handwritten_form">
+                        <small style="color: #155724; display: block; margin-top: 5px;">This file will be included unless you remove it or upload a new one.</small>
+                    </div>
+                    <?php endif; ?>
 
                     <div class="form-group">
                         <label class="form-label" for="handwritten_form">
@@ -357,11 +442,15 @@ function isChecked($field, $value) {
                         </p>
                     </div>
                     
-                    <?php if (!empty($formFiles)): ?>
+                    <?php 
+                    $supportingFiles = array_filter($formFiles, function($file) {
+                        return (!isset($file['category']) || $file['category'] === 'supporting');
+                    });
+                    if (!empty($supportingFiles)): ?>
                     <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                         <strong><i class="fas fa-paperclip"></i> Previously uploaded files:</strong>
                         <ul style="margin: 10px 0 0 20px;">
-                            <?php foreach ($formFiles as $file): ?>
+                            <?php foreach ($supportingFiles as $file): ?>
                             <li><?php echo htmlspecialchars($file['original_name']); ?></li>
                             <?php endforeach; ?>
                         </ul>
@@ -417,16 +506,18 @@ function isChecked($field, $value) {
                     
                     <div class="form-group">
                         <label class="form-label">
-                            Upload Valid ID / Credentials <span class="optional">(Optional but recommended)</span>
+                            Upload Valid ID / Credentials <span class="required">*</span>
                         </label>
                         <div class="file-upload-area" id="validIdDropZone">
                             <div class="upload-icon"><i class="fas fa-id-card"></i></div>
                             <p><strong>Click to upload</strong> or drag and drop your ID here</p>
                             <p class="file-types">Accepted formats: PDF, JPG, PNG (Max 10MB each)</p>
                             <input type="file" name="valid_ids[]" id="validIdInput" 
-                                   accept=".pdf,.jpg,.jpeg,.png" multiple>
+                                   accept=".pdf,.jpg,.jpeg,.png" multiple 
+                                   data-required="true">
                         </div>
                         <div class="file-list" id="validIdFileList"></div>
+                        <small style="color: var(--text-muted);">At least one valid ID or credential is required.</small>
                     </div>
                 </div>
             </section>
@@ -534,6 +625,96 @@ function isChecked($field, $value) {
         </div>
     </div>
 
+    <!-- Remove Handwritten Form Confirmation Modal -->
+    <div class="custom-modal" id="removeHandwrittenModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                <i class="fas fa-trash-alt"></i>
+                <h3>Remove Completed Form</h3>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to remove this completed form file?</p>
+                <p style="margin-top: 0.75rem; color: var(--text-muted);">This file will <strong>not be included</strong> in your submission. You can upload a new file or fill out the form manually instead.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelRemoveHandwrittenBtn">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmRemoveHandwrittenBtn">
+                    <i class="fas fa-trash-alt"></i> Remove File
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="assets/js/form.js?v=<?php echo time(); ?>"></script>
+    <script>
+    // Handle remove handwritten form button
+    document.addEventListener('DOMContentLoaded', function() {
+        const removeBtn = document.getElementById('removeHandwrittenBtn');
+        const excludeInput = document.getElementById('exclude_handwritten_form');
+        const fileSection = document.getElementById('handwrittenFileSection');
+        const modal = document.getElementById('removeHandwrittenModal');
+        
+        if (removeBtn && modal) {
+            removeBtn.addEventListener('click', function() {
+                // Prevent body scroll when modal is open
+                document.body.style.overflow = 'hidden';
+                
+                // Show modal
+                modal.classList.add('active');
+                
+                // Handle confirm button
+                const confirmBtn = document.getElementById('confirmRemoveHandwrittenBtn');
+                const cancelBtn = document.getElementById('cancelRemoveHandwrittenBtn');
+                const overlay = modal.querySelector('.modal-overlay');
+                
+                const closeModal = () => {
+                    modal.classList.remove('active');
+                    // Restore body scroll
+                    document.body.style.overflow = '';
+                    // Clean up event listeners
+                    confirmBtn.onclick = null;
+                    cancelBtn.onclick = null;
+                    if (overlay) overlay.onclick = null;
+                };
+                
+                const handleConfirm = () => {
+                    closeModal();
+                    // Mark file as excluded
+                    if (excludeInput) {
+                        excludeInput.value = '1';
+                    }
+                    // Visual feedback
+                    if (fileSection) {
+                        fileSection.style.opacity = '0.5';
+                        fileSection.style.pointerEvents = 'none';
+                    }
+                    removeBtn.innerHTML = '<i class="fas fa-check"></i> Removed';
+                    removeBtn.disabled = true;
+                    removeBtn.classList.remove('btn-danger-outline');
+                    removeBtn.classList.add('btn-secondary');
+                };
+                
+                // Set up event listeners
+                confirmBtn.onclick = handleConfirm;
+                cancelBtn.onclick = closeModal;
+                if (overlay) {
+                    overlay.onclick = closeModal;
+                }
+                
+                // Close on Escape key
+                const handleEscape = (e) => {
+                    if (e.key === 'Escape' && modal.classList.contains('active')) {
+                        closeModal();
+                        document.removeEventListener('keydown', handleEscape);
+                    }
+                };
+                document.addEventListener('keydown', handleEscape);
+            });
+        }
+    });
+    </script>
 </body>
 </html>

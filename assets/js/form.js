@@ -416,6 +416,25 @@ function initFormValidation() {
                 typedSig.classList.add('error');
                 showError(typedSig, 'Please type your signature');
             }
+            
+            // Validate Valid ID / Credentials (required)
+            const validIdInput = document.getElementById('validIdInput');
+            const validIdFileList = document.getElementById('validIdFileList');
+            const hasValidIdFiles = (validIdInput && validIdInput.files && validIdInput.files.length > 0) ||
+                                   (validIdFileList && validIdFileList.querySelectorAll('.file-item').length > 0);
+            
+            // Check if there are previously uploaded valid ID files in the session (shown in the green box)
+            const previouslyUploadedValidId = document.querySelector('div[style*="background: #d4edda"]') && 
+                                             document.querySelector('div[style*="background: #d4edda"]').textContent.includes('Previously uploaded ID/Credentials');
+            
+            if (!hasValidIdFiles && !previouslyUploadedValidId) {
+                isValid = false;
+                const validIdSection = document.querySelector('#validIdDropZone').closest('.form-group');
+                if (validIdSection) {
+                    validIdSection.querySelector('#validIdDropZone').style.borderColor = '#dc3545';
+                    showError(validIdSection, 'Please upload at least one valid ID or credential. This field is required.');
+                }
+            }
         }
         
         if (!isValid) {
