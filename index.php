@@ -490,7 +490,7 @@ function isChecked($field, $value) {
                     
                     <?php 
                     $validIdFiles = array_filter($formFiles, function($file) {
-                        return $file['category'] === 'valid_id';
+                        return isset($file['category']) && $file['category'] === 'valid_id';
                     });
                     if (!empty($validIdFiles)): ?>
                     <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin-bottom: 15px;">

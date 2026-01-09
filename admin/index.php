@@ -61,10 +61,10 @@ include __DIR__ . '/includes/header.php';
         </div>
         
         <div class="stat-card stat-resolved">
-            <div class="stat-icon"><i class="fas fa-check-double"></i></div>
+            <div class="stat-icon"><i class="fas fa-lock"></i></div>
             <div class="stat-content">
-                <span class="stat-value"><?php echo number_format($stats['by_status']['resolved'] ?? 0); ?></span>
-                <span class="stat-label">Resolved</span>
+                <span class="stat-value"><?php echo number_format($stats['by_status']['closed'] ?? 0); ?></span>
+                <span class="stat-label">Closed</span>
             </div>
         </div>
     </div>

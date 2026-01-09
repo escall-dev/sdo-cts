@@ -109,6 +109,7 @@ try {
             original_name VARCHAR(255) NOT NULL,
             file_type VARCHAR(50) NOT NULL,
             file_size INT NOT NULL,
+            category VARCHAR(50) DEFAULT 'supporting',
             upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (complaint_id) REFERENCES complaints(id) ON DELETE CASCADE,
             INDEX idx_complaint_id (complaint_id)

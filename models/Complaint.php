@@ -97,10 +97,10 @@ class Complaint {
     /**
      * Add document to complaint
      */
-    public function addDocument($complaintId, $fileName, $originalName, $fileType, $fileSize) {
-        $sql = "INSERT INTO complaint_documents (complaint_id, file_name, original_name, file_type, file_size)
-                VALUES (?, ?, ?, ?, ?)";
-        $this->db->query($sql, [$complaintId, $fileName, $originalName, $fileType, $fileSize]);
+    public function addDocument($complaintId, $fileName, $originalName, $fileType, $fileSize, $category = 'supporting') {
+        $sql = "INSERT INTO complaint_documents (complaint_id, file_name, original_name, file_type, file_size, category)
+                VALUES (?, ?, ?, ?, ?, ?)";
+        $this->db->query($sql, [$complaintId, $fileName, $originalName, $fileType, $fileSize, $category]);
         return $this->db->lastInsertId();
     }
 

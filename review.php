@@ -56,7 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_submit'])) {
                 $newPath = $uploadDir . $file['temp_name'];
                 if (file_exists($tempPath)) {
                     rename($tempPath, $newPath);
-                    $complaint->addDocument($complaintId, $file['temp_name'], $file['original_name'], $file['type'], $file['size']);
+                    $category = $file['category'] ?? 'supporting';
+                    $complaint->addDocument($complaintId, $file['temp_name'], $file['original_name'], $file['type'], $file['size'], $category);
                 }
             }
         }
@@ -430,8 +431,12 @@ $othersText = ($data['referred_to'] === 'Others' && !empty($data['referred_to_ot
             $handwrittenFiles = array_filter($files, function($f) {
                 return isset($f['category']) && $f['category'] === 'handwritten_form';
             });
+            $validIdFiles = array_filter($files, function($f) {
+                return isset($f['category']) && $f['category'] === 'valid_id';
+            });
             $supportingFiles = array_filter($files, function($f) {
-                return !isset($f['category']) || $f['category'] !== 'handwritten_form';
+                $cat = $f['category'] ?? 'supporting';
+                return $cat === 'supporting';
             });
             ?>
             <?php if (!empty($handwrittenFiles)): ?>
@@ -462,11 +467,31 @@ $othersText = ($data['referred_to'] === 'Others' && !empty($data['referred_to_ot
             </section>
             <?php endif; ?>
 
-            <?php if (!empty($supportingFiles)): ?>
+            <?php if (!empty($validIdFiles)): ?>
             <section class="form-section no-print">
                 <div class="section-header">
                     <span class="section-icon"><i class="fas fa-paperclip"></i></span>
                     Additional Attached Documents
+                </div>
+                <div class="section-content">
+                    <ul style="margin:0 0 0 20px;padding:0;">
+                        <?php foreach ($validIdFiles as $file): ?>
+                        <?php $url = $tempDirUrl . rawurlencode($file['temp_name']); ?>
+                        <li style="margin-bottom:0.5rem;">
+                            <?php echo htmlspecialchars($file['original_name']); ?>
+                            <a href="<?php echo htmlspecialchars($url); ?>" target="_blank" style="margin-left:8px;">Open</a>
+                        </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </section>
+            <?php endif; ?>
+
+            <?php if (!empty($supportingFiles)): ?>
+            <section class="form-section no-print">
+                <div class="section-header">
+                    <span class="section-icon"><i class="fas fa-folder-open"></i></span>
+                    Supporting Documents
                 </div>
                 <div class="section-content">
                     <ul style="margin:0 0 0 20px;padding:0;">
@@ -544,13 +569,37 @@ $othersText = ($data['referred_to'] === 'Others' && !empty($data['referred_to_ot
 
             <!-- Attached Files (Below Form) -->
             <?php if (!empty($files)): ?>
+            <?php
+                // Separate files by category for standard mode
+                $stdValidIdFiles = array_filter($files, function($f) {
+                    return isset($f['category']) && $f['category'] === 'valid_id';
+                });
+                $stdSupportingFiles = array_filter($files, function($f) {
+                    $cat = $f['category'] ?? 'supporting';
+                    return $cat === 'supporting';
+                });
+            ?>
             <div class="attached-notice no-print">
-                <strong>📎 Attached Supporting Documents:</strong>
-                <ul style="margin:8px 0 0 20px;padding:0;">
-                    <?php foreach ($files as $file): ?>
-                    <li><?php echo htmlspecialchars($file['original_name']); ?></li>
-                    <?php endforeach; ?>
-                </ul>
+                <?php if (!empty($stdValidIdFiles)): ?>
+                <div style="margin-bottom:12px;">
+                    <strong>🪪 Valid ID / Credentials:</strong>
+                    <ul style="margin:8px 0 0 20px;padding:0;">
+                        <?php foreach ($stdValidIdFiles as $file): ?>
+                        <li><?php echo htmlspecialchars($file['original_name']); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                <?php endif; ?>
+                <?php if (!empty($stdSupportingFiles)): ?>
+                <div>
+                    <strong>📎 Supporting Documents:</strong>
+                    <ul style="margin:8px 0 0 20px;padding:0;">
+                        <?php foreach ($stdSupportingFiles as $file): ?>
+                        <li><?php echo htmlspecialchars($file['original_name']); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                <?php endif; ?>
             </div>
             <?php endif; ?>
         <?php endif; ?>

@@ -507,15 +507,45 @@ include __DIR__ . '/includes/header.php';
             <!-- UPLOADED FORM MODE: show uploaded document(s) instead of blank template -->
             <?php if (!empty($documents)): ?>
             <?php
-                // Use the first document as the primary uploaded complaint form for inline viewing
-                $primaryDoc = $documents[0];
-                $primaryUrl = "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $primaryDoc['file_name'];
-                $primaryExt = strtolower(pathinfo($primaryDoc['file_name'], PATHINFO_EXTENSION));
-                $primaryIsImage = in_array($primaryExt, ['jpg','jpeg','png']);
+                // Separate documents by category
+                $formDocs = [];      // handwritten_form category (complaint form)
+                $validIdDocs = [];   // valid_id category
+                $supportingDocs = []; // supporting category
+                
+                foreach ($documents as $doc) {
+                    $cat = $doc['category'] ?? 'supporting';
+                    if ($cat === 'handwritten_form') {
+                        $formDocs[] = $doc;
+                    } elseif ($cat === 'valid_id') {
+                        $validIdDocs[] = $doc;
+                    } else {
+                        $supportingDocs[] = $doc;
+                    }
+                }
+                
+                // Fallback for old records without category: use file type
+                // Images are complaint forms, others are attachments
+                if (empty($formDocs) && empty($validIdDocs) && empty($supportingDocs)) {
+                    foreach ($documents as $doc) {
+                        $ext = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
+                        if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])) {
+                            $formDocs[] = $doc;
+                        } else {
+                            $supportingDocs[] = $doc;
+                        }
+                    }
+                }
+                
+                // Use the first form document as the primary uploaded complaint form
+                $primaryDoc = !empty($formDocs) ? $formDocs[0] : null;
+                $primaryUrl = $primaryDoc ? "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $primaryDoc['file_name'] : '';
+                $primaryExt = $primaryDoc ? strtolower(pathinfo($primaryDoc['file_name'], PATHINFO_EXTENSION)) : '';
+                $primaryIsImage = in_array($primaryExt, ['jpg','jpeg','png','gif']);
                 $primaryIsPdf = ($primaryExt === 'pdf');
             ?>
             <div class="form-container" style="box-shadow:none;padding:20px 0;">
                 <div style="padding:0 20px 20px;">
+                    <?php if ($primaryDoc): ?>
                     <h3 style="margin-bottom:10px;">Uploaded Complaint-Assisted Form</h3>
                     <p style="margin:0 0 10px;color:#555;">
                         This complaint was filed via an uploaded completed form. You can zoom and scroll the full document below.
@@ -550,14 +580,33 @@ include __DIR__ . '/includes/header.php';
                             <?php endif; ?>
                         </div>
                     </div>
+                    <?php else: ?>
+                    <p style="color:#666;">No uploaded complaint form found.</p>
+                    <?php endif; ?>
 
-                    <?php if (count($documents) > 1): ?>
-                    <p style="margin-top:10px;font-size:12px;color:#555;">
-                        Other attached documents:
+                    <?php if (!empty($validIdDocs)): ?>
+                    <p style="margin-top:16px;font-size:13px;color:#333;font-weight:600;">
+                        🪪 Valid ID / Credentials:
                     </p>
                     <ul style="margin-top:4px;margin-left:18px;">
-                        <?php foreach ($documents as $index => $doc): ?>
-                            <?php if ($index === 0) continue; ?>
+                        <?php foreach ($validIdDocs as $doc): ?>
+                            <?php $url = "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name']; ?>
+                            <li style="margin-bottom:4px;">
+                                <a href="<?php echo htmlspecialchars($url); ?>" target="_blank">
+                                    <?php echo htmlspecialchars($doc['original_name']); ?>
+                                </a>
+                                <span style="color:#666;font-size:12px;">(<?php echo number_format($doc['file_size'] / 1024, 1); ?> KB)</span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <?php endif; ?>
+
+                    <?php if (!empty($supportingDocs)): ?>
+                    <p style="margin-top:16px;font-size:13px;color:#333;font-weight:600;">
+                        📎 Additional Supporting Documents:
+                    </p>
+                    <ul style="margin-top:4px;margin-left:18px;">
+                        <?php foreach ($supportingDocs as $doc): ?>
                             <?php $url = "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name']; ?>
                             <li style="margin-bottom:4px;">
                                 <a href="<?php echo htmlspecialchars($url); ?>" target="_blank">
@@ -630,30 +679,100 @@ include __DIR__ . '/includes/header.php';
 
             <!-- Attached Files (Below Form) -->
             <?php if (!empty($documents)): ?>
+            <?php
+                // Separate documents by category
+                $handwrittenDocs = array_filter($documents, function($d) { return ($d['category'] ?? '') === 'handwritten_form'; });
+                $validIdDocs = array_filter($documents, function($d) { return ($d['category'] ?? '') === 'valid_id'; });
+                $supportingDocs = array_filter($documents, function($d) { 
+                    $cat = $d['category'] ?? 'supporting';
+                    return $cat === 'supporting' || $cat === '';
+                });
+                $docIndex = 0;
+            ?>
             <div class="attached-notice no-print">
-                <strong>📎 Attached Supporting Documents:</strong>
-                <ul style="margin-top:8px;">
-                    <?php foreach ($documents as $index => $doc): ?>
-                    <?php
-                        $fileUrl = "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
-                        $ext = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
-                        $isImage = in_array($ext, ['jpg','jpeg','png','gif']);
-                        $isPdf = ($ext === 'pdf');
-                        $type = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
-                    ?>
-                    <li style="margin-bottom:6px;">
-                        <a href="javascript:void(0)"
-                           class="doc-link"
-                           data-url="<?php echo htmlspecialchars($fileUrl); ?>"
-                           data-type="<?php echo $type; ?>"
-                           data-name="<?php echo htmlspecialchars($doc['original_name']); ?>"
-                           <?php echo $index === 0 ? 'data-default="1"' : ''; ?>>
-                            <?php echo htmlspecialchars($doc['original_name']); ?>
-                        </a>
-                        <span style="color:#666;font-size:12px;">(<?php echo number_format($doc['file_size'] / 1024, 1); ?> KB)</span>
-                    </li>
-                    <?php endforeach; ?>
-                </ul>
+                <?php if (!empty($handwrittenDocs)): ?>
+                <div style="margin-bottom:16px;">
+                    <strong>📝 Uploaded Completed Complaint-Assisted Form:</strong>
+                    <ul style="margin-top:8px;">
+                        <?php foreach ($handwrittenDocs as $doc): ?>
+                        <?php
+                            $fileUrl = "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
+                            $ext = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
+                            $isImage = in_array($ext, ['jpg','jpeg','png','gif']);
+                            $isPdf = ($ext === 'pdf');
+                            $type = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
+                        ?>
+                        <li style="margin-bottom:6px;">
+                            <a href="javascript:void(0)"
+                               class="doc-link"
+                               data-url="<?php echo htmlspecialchars($fileUrl); ?>"
+                               data-type="<?php echo $type; ?>"
+                               data-name="<?php echo htmlspecialchars($doc['original_name']); ?>"
+                               <?php echo $docIndex === 0 ? 'data-default="1"' : ''; ?>>
+                                <?php echo htmlspecialchars($doc['original_name']); ?>
+                            </a>
+                            <span style="color:#666;font-size:12px;">(<?php echo number_format($doc['file_size'] / 1024, 1); ?> KB)</span>
+                        </li>
+                        <?php $docIndex++; endforeach; ?>
+                    </ul>
+                </div>
+                <?php endif; ?>
+
+                <?php if (!empty($validIdDocs)): ?>
+                <div style="margin-bottom:16px;">
+                    <strong>🪪 Valid ID / Credentials:</strong>
+                    <ul style="margin-top:8px;">
+                        <?php foreach ($validIdDocs as $doc): ?>
+                        <?php
+                            $fileUrl = "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
+                            $ext = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
+                            $isImage = in_array($ext, ['jpg','jpeg','png','gif']);
+                            $isPdf = ($ext === 'pdf');
+                            $type = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
+                        ?>
+                        <li style="margin-bottom:6px;">
+                            <a href="javascript:void(0)"
+                               class="doc-link"
+                               data-url="<?php echo htmlspecialchars($fileUrl); ?>"
+                               data-type="<?php echo $type; ?>"
+                               data-name="<?php echo htmlspecialchars($doc['original_name']); ?>"
+                               <?php echo $docIndex === 0 ? 'data-default="1"' : ''; ?>>
+                                <?php echo htmlspecialchars($doc['original_name']); ?>
+                            </a>
+                            <span style="color:#666;font-size:12px;">(<?php echo number_format($doc['file_size'] / 1024, 1); ?> KB)</span>
+                        </li>
+                        <?php $docIndex++; endforeach; ?>
+                    </ul>
+                </div>
+                <?php endif; ?>
+
+                <?php if (!empty($supportingDocs)): ?>
+                <div style="margin-bottom:16px;">
+                    <strong>📎 Supporting Documents:</strong>
+                    <ul style="margin-top:8px;">
+                        <?php foreach ($supportingDocs as $doc): ?>
+                        <?php
+                            $fileUrl = "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
+                            $ext = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
+                            $isImage = in_array($ext, ['jpg','jpeg','png','gif']);
+                            $isPdf = ($ext === 'pdf');
+                            $type = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
+                        ?>
+                        <li style="margin-bottom:6px;">
+                            <a href="javascript:void(0)"
+                               class="doc-link"
+                               data-url="<?php echo htmlspecialchars($fileUrl); ?>"
+                               data-type="<?php echo $type; ?>"
+                               data-name="<?php echo htmlspecialchars($doc['original_name']); ?>"
+                               <?php echo $docIndex === 0 ? 'data-default="1"' : ''; ?>>
+                                <?php echo htmlspecialchars($doc['original_name']); ?>
+                            </a>
+                            <span style="color:#666;font-size:12px;">(<?php echo number_format($doc['file_size'] / 1024, 1); ?> KB)</span>
+                        </li>
+                        <?php $docIndex++; endforeach; ?>
+                    </ul>
+                </div>
+                <?php endif; ?>
                 <p style="margin-top:8px;font-size:12px;color:#666;">
                     Click a file name to view the <strong>full document</strong> in the viewer below.
                     The viewer will scale the content to fit the screen (scroll if there are multiple pages).
