@@ -97,27 +97,41 @@ class EmailLog {
      * Get statistics
      */
     public function getStatistics() {
-        $stats = [];
+        $stats = [
+            'total_sent' => 0,
+            'total_failed' => 0,
+            'total_skipped' => 0,
+            'today' => 0,
+            'by_event_type' => []
+        ];
 
-        // Total sent
-        $result = $this->db->query("SELECT COUNT(*) as total FROM email_logs WHERE status = 'sent'")->fetch();
-        $stats['total_sent'] = $result['total'];
+        try {
+            // Total sent - using exact same pattern as getCount() which works
+            $result = $this->db->query("SELECT COUNT(*) as total FROM email_logs WHERE status = 'sent'", [])->fetch();
+            $stats['total_sent'] = isset($result['total']) ? (int)$result['total'] : 0;
 
-        // Total failed
-        $result = $this->db->query("SELECT COUNT(*) as total FROM email_logs WHERE status = 'failed'")->fetch();
-        $stats['total_failed'] = $result['total'];
+            // Total failed
+            $result = $this->db->query("SELECT COUNT(*) as total FROM email_logs WHERE status = 'failed'", [])->fetch();
+            $stats['total_failed'] = isset($result['total']) ? (int)$result['total'] : 0;
 
-        // Total skipped
-        $result = $this->db->query("SELECT COUNT(*) as total FROM email_logs WHERE status = 'skipped'")->fetch();
-        $stats['total_skipped'] = $result['total'];
+            // Total skipped
+            $result = $this->db->query("SELECT COUNT(*) as total FROM email_logs WHERE status = 'skipped'", [])->fetch();
+            $stats['total_skipped'] = isset($result['total']) ? (int)$result['total'] : 0;
 
-        // Today's emails
-        $result = $this->db->query("SELECT COUNT(*) as total FROM email_logs WHERE DATE(created_at) = CURDATE()")->fetch();
-        $stats['today'] = $result['total'];
+            // Today's emails
+            $result = $this->db->query("SELECT COUNT(*) as total FROM email_logs WHERE DATE(created_at) = CURDATE()", [])->fetch();
+            $stats['today'] = isset($result['total']) ? (int)$result['total'] : 0;
 
-        // By event type
-        $result = $this->db->query("SELECT event_type, COUNT(*) as count FROM email_logs GROUP BY event_type ORDER BY count DESC LIMIT 5")->fetchAll();
-        $stats['by_event_type'] = $result;
+            // By event type
+            $result = $this->db->query("SELECT event_type, COUNT(*) as count FROM email_logs GROUP BY event_type ORDER BY count DESC LIMIT 5", [])->fetchAll();
+            $stats['by_event_type'] = is_array($result) ? $result : [];
+        } catch (PDOException $e) {
+            // If table doesn't exist or query fails, log error but return default values
+            error_log("EmailLog::getStatistics() PDO error: " . $e->getMessage());
+        } catch (Exception $e) {
+            // Catch any other exceptions
+            error_log("EmailLog::getStatistics() error: " . $e->getMessage());
+        }
 
         return $stats;
     }

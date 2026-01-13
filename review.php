@@ -30,6 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_submit'])) {
         $complainantName = trim($_POST['bypass_name'] ?? $complainantName);
         $complainantEmail = trim($_POST['bypass_email'] ?? $complainantEmail);
         $complainantContact = trim($_POST['bypass_contact'] ?? $complainantContact);
+        // Also get the unit selection
+        if (!empty($_POST['bypass_unit'])) {
+            $data['involved_school_office_unit'] = trim($_POST['bypass_unit']);
+        }
     }
     
     // Validate all required fields
@@ -728,8 +732,36 @@ $othersText = ($data['referred_to'] === 'Others' && !empty($data['referred_to_ot
                                value="<?php echo htmlspecialchars($data['contact_number'] ?? ''); ?>"
                                required>
                         <div class="field-error" id="bypassContactError" style="color: #dc2626; font-size: 0.875rem; margin-top: 0.5rem; display: none;">
-                            <i class="fas fa-exclamation-circle"></i> Contact number required (min 7 digits).
+                            <i class="fas fa-exclamation-circle"></i> Contact number required (min 11 digits).
                         </div>
+                    </div>
+                </div>
+                
+                <!-- Unit Selection - Full Width Below -->
+                <div style="margin-top: 1.5rem;">
+                    <div class="form-group">
+                        <label class="form-label" style="font-weight: 600; color: #92400e;">
+                            Complaint Recipient Unit <span class="required" style="color: #dc2626;">*</span>
+                        </label>
+                        <select class="form-control" 
+                                id="bypass_unit" 
+                                name="bypass_unit" 
+                                required
+                                style="max-width: 100%;">
+                            <option value="">-- Select Unit/Office --</option>
+                            <option value="SDS" <?php echo ($data['involved_school_office_unit'] ?? '') === 'SDS' ? 'selected' : ''; ?>>SDS: Schools Division Superintendent</option>
+                            <option value="ASDS" <?php echo ($data['involved_school_office_unit'] ?? '') === 'ASDS' ? 'selected' : ''; ?>>ASDS: Assistant Schools Division Superintendent</option>
+                            <option value="Admin" <?php echo ($data['involved_school_office_unit'] ?? '') === 'Admin' ? 'selected' : ''; ?>>Admin: Cash, Personnel, Records, Supply, General Services, Procurement</option>
+                            <option value="CID" <?php echo ($data['involved_school_office_unit'] ?? '') === 'CID' ? 'selected' : ''; ?>>CID: Curriculum Implementation Division (LRMS, Instructional Management, PSDS)</option>
+                            <option value="Finance" <?php echo ($data['involved_school_office_unit'] ?? '') === 'Finance' ? 'selected' : ''; ?>>Finance: Accounting, Budget</option>
+                            <option value="ICTO" <?php echo ($data['involved_school_office_unit'] ?? '') === 'ICTO' ? 'selected' : ''; ?>>Information and Communication Technology Office</option>
+                            <option value="Legal" <?php echo ($data['involved_school_office_unit'] ?? '') === 'Legal' ? 'selected' : ''; ?>>Legal Office</option>
+                            <option value="SGOD" <?php echo ($data['involved_school_office_unit'] ?? '') === 'SGOD' ? 'selected' : ''; ?>>SGOD: School Governance and Operations Division (M&E, SocMob, Planning & Research, HRD, Facilities, School Health)</option>
+                        </select>
+                        <div class="field-error" id="bypassUnitError" style="color: #dc2626; font-size: 0.875rem; margin-top: 0.5rem; display: none;">
+                            <i class="fas fa-exclamation-circle"></i> Please select the unit/office for this complaint.
+                        </div>
+                        <small style="color: #78716c; margin-top: 0.5rem; display: block;">Select the unit/office where your complaint should be directed.</small>
                     </div>
                 </div>
             </div>
@@ -756,9 +788,28 @@ $othersText = ($data['referred_to'] === 'Others' && !empty($data['referred_to_ot
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding: 10px 12px; background: #eff6ff; color: #0c4a6e;"><strong>Contact:</strong></td>
-                        <td style="padding: 10px 12px; background: #f0f9ff;">
+                        <td style="padding: 10px 12px; border-bottom: 1px solid #bae6fd; background: #eff6ff; color: #0c4a6e;"><strong>Contact:</strong></td>
+                        <td style="padding: 10px 12px; border-bottom: 1px solid #bae6fd; background: #f0f9ff;">
                             <?php echo htmlspecialchars($data['contact_number'] ?? 'Not provided'); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px 12px; background: #eff6ff; color: #0c4a6e;"><strong>Complaint Recipient:</strong></td>
+                        <td style="padding: 10px 12px; background: #f0f9ff;">
+                            <?php 
+                            $unitNames = [
+                                'SDS' => 'SDS: Schools Division Superintendent',
+                                'ASDS' => 'ASDS: Assistant Schools Division Superintendent',
+                                'Admin' => 'Admin: Cash, Personnel, Records, Supply, General Services, Procurement',
+                                'CID' => 'CID: Curriculum Implementation Division (LRMS, Instructional Management, PSDS)',
+                                'Finance' => 'Finance: Accounting, Budget',
+                                'ICTO' => 'Information and Communication Technology Office',
+                                'Legal' => 'Legal Office',
+                                'SGOD' => 'SGOD: School Governance and Operations Division (M&E, SocMob, Planning & Research, HRD, Facilities, School Health)'
+                            ];
+                            $unitCode = $data['involved_school_office_unit'] ?? '';
+                            echo htmlspecialchars($unitNames[$unitCode] ?? ($unitCode ?: 'Not specified'));
+                            ?>
                         </td>
                     </tr>
                 </table>
@@ -786,16 +837,18 @@ $othersText = ($data['referred_to'] === 'Others' && !empty($data['referred_to_ot
             const isBypassMode = <?php echo $isHandwritten ? 'true' : 'false'; ?>;
             const needsComplainantInfo = <?php echo $needsComplainantInfo ? 'true' : 'false'; ?>;
             
-            let bypassNameInput, bypassEmailInput, bypassContactInput;
-            let bypassNameError, bypassEmailError, bypassContactError;
+            let bypassNameInput, bypassEmailInput, bypassContactInput, bypassUnitSelect;
+            let bypassNameError, bypassEmailError, bypassContactError, bypassUnitError;
             
             if (isBypassMode && needsComplainantInfo) {
                 bypassNameInput = document.getElementById('bypass_name');
                 bypassEmailInput = document.getElementById('bypass_email');
                 bypassContactInput = document.getElementById('bypass_contact');
+                bypassUnitSelect = document.getElementById('bypass_unit');
                 bypassNameError = document.getElementById('bypassNameError');
                 bypassEmailError = document.getElementById('bypassEmailError');
                 bypassContactError = document.getElementById('bypassContactError');
+                bypassUnitError = document.getElementById('bypassUnitError');
             }
             
             const submitBtn = document.getElementById('submitBtn');
@@ -822,11 +875,13 @@ $othersText = ($data['referred_to'] === 'Others' && !empty($data['referred_to_ot
                 const name = bypassNameInput.value.trim();
                 const email = bypassEmailInput.value.trim();
                 const contact = bypassContactInput.value.trim();
+                const unit = bypassUnitSelect.value;
                 
                 // Clear previous errors
                 bypassNameError.style.display = 'none';
                 bypassEmailError.style.display = 'none';
                 bypassContactError.style.display = 'none';
+                bypassUnitError.style.display = 'none';
                 
                 // Validate name
                 const nameValid = name.length >= 2;
@@ -846,8 +901,11 @@ $othersText = ($data['referred_to'] === 'Others' && !empty($data['referred_to_ot
                     bypassContactError.style.display = 'block';
                 }
                 
+                // Validate unit
+                const unitValid = unit !== '';
+                
                 // Enable/disable submit button
-                const allValid = nameValid && emailValid && contactValid;
+                const allValid = nameValid && emailValid && contactValid && unitValid;
                 
                 if (allValid) {
                     submitBtn.disabled = false;
@@ -868,6 +926,7 @@ $othersText = ($data['referred_to'] === 'Others' && !empty($data['referred_to_ot
                 bypassEmailInput.addEventListener('blur', updateSubmitButton);
                 bypassContactInput.addEventListener('input', updateSubmitButton);
                 bypassContactInput.addEventListener('blur', updateSubmitButton);
+                bypassUnitSelect.addEventListener('change', updateSubmitButton);
             }
             
             // Prevent form submission if validation fails
@@ -879,12 +938,16 @@ $othersText = ($data['referred_to'] === 'Others' && !empty($data['referred_to_ot
                 const name = bypassNameInput.value.trim();
                 const email = bypassEmailInput.value.trim();
                 const contact = bypassContactInput.value.trim();
+                const unit = bypassUnitSelect.value;
                 
-                const isValid = name.length >= 2 && validateEmail(email) && validateContact(contact);
+                const isValid = name.length >= 2 && validateEmail(email) && validateContact(contact) && unit !== '';
                 
                 if (!isValid) {
                     e.preventDefault();
                     updateSubmitButton();
+                    if (unit === '') {
+                        bypassUnitError.style.display = 'block';
+                    }
                     bypassNameInput.focus();
                 }
             });

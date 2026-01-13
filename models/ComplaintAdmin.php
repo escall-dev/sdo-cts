@@ -44,6 +44,11 @@ class ComplaintAdmin {
             $params[] = $filters['assigned_unit'];
         }
 
+        if (!empty($filters['unit'])) {
+            $sql .= " AND c.involved_school_office_unit = ?";
+            $params[] = $filters['unit'];
+        }
+
         if (!empty($filters['date_from'])) {
             $sql .= " AND DATE(c.date_petsa) >= ?";
             $params[] = $filters['date_from'];
@@ -85,6 +90,11 @@ class ComplaintAdmin {
         if (!empty($filters['assigned_unit'])) {
             $sql .= " AND c.assigned_unit = ?";
             $params[] = $filters['assigned_unit'];
+        }
+
+        if (!empty($filters['unit'])) {
+            $sql .= " AND c.involved_school_office_unit = ?";
+            $params[] = $filters['unit'];
         }
 
         if (!empty($filters['date_from'])) {

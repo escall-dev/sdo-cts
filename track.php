@@ -309,7 +309,22 @@ $statusLabels = [
                         <?php echo htmlspecialchars($complaint['involved_full_name']); ?> 
                         (<?php echo htmlspecialchars($complaint['involved_position']); ?>)
                         <br>
-                        <small><?php echo htmlspecialchars($complaint['involved_school_office_unit']); ?></small>
+                        <small><?php 
+                            // Simple unit name mapping for public display
+                            $unitNames = [
+                                'SDS' => 'SDS: Schools Division Superintendent',
+                                'ASDS' => 'ASDS: Assistant Schools Division Superintendent',
+                                'Admin' => 'Admin: Cash, Personnel, Records, Supply, General Services, Procurement',
+                                'CID' => 'CID: Curriculum Implementation Division (LRMS, Instructional Management, PSDS)',
+                                'Finance' => 'Finance: Accounting, Budget',
+                                'ICTO' => 'Information and Communication Technology Office',
+                                'Legal' => 'Legal Office',
+                                'SGOD' => 'SGOD: School Governance and Operations Division (M&E, SocMob, Planning & Research, HRD, Facilities, School Health)'
+                            ];
+                            $unitCode = $complaint['involved_school_office_unit'] ?? '';
+                            $unitDisplay = isset($unitNames[$unitCode]) ? $unitNames[$unitCode] : $unitCode;
+                            echo htmlspecialchars($unitDisplay); 
+                        ?></small>
                     </div>
                 </div>
                 

@@ -97,13 +97,14 @@ define('STATUS_CONFIG', [
 
 // Unit/Section configuration
 define('UNITS', [
-    'OSDS' => 'Office of the Schools Division Superintendent',
-    'SGOD' => 'School Governance and Operations Division',
-    'CID' => 'Curriculum Implementation Division',
-    'HRMO' => 'Human Resource Management Office',
-    'Legal' => 'Legal Unit',
-    'Records' => 'Records Section',
-    'Others' => 'Other Units'
+    'SDS' => 'SDS: Schools Division Superintendent',
+    'ASDS' => 'ASDS: Assistant Schools Division Superintendent',
+    'Admin' => 'Admin: Cash, Personnel, Records, Supply, General Services, Procurement',
+    'CID' => 'CID: Curriculum Implementation Division (LRMS, Instructional Management, PSDS)',
+    'Finance' => 'Finance: Accounting, Budget',
+    'ICTO' => 'Information and Communication Technology Office',
+    'Legal' => 'Legal Office',
+    'SGOD' => 'SGOD: School Governance and Operations Division (M&E, SocMob, Planning & Research, HRD, Facilities, School Health)'
 ]);
 
 // Permission definitions
@@ -121,4 +122,14 @@ define('PERMISSIONS', [
     'logs.view' => 'View activity logs',
     'settings.manage' => 'Manage system settings'
 ]);
+
+// Helper function to get unit display name
+if (!function_exists('getUnitDisplayName')) {
+    function getUnitDisplayName($unitCode) {
+        if (empty($unitCode)) {
+            return '-';
+        }
+        return defined('UNITS') && isset(UNITS[$unitCode]) ? UNITS[$unitCode] : $unitCode;
+    }
+}
 

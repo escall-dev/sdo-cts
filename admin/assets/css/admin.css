@@ -1334,6 +1334,18 @@ body {
     color: var(--text-muted);
 }
 
+.unit-badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #1e40af;
+    background: #dbeafe;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
 .ref-link {
     font-family: 'JetBrains Mono', monospace;
     font-weight: 600;

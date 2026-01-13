@@ -748,7 +748,7 @@ include __DIR__ . '/includes/header.php';
                     <div class="field-box involved-name-box"><?php echo htmlspecialchars($complaint['involved_full_name']); ?></div>
                     <div class="field-box involved-position-box"><?php echo htmlspecialchars($complaint['involved_position']); ?></div>
                     <div class="field-box involved-address-box"><?php echo htmlspecialchars($complaint['involved_address']); ?></div>
-                    <div class="field-box involved-school-box"><?php echo htmlspecialchars($complaint['involved_school_office_unit']); ?></div>
+                    <div class="field-box involved-school-box"><?php echo htmlspecialchars(getUnitDisplayName($complaint['involved_school_office_unit'])); ?></div>
                     
                     <!-- Narration (Multi-line, Controlled) -->
                     <div class="field-box narration-box"><?php echo htmlspecialchars($complaint['narration_complaint']); ?></div>

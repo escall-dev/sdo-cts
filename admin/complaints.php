@@ -15,6 +15,7 @@ $complaintModel = new ComplaintAdmin();
 // Get filter parameters
 $filters = [
     'status' => $_GET['status'] ?? '',
+    'unit' => $_GET['unit'] ?? '',
     'date_from' => $_GET['date_from'] ?? '',
     'date_to' => $_GET['date_to'] ?? '',
     'search' => $_GET['search'] ?? ''
@@ -65,6 +66,21 @@ include __DIR__ . '/includes/header.php';
         </div>
         
         <div class="filter-group">
+            <label>Unit</label>
+            <select name="unit" class="filter-select">
+                <option value="">All Units</option>
+                <option value="SDS" <?php echo $filters['unit'] === 'SDS' ? 'selected' : ''; ?>>SDS: Schools Division Superintendent</option>
+                <option value="ASDS" <?php echo $filters['unit'] === 'ASDS' ? 'selected' : ''; ?>>ASDS: Assistant Schools Division Superintendent</option>
+                <option value="Admin" <?php echo $filters['unit'] === 'Admin' ? 'selected' : ''; ?>>Admin: Cash, Personnel, Records, Supply, General Services, Procurement</option>
+                <option value="CID" <?php echo $filters['unit'] === 'CID' ? 'selected' : ''; ?>>CID: Curriculum Implementation Division</option>
+                <option value="Finance" <?php echo $filters['unit'] === 'Finance' ? 'selected' : ''; ?>>Finance: Accounting, Budget</option>
+                <option value="ICTO" <?php echo $filters['unit'] === 'ICTO' ? 'selected' : ''; ?>>Information and Communication Technology Office</option>
+                <option value="Legal" <?php echo $filters['unit'] === 'Legal' ? 'selected' : ''; ?>>Legal Office</option>
+                <option value="SGOD" <?php echo $filters['unit'] === 'SGOD' ? 'selected' : ''; ?>>SGOD: School Governance and Operations Division</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
             <label>Date From</label>
             <input type="date" name="date_from" value="<?php echo htmlspecialchars($filters['date_from']); ?>" class="filter-input">
         </div>
@@ -109,7 +125,21 @@ include __DIR__ . '/includes/header.php';
                     $complainantName  = $complaint['name_pangalan'] ?? '';
                     $complainantEmail = $complaint['email_address'] ?? '';
                     $involvedName     = $complaint['involved_full_name'] ?? '';
+                    $involvedUnit     = $complaint['involved_school_office_unit'] ?? '';
                     $docCount         = isset($complaint['doc_count']) ? (int)$complaint['doc_count'] : 0;
+
+                    // Unit code to short label mapping
+                    $unitLabels = [
+                        'SDS' => 'SDS',
+                        'ASDS' => 'ASDS',
+                        'Admin' => 'Admin',
+                        'CID' => 'CID',
+                        'Finance' => 'Finance',
+                        'ICTO' => 'ICTO',
+                        'Legal' => 'Legal',
+                        'SGOD' => 'SGOD'
+                    ];
+                    $unitDisplay = $unitLabels[$involvedUnit] ?? $involvedUnit;
 
                     // Fallback detection for older uploaded-form submissions:
                     // if core fields are blank and there are documents, mark as uploaded.
@@ -144,7 +174,16 @@ include __DIR__ . '/includes/header.php';
                         <?php endif; ?>
                     </td>
                     <td>
-                        <div class="cell-primary"><?php echo htmlspecialchars($involvedName); ?></div>
+                        <?php if (!empty($unitDisplay)): ?>
+                        <div class="cell-primary">
+                            <span class="unit-badge"><?php echo htmlspecialchars($unitDisplay); ?></span>
+                        </div>
+                        <?php endif; ?>
+                        <?php if (!empty($involvedName)): ?>
+                        <div class="cell-secondary"><?php echo htmlspecialchars($involvedName); ?></div>
+                        <?php elseif (empty($unitDisplay)): ?>
+                        <div class="cell-secondary text-muted">-</div>
+                        <?php endif; ?>
                     </td>
                    
                     <td>

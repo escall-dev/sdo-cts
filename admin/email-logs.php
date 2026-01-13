@@ -7,6 +7,7 @@
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/../models/EmailLog.php';
 require_once __DIR__ . '/../config/mail_config.php';
+require_once __DIR__ . '/../config/database.php';
 
 $auth = auth();
 
@@ -39,7 +40,28 @@ $perPage = 20;
 $logs = $emailLogModel->getAll($filters, $page, $perPage);
 $totalLogs = $emailLogModel->getCount($filters);
 $totalPages = ceil($totalLogs / $perPage);
-$stats = $emailLogModel->getStatistics();
+
+// Get stats directly from database to ensure they work
+$db = Database::getInstance();
+$stats = [
+    'total_sent' => 0,
+    'total_failed' => 0,
+    'total_skipped' => 0,
+    'today' => 0
+];
+
+// Direct queries for statistics
+$result = $db->query("SELECT COUNT(*) as cnt FROM email_logs WHERE status = 'sent'", [])->fetch();
+$stats['total_sent'] = (int)($result['cnt'] ?? 0);
+
+$result = $db->query("SELECT COUNT(*) as cnt FROM email_logs WHERE status = 'failed'", [])->fetch();
+$stats['total_failed'] = (int)($result['cnt'] ?? 0);
+
+$result = $db->query("SELECT COUNT(*) as cnt FROM email_logs WHERE status = 'skipped'", [])->fetch();
+$stats['total_skipped'] = (int)($result['cnt'] ?? 0);
+
+$result = $db->query("SELECT COUNT(*) as cnt FROM email_logs WHERE DATE(created_at) = CURDATE()", [])->fetch();
+$stats['today'] = (int)($result['cnt'] ?? 0);
 
 // Include header
 include __DIR__ . '/includes/header.php';
@@ -64,7 +86,7 @@ include __DIR__ . '/includes/header.php';
             <i class="fas fa-check"></i>
         </div>
         <div class="stat-info">
-            <span class="stat-value"><?php echo number_format($stats['total_sent']); ?></span>
+            <span class="stat-value"><?php echo number_format($stats['total_sent'] ?? 0); ?></span>
             <span class="stat-label">Emails Sent</span>
         </div>
     </div>
@@ -73,7 +95,7 @@ include __DIR__ . '/includes/header.php';
             <i class="fas fa-times"></i>
         </div>
         <div class="stat-info">
-            <span class="stat-value"><?php echo number_format($stats['total_failed']); ?></span>
+            <span class="stat-value"><?php echo number_format($stats['total_failed'] ?? 0); ?></span>
             <span class="stat-label">Failed</span>
         </div>
     </div>
@@ -82,7 +104,7 @@ include __DIR__ . '/includes/header.php';
             <i class="fas fa-forward"></i>
         </div>
         <div class="stat-info">
-            <span class="stat-value"><?php echo number_format($stats['total_skipped']); ?></span>
+            <span class="stat-value"><?php echo number_format($stats['total_skipped'] ?? 0); ?></span>
             <span class="stat-label">Skipped</span>
         </div>
     </div>
@@ -91,7 +113,7 @@ include __DIR__ . '/includes/header.php';
             <i class="fas fa-calendar-day"></i>
         </div>
         <div class="stat-info">
-            <span class="stat-value"><?php echo number_format($stats['today']); ?></span>
+            <span class="stat-value"><?php echo number_format($stats['today'] ?? 0); ?></span>
             <span class="stat-label">Today</span>
         </div>
     </div>
