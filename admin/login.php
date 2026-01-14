@@ -382,8 +382,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <p>Schools Division Office of San Pedro City - Complaint Tracking System</p>
 
-                <p>San Pedro Division Office - Complaint Tracking System</p>
-
             </div>
 
             <?php if ($error): ?>
