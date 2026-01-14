@@ -379,7 +379,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="login-header">
                 <div class="logo-badge"><img src="/SDO-cts/assets/img/sdo-logo.jpg" alt="SDO San Pedro Logo" style="width:60px;height:60px;border-radius:50%;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,0.15);"></div>
                 <h1>SDO CTS Admin</h1>
-                <p>San Pedro Division Office - Complaint Tracking System</p>
+                <p>School Division Office of San Pedro City - Complaint Tracking System</p>
             </div>
 
             <?php if ($error): ?>
