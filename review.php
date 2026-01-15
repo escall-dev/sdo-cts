@@ -573,7 +573,7 @@ function isPrintablePdf($filename) {
                                 <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($url); ?>" data-type="<?php echo $docType; ?>" data-name="<?php echo htmlspecialchars($fileName); ?>" title="View in popup">
                                     <i class="fas fa-expand"></i> View
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($url); ?>" data-type="<?php echo $docType; ?>" data-name="<?php echo htmlspecialchars($fileName); ?>" title="Print">
+                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($url); ?>" data-type="<?php echo $docType; ?>" data-name="<?php echo htmlspecialchars($fileName); ?>" data-category="<?php echo htmlspecialchars($file['category'] ?? 'supporting'); ?>" title="Print">
                                     <i class="fas fa-print"></i>
                                 </button>
                                 <a href="<?php echo htmlspecialchars($url); ?>" download="<?php echo htmlspecialchars($fileName); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
@@ -621,7 +621,7 @@ function isPrintablePdf($filename) {
                                 <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($url); ?>" data-type="<?php echo $docType; ?>" data-name="<?php echo htmlspecialchars($fileName); ?>" title="View in popup">
                                     <i class="fas fa-expand"></i> View
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($url); ?>" data-type="<?php echo $docType; ?>" data-name="<?php echo htmlspecialchars($fileName); ?>" title="Print">
+                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($url); ?>" data-type="<?php echo $docType; ?>" data-name="<?php echo htmlspecialchars($fileName); ?>" data-category="<?php echo htmlspecialchars($file['category'] ?? 'valid_id'); ?>" title="Print">
                                     <i class="fas fa-print"></i>
                                 </button>
                                 <a href="<?php echo htmlspecialchars($url); ?>" download="<?php echo htmlspecialchars($fileName); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
@@ -669,7 +669,7 @@ function isPrintablePdf($filename) {
                                 <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($url); ?>" data-type="<?php echo $docType; ?>" data-name="<?php echo htmlspecialchars($fileName); ?>" title="View in popup">
                                     <i class="fas fa-expand"></i> View
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($url); ?>" data-type="<?php echo $docType; ?>" data-name="<?php echo htmlspecialchars($fileName); ?>" title="Print">
+                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($url); ?>" data-type="<?php echo $docType; ?>" data-name="<?php echo htmlspecialchars($fileName); ?>" data-category="<?php echo htmlspecialchars($file['category'] ?? 'supporting'); ?>" title="Print">
                                     <i class="fas fa-print"></i>
                                 </button>
                                 <a href="<?php echo htmlspecialchars($url); ?>" download="<?php echo htmlspecialchars($fileName); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
@@ -789,7 +789,7 @@ function isPrintablePdf($filename) {
                                 <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($url); ?>" data-type="<?php echo $docType; ?>" data-name="<?php echo htmlspecialchars($fileName); ?>" title="View in popup">
                                     <i class="fas fa-expand"></i> View
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($url); ?>" data-type="<?php echo $docType; ?>" data-name="<?php echo htmlspecialchars($fileName); ?>" title="Print">
+                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($url); ?>" data-type="<?php echo $docType; ?>" data-name="<?php echo htmlspecialchars($fileName); ?>" data-category="<?php echo htmlspecialchars($file['category'] ?? 'valid_id'); ?>" title="Print">
                                     <i class="fas fa-print"></i>
                                 </button>
                                 <a href="<?php echo htmlspecialchars($url); ?>" download="<?php echo htmlspecialchars($fileName); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
@@ -836,7 +836,7 @@ function isPrintablePdf($filename) {
                                 <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($url); ?>" data-type="<?php echo $docType; ?>" data-name="<?php echo htmlspecialchars($fileName); ?>" title="View in popup">
                                     <i class="fas fa-expand"></i> View
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($url); ?>" data-type="<?php echo $docType; ?>" data-name="<?php echo htmlspecialchars($fileName); ?>" title="Print">
+                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($url); ?>" data-type="<?php echo $docType; ?>" data-name="<?php echo htmlspecialchars($fileName); ?>" data-category="<?php echo htmlspecialchars($file['category'] ?? 'supporting'); ?>" title="Print">
                                     <i class="fas fa-print"></i>
                                 </button>
                                 <a href="<?php echo htmlspecialchars($url); ?>" download="<?php echo htmlspecialchars($fileName); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
@@ -1305,7 +1305,18 @@ function isPrintablePdf($filename) {
             const MAX_ZOOM = 4;
             const ZOOM_STEP = 0.25;
 
-            function printAttachment(url, type) {
+            function getCategoryLabel(category) {
+                if (category === 'handwritten_form') {
+                    return 'Uploaded Completed Complaint-Assisted Form';
+                }
+                if (category === 'valid_id') {
+                    return 'Valid ID / Credentials';
+                }
+                return 'Supporting Document';
+            }
+
+            function printAttachment(url, type, category) {
+                const categoryLabel = getCategoryLabel(category);
                 const iframe = document.createElement('iframe');
                 iframe.style.position = 'fixed';
                 iframe.style.right = '0';
@@ -1352,13 +1363,31 @@ function isPrintablePdf($filename) {
                         <head>
                             <title>Print Document</title>
                             <style>
-                                body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-                                img { max-width: 100%; max-height: 100vh; object-fit: contain; }
+                                body { margin: 0; color: #111827; font-family: Arial, sans-serif; }
+                                .print-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 2px solid #111827; }
+                                .print-header img { height: 48px; width: auto; }
+                                .print-header .sdo-logo { border-radius: 50%; }
+                                .print-title { text-align: center; flex: 1; font-size: 14px; font-weight: 700; text-transform: uppercase; }
+                                .print-subtitle { text-align: center; font-size: 12px; font-weight: 600; margin-top: 4px; }
+                                .print-body { padding: 18px 24px; }
+                                .category-label { font-size: 12px; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; }
+                                .doc-image { width: 100%; height: auto; display: block; border: 1px solid #e5e7eb; }
                                 @media print { body { margin: 0; } img { max-width: 100%; height: auto; } }
                             </style>
                         </head>
                         <body>
-                            <img src="${url}" onload="window.print(); window.onafterprint = function(){ parent.postMessage('print-done','*'); }" />
+                            <div class="print-header">
+                                <img src="/SDO-cts/assets/img/sdo-logo.jpg" alt="SDO Logo" class="sdo-logo">
+                                <div>
+                                    <div class="print-title">San Pedro Division Office</div>
+                                    <div class="print-subtitle">${categoryLabel}</div>
+                                </div>
+                                <img src="/SDO-cts/assets/img/bagongpilpinas-logo.png" alt="Bagong Pilipinas">
+                            </div>
+                            <div class="print-body">
+                                <div class="category-label">${categoryLabel}</div>
+                                <img class="doc-image" src="${url}" onload="window.print(); window.onafterprint = function(){ parent.postMessage('print-done','*'); }" />
+                            </div>
                         </body>
                         </html>
                     `);
@@ -1458,7 +1487,8 @@ function isPrintablePdf($filename) {
                 btn.addEventListener('click', function() {
                     const url = this.getAttribute('data-url');
                     const type = this.getAttribute('data-type');
-                    printAttachment(url, type);
+                    const category = this.getAttribute('data-category') || 'supporting';
+                    printAttachment(url, type, category);
                 });
             });
 
