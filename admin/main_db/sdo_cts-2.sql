@@ -1,0 +1,1336 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Jan 15, 2026 at 07:51 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `sdo_cts`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `activity_log`
+--
+
+CREATE TABLE `activity_log` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `action_type` enum('login','logout','view','create','update','delete','status_change','forward','accept','return') NOT NULL,
+  `entity_type` varchar(50) NOT NULL,
+  `entity_id` int(11) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `old_value` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`old_value`)),
+  `new_value` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`new_value`)),
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `activity_log`
+--
+
+INSERT INTO `activity_log` (`id`, `user_id`, `action_type`, `entity_type`, `entity_id`, `description`, `old_value`, `new_value`, `ip_address`, `user_agent`, `created_at`) VALUES
+(1, 3, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 03:26:31'),
+(2, 3, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 03:26:39'),
+(3, 3, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 03:34:25'),
+(4, 3, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 03:34:33'),
+(5, 3, 'accept', 'complaint', 1, 'Accepted complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 03:34:43'),
+(6, 3, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 03:34:43'),
+(7, 3, 'status_change', 'complaint', 1, 'Changed status to In Progress for CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 03:35:08'),
+(8, 3, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 03:35:08'),
+(9, 3, 'forward', 'complaint', 1, 'Forwarded complaint CTS-2026-00001 to OSDS', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 03:36:08'),
+(10, 3, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 03:36:08'),
+(11, 3, 'create', 'user', 4, 'Created user: Alexander Joerenz Escallente', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 03:37:05'),
+(12, 3, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 03:37:19'),
+(13, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 03:37:32'),
+(14, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 03:47:21'),
+(15, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 04:01:01'),
+(16, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 04:01:08'),
+(17, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 04:03:57'),
+(18, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 04:05:17'),
+(19, 5, 'login', 'auth', NULL, 'User logged in via Google OAuth', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 04:05:26'),
+(20, 5, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 04:05:37'),
+(21, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 04:05:48'),
+(22, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 04:09:52'),
+(23, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 04:10:13'),
+(24, 4, 'update', 'user', 4, 'Changed profile avatar', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 04:10:44'),
+(25, 4, 'update', 'user', 4, 'Changed profile avatar', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 04:10:48'),
+(26, 4, 'update', 'user', 4, 'Changed profile avatar', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 04:11:04'),
+(27, 4, 'update', 'user', 4, 'Changed profile avatar', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 04:11:07'),
+(28, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:15:33'),
+(29, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:15:42'),
+(30, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:16:09'),
+(31, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:17:41'),
+(32, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:20:03'),
+(33, 4, 'return', 'complaint', 6, 'Returned complaint CTS-2026-00006: pangit', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:20:20'),
+(34, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:20:20'),
+(35, 4, 'view', 'complaint', 2, 'Viewed complaint CTS-2026-00002', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:21:32'),
+(36, 4, 'accept', 'complaint', 2, 'Accepted complaint CTS-2026-00002', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:21:50'),
+(37, 4, 'view', 'complaint', 2, 'Viewed complaint CTS-2026-00002', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:21:50'),
+(38, 4, 'view', 'complaint', 2, 'Viewed complaint CTS-2026-00002', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:22:41'),
+(39, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:29:42'),
+(40, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:29:57'),
+(41, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:31:26'),
+(42, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:44:42'),
+(43, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:46:01'),
+(44, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:46:06'),
+(45, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:46:08'),
+(46, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:46:12'),
+(47, 4, 'update', 'user', 4, 'Changed profile avatar', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:52:14'),
+(48, 4, 'update', 'user', 4, 'Changed profile avatar', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:52:19'),
+(49, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:52:30'),
+(50, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 05:52:53'),
+(51, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:13:20'),
+(52, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:13:29'),
+(53, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:19:28'),
+(54, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:34:06'),
+(55, 4, 'view', 'complaint', 5, 'Viewed complaint CTS-2026-00005', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:34:55'),
+(56, 4, 'view', 'complaint', 5, 'Viewed complaint CTS-2026-00005', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:35:07'),
+(57, 4, 'accept', 'complaint', 5, 'Accepted complaint CTS-2026-00005', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:35:11'),
+(58, 4, 'view', 'complaint', 5, 'Viewed complaint CTS-2026-00005', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:35:11'),
+(59, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:35:57'),
+(60, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:37:22'),
+(61, 4, 'status_change', 'complaint', 1, 'Changed status to Resolved for CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:37:30'),
+(62, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:37:30'),
+(63, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:38:01'),
+(64, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:38:20'),
+(65, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:38:28'),
+(66, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:38:30'),
+(67, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:38:31'),
+(68, 4, 'status_change', 'complaint', 6, 'Changed status to Pending for CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:38:47'),
+(69, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:38:47'),
+(70, 4, 'accept', 'complaint', 6, 'Accepted complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:38:50'),
+(71, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:38:50'),
+(72, 4, 'forward', 'complaint', 6, 'Forwarded complaint CTS-2026-00006 to Legal', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:38:54'),
+(73, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:38:54'),
+(74, 4, 'status_change', 'complaint', 6, 'Changed status to In Progress for CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:39:01'),
+(75, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:39:01'),
+(76, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:39:53'),
+(77, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:40:28'),
+(78, 4, 'view', 'complaint', 3, 'Viewed complaint CTS-2026-00003', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:40:55'),
+(79, 4, 'accept', 'complaint', 3, 'Accepted complaint CTS-2026-00003', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:40:58'),
+(80, 4, 'view', 'complaint', 3, 'Viewed complaint CTS-2026-00003', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:40:58'),
+(81, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:42:01'),
+(82, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:42:37'),
+(83, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:45:10'),
+(84, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:48:21'),
+(85, 4, 'view', 'complaint', 4, 'Viewed complaint CTS-2026-00004', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:50:37'),
+(86, 4, 'accept', 'complaint', 4, 'Accepted complaint CTS-2026-00004', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:51:29'),
+(87, 4, 'view', 'complaint', 4, 'Viewed complaint CTS-2026-00004', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:51:29'),
+(88, 4, 'status_change', 'complaint', 4, 'Changed status to In Progress for CTS-2026-00004', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:52:03'),
+(89, 4, 'view', 'complaint', 4, 'Viewed complaint CTS-2026-00004', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:52:03'),
+(90, 4, 'forward', 'complaint', 4, 'Forwarded complaint CTS-2026-00004 to Legal', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:52:57'),
+(91, 4, 'view', 'complaint', 4, 'Viewed complaint CTS-2026-00004', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:52:57'),
+(92, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:55:02'),
+(93, 4, 'view', 'complaint', 5, 'Viewed complaint CTS-2026-00005', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:55:14'),
+(94, 4, 'view', 'complaint', 5, 'Viewed complaint CTS-2026-00005', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:56:15'),
+(95, 4, 'view', 'complaint', 2, 'Viewed complaint CTS-2026-00002', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:56:24'),
+(96, 4, 'view', 'complaint', 2, 'Viewed complaint CTS-2026-00002', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:57:21'),
+(97, 4, 'view', 'complaint', 2, 'Viewed complaint CTS-2026-00002', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:58:48'),
+(98, 4, 'view', 'complaint', 2, 'Viewed complaint CTS-2026-00002', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:58:56'),
+(99, 4, 'view', 'complaint', 2, 'Viewed complaint CTS-2026-00002', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 06:59:43'),
+(100, 4, 'view', 'complaint', 2, 'Viewed complaint CTS-2026-00002', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 07:01:34'),
+(101, 4, 'view', 'complaint', 2, 'Viewed complaint CTS-2026-00002', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 07:03:04'),
+(102, 4, 'view', 'complaint', 2, 'Viewed complaint CTS-2026-00002', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 07:03:17'),
+(103, 4, 'view', 'complaint', 7, 'Viewed complaint CTS-2026-00007', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 07:04:36'),
+(104, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:24:42'),
+(105, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:25:26'),
+(106, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:39:21'),
+(107, 6, 'login', 'auth', NULL, 'User logged in via Google OAuth', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:39:34'),
+(108, 6, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:39:44'),
+(109, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:39:54'),
+(110, 4, 'update', 'user', 6, 'Updated user: alex', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:40:09'),
+(111, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:40:11'),
+(112, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:41:27'),
+(113, 4, 'update', 'user', 6, 'Updated user: alex', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:41:51'),
+(114, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:41:53'),
+(115, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:42:19'),
+(116, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:43:07'),
+(117, 6, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:43:17'),
+(118, 6, 'update', 'user', 6, 'Changed profile avatar', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:43:31'),
+(119, 6, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:43:34'),
+(120, 7, 'login', 'auth', NULL, 'User logged in via Google OAuth', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:43:55'),
+(121, 7, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:43:59'),
+(122, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:44:53'),
+(123, 4, 'update', 'user', 7, 'Deactivated user: bagwis_', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:45:02'),
+(124, 4, 'update', 'user', 7, 'Activated user: bagwis_', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:45:06'),
+(125, 4, 'update', 'user', 7, 'Deactivated user: bagwis_', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:45:09'),
+(126, 4, 'update', 'user', 5, 'Deactivated user: escall dev', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:45:24'),
+(127, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 08:45:35'),
+(128, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 11:37:59'),
+(129, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 11:38:10'),
+(130, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 11:51:59'),
+(131, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 11:53:43'),
+(132, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-06 11:54:12'),
+(133, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 00:04:58'),
+(134, 4, 'view', 'complaint', 7, 'Viewed complaint CTS-2026-00007', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 00:05:10'),
+(135, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 00:10:41'),
+(136, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 00:23:17'),
+(137, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 00:35:12'),
+(138, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 00:35:19'),
+(139, 4, 'update', 'user', 5, 'Updated user: escall dev', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:01:10'),
+(140, 4, 'update', 'user', 6, 'Updated user: alex', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:01:27'),
+(141, 4, 'view', 'complaint', 10, 'Viewed complaint CTS-2026-00010', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:30:09'),
+(142, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:36:04'),
+(143, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:36:23'),
+(144, 4, 'view', 'complaint', 11, 'Viewed complaint CTS-2026-00011', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:36:35'),
+(145, 4, 'accept', 'complaint', 11, 'Accepted complaint CTS-2026-00011', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:37:46'),
+(146, 4, 'view', 'complaint', 11, 'Viewed complaint CTS-2026-00011', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:37:46'),
+(147, 4, 'status_change', 'complaint', 11, 'Changed status to In Progress for CTS-2026-00011', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:38:38'),
+(148, 4, 'view', 'complaint', 11, 'Viewed complaint CTS-2026-00011', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:38:38'),
+(149, 4, 'update', 'user', 7, 'Activated user: bagwis_', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:39:44'),
+(150, 4, 'update', 'user', 7, 'Deactivated user: bagwis_', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:39:50'),
+(151, 4, 'update', 'user', 7, 'Activated user: bagwis_', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:39:53'),
+(152, 4, 'update', 'user', 6, 'Updated user: alex', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:41:57'),
+(153, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:42:11'),
+(154, 6, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:42:21'),
+(155, 6, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:42:59'),
+(156, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:43:05'),
+(157, 4, 'view', 'complaint', 11, 'Viewed complaint CTS-2026-00011', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:43:18'),
+(158, 4, 'view', 'complaint', 11, 'Viewed complaint CTS-2026-00011', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:49:03'),
+(159, 4, 'view', 'complaint', 10, 'Viewed complaint CTS-2026-00010', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 01:49:09'),
+(160, 4, 'create', 'user', 8, 'Created user: sdo admin', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 02:26:16'),
+(161, 4, 'update', 'user', 8, 'Updated user: sdo admin', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 02:33:15'),
+(162, 8, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '192.168.10.251', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 02:33:26'),
+(163, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 02:33:58'),
+(164, 6, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 02:34:12'),
+(165, 6, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 02:37:34'),
+(166, 6, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 02:37:44'),
+(167, 6, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 02:39:50'),
+(168, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 02:39:55'),
+(169, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 02:40:01'),
+(170, 6, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 02:40:09'),
+(171, 6, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 02:45:12'),
+(172, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 02:45:16'),
+(173, 4, 'view', 'complaint', 11, 'Viewed complaint CTS-2026-00011', NULL, NULL, '::1', 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36', '2026-01-07 03:29:38'),
+(174, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:32:42'),
+(175, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Mobile Safari/537.36', '2026-01-07 03:35:17'),
+(176, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:35:26'),
+(177, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:35:34'),
+(178, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:35:44'),
+(179, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:39:22'),
+(180, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:40:33'),
+(181, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:40:51'),
+(182, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:42:48'),
+(183, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:42:55'),
+(184, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:43:02'),
+(185, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:43:41'),
+(186, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:46:02'),
+(187, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:46:15'),
+(188, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:47:56'),
+(189, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:48:56'),
+(190, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:51:30'),
+(191, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:51:36'),
+(192, 4, 'status_change', 'complaint', 1, 'Changed status to Closed for CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:51:44'),
+(193, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:51:44'),
+(194, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:54:50'),
+(195, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:55:34'),
+(196, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:55:35'),
+(197, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:55:36'),
+(198, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:55:38'),
+(199, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:55:46'),
+(200, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:55:47'),
+(201, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:56:02'),
+(202, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:56:24'),
+(203, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:57:47'),
+(204, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:58:59'),
+(205, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 03:59:20'),
+(206, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 04:03:08'),
+(207, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 04:03:24'),
+(208, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 05:11:22'),
+(209, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 05:11:55'),
+(210, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 05:12:15'),
+(211, 4, 'view', 'complaint', 10, 'Viewed complaint CTS-2026-00010', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 05:12:58'),
+(212, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 05:13:48'),
+(213, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 05:15:25'),
+(214, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 05:19:12'),
+(215, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 06:10:22'),
+(216, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 06:10:40'),
+(217, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 06:10:54'),
+(218, 4, 'view', 'complaint', 13, 'Viewed complaint CTS-2026-00013', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 06:22:12'),
+(219, 4, 'accept', 'complaint', 13, 'Accepted complaint CTS-2026-00013', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 06:23:09'),
+(220, 4, 'view', 'complaint', 13, 'Viewed complaint CTS-2026-00013', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 06:23:09'),
+(221, 4, 'status_change', 'complaint', 13, 'Changed status to In Progress for CTS-2026-00013', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 06:23:41'),
+(222, 4, 'view', 'complaint', 13, 'Viewed complaint CTS-2026-00013', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 06:23:41'),
+(223, 4, 'forward', 'complaint', 13, 'Forwarded complaint CTS-2026-00013 to OSDS', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 06:24:13'),
+(224, 4, 'view', 'complaint', 13, 'Viewed complaint CTS-2026-00013', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 06:24:13');
+INSERT INTO `activity_log` (`id`, `user_id`, `action_type`, `entity_type`, `entity_id`, `description`, `old_value`, `new_value`, `ip_address`, `user_agent`, `created_at`) VALUES
+(225, 4, 'view', 'complaint', 13, 'Viewed complaint CTS-2026-00013', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 06:32:08'),
+(226, 4, 'view', 'complaint', 12, 'Viewed complaint CTS-2026-00012', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 06:37:22'),
+(227, 4, 'view', 'complaint', 14, 'Viewed complaint CTS-2026-00014', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 06:38:29'),
+(228, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:15:38'),
+(229, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:16:10'),
+(230, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:17:15'),
+(231, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:23:00'),
+(232, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:26:52'),
+(233, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:27:29'),
+(234, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:30:39'),
+(235, 4, 'view', 'complaint', 15, 'Viewed complaint CTS-2026-00015', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:30:55'),
+(236, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:30:59'),
+(237, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:32:10'),
+(238, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:32:31'),
+(239, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:33:37'),
+(240, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:33:46'),
+(241, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:33:46'),
+(242, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:39:59'),
+(243, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:40:11'),
+(244, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:42:47'),
+(245, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:42:52'),
+(246, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:42:54'),
+(247, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:42:55'),
+(248, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:42:55'),
+(249, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:42:55'),
+(250, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:42:55'),
+(251, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:42:55'),
+(252, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:42:56'),
+(253, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:42:57'),
+(254, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:43:09'),
+(255, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:45:18'),
+(256, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:48:36'),
+(257, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:49:48'),
+(258, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:50:04'),
+(259, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:52:33'),
+(260, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:52:35'),
+(261, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:52:46'),
+(262, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:58:11'),
+(263, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 07:58:12'),
+(264, 4, 'view', 'complaint', 17, 'Viewed complaint CTS-2026-00017', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 08:00:19'),
+(265, 4, 'view', 'complaint', 17, 'Viewed complaint CTS-2026-00017', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 08:02:00'),
+(266, 4, 'view', 'complaint', 17, 'Viewed complaint CTS-2026-00017', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 08:03:21'),
+(267, 4, 'view', 'complaint', 17, 'Viewed complaint CTS-2026-00017', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 08:05:52'),
+(268, 4, 'view', 'complaint', 17, 'Viewed complaint CTS-2026-00017', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 08:06:08'),
+(269, 4, 'view', 'complaint', 17, 'Viewed complaint CTS-2026-00017', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 08:07:47'),
+(270, 4, 'view', 'complaint', 17, 'Viewed complaint CTS-2026-00017', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 08:08:53'),
+(271, 4, 'view', 'complaint', 18, 'Viewed complaint CTS-2026-00018', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 08:11:10'),
+(272, 4, 'view', 'complaint', 18, 'Viewed complaint CTS-2026-00018', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 08:28:31'),
+(273, 4, 'view', 'complaint', 17, 'Viewed complaint CTS-2026-00017', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 08:28:39'),
+(274, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 08:28:57'),
+(275, 4, 'view', 'complaint', 18, 'Viewed complaint CTS-2026-00018', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 08:34:35'),
+(276, 4, 'view', 'complaint', 19, 'Viewed complaint CTS-2026-00019', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-07 08:36:14'),
+(277, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 02:36:18'),
+(278, 4, 'view', 'complaint', 19, 'Viewed complaint CTS-2026-00019', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 02:36:18'),
+(279, 4, 'view', 'complaint', 19, 'Viewed complaint CTS-2026-00019', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 02:36:48'),
+(280, 4, 'view', 'complaint', 19, 'Viewed complaint CTS-2026-00019', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 02:36:52'),
+(281, 4, 'view', 'complaint', 19, 'Viewed complaint CTS-2026-00019', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 02:37:52'),
+(282, 4, 'accept', 'complaint', 19, 'Accepted complaint CTS-2026-00019', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 02:37:59'),
+(283, 4, 'view', 'complaint', 19, 'Viewed complaint CTS-2026-00019', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 02:37:59'),
+(284, 4, 'view', 'complaint', 19, 'Viewed complaint CTS-2026-00019', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 02:49:00'),
+(285, 4, 'view', 'complaint', 5, 'Viewed complaint CTS-2026-00005', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:11:19'),
+(286, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:15:36'),
+(287, 4, 'view', 'complaint', 19, 'Viewed complaint CTS-2026-00019', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:25:03'),
+(288, 4, 'view', 'complaint', 6, 'Viewed complaint CTS-2026-00006', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:25:23'),
+(289, 4, 'view', 'complaint', 15, 'Viewed complaint CTS-2026-00015', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:25:53'),
+(290, 4, 'view', 'complaint', 1, 'Viewed complaint CTS-2026-00001', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:26:52'),
+(291, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:44:11'),
+(292, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:44:53'),
+(293, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:45:37'),
+(294, 4, 'accept', 'complaint', 20, 'Accepted complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:54:42'),
+(295, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:54:42'),
+(296, 4, 'status_change', 'complaint', 20, 'Changed status to In Progress for CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:55:01'),
+(297, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:55:01'),
+(298, 4, 'status_change', 'complaint', 20, 'Changed status to Resolved for CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:55:09'),
+(299, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:55:09'),
+(300, 4, 'status_change', 'complaint', 20, 'Changed status to Closed for CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:55:13'),
+(301, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:55:13'),
+(302, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 03:55:41'),
+(303, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 06:43:20'),
+(304, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 06:43:36'),
+(305, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:46:22'),
+(306, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:47:47'),
+(307, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:50:06'),
+(308, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:52:13'),
+(309, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:52:18'),
+(310, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:53:19'),
+(311, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:53:29'),
+(312, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:54:46'),
+(313, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:56:10'),
+(314, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:56:18'),
+(315, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:56:19'),
+(316, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:56:19'),
+(317, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:56:19'),
+(318, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:56:19'),
+(319, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:56:19'),
+(320, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:56:19'),
+(321, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:56:19'),
+(322, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:56:20'),
+(323, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:56:20'),
+(324, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:56:20'),
+(325, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:56:20'),
+(326, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:56:20'),
+(327, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:56:20'),
+(328, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:57:22'),
+(329, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 08:58:37'),
+(330, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:00:22'),
+(331, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:01:40'),
+(332, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:01:50'),
+(333, 4, 'view', 'complaint', 15, 'Viewed complaint CTS-2026-00015', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:01:58'),
+(334, 4, 'view', 'complaint', 14, 'Viewed complaint CTS-2026-00014', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:02:05'),
+(335, 4, 'view', 'complaint', 19, 'Viewed complaint CTS-2026-00019', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:02:07'),
+(336, 4, 'view', 'complaint', 19, 'Viewed complaint CTS-2026-00019', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:03:06'),
+(337, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:03:15'),
+(338, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:04:06'),
+(339, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:04:16'),
+(340, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:04:16'),
+(341, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:04:16'),
+(342, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:04:16'),
+(343, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:04:16'),
+(344, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:04:17'),
+(345, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:05:00'),
+(346, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-08 09:05:42'),
+(347, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 00:27:55'),
+(348, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 00:27:55'),
+(349, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 00:50:55'),
+(350, 6, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 00:51:04'),
+(351, 6, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 00:51:26'),
+(352, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 00:51:32'),
+(353, 4, 'update', 'user', 6, 'Updated user: alex', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 00:51:45'),
+(354, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 00:51:47'),
+(355, 6, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 00:51:58'),
+(356, 6, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 00:52:03'),
+(357, 6, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 00:52:34'),
+(358, 6, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 00:52:43'),
+(359, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 00:52:48'),
+(360, 4, 'update', 'user', 6, 'Updated user: alex', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 00:52:56'),
+(361, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 00:52:58'),
+(362, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:03:58'),
+(363, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:04:52'),
+(364, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:05:49'),
+(365, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:06:32'),
+(366, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:10:54'),
+(367, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:13:24'),
+(368, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:37:58'),
+(369, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:38:00'),
+(370, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:46:51'),
+(371, 4, 'view', 'complaint', 7, 'Viewed complaint CTS-2026-00007', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:55:01'),
+(372, 4, 'accept', 'complaint', 7, 'Accepted complaint CTS-2026-00007', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:55:08'),
+(373, 4, 'view', 'complaint', 7, 'Viewed complaint CTS-2026-00007', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:55:08'),
+(374, 4, 'status_change', 'complaint', 7, 'Changed status to In Progress for CTS-2026-00007', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:55:16'),
+(375, 4, 'view', 'complaint', 7, 'Viewed complaint CTS-2026-00007', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:55:16'),
+(376, 4, 'status_change', 'complaint', 7, 'Changed status to Resolved for CTS-2026-00007', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:55:32'),
+(377, 4, 'view', 'complaint', 7, 'Viewed complaint CTS-2026-00007', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:55:32'),
+(378, 4, 'status_change', 'complaint', 7, 'Changed status to Closed for CTS-2026-00007', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:55:38'),
+(379, 4, 'view', 'complaint', 7, 'Viewed complaint CTS-2026-00007', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:55:38'),
+(380, 4, 'view', 'complaint', 19, 'Viewed complaint CTS-2026-00019', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:59:04'),
+(381, 4, 'view', 'complaint', 18, 'Viewed complaint CTS-2026-00018', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:59:10'),
+(382, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:59:15'),
+(383, 4, 'view', 'complaint', 19, 'Viewed complaint CTS-2026-00019', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 01:59:22'),
+(384, 4, 'view', 'complaint', 21, 'Viewed complaint CTS-2026-00021', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 02:02:25'),
+(385, 4, 'view', 'complaint', 22, 'Viewed complaint CTS-2026-00022', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 02:03:31'),
+(386, 4, 'view', 'complaint', 23, 'Viewed complaint CTS-2026-00023', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 02:04:26'),
+(387, 4, 'view', 'complaint', 23, 'Viewed complaint CTS-2026-00023', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 02:04:40'),
+(388, 4, 'view', 'complaint', 23, 'Viewed complaint CTS-2026-00023', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 02:13:53'),
+(389, 4, 'view', 'complaint', 24, 'Viewed complaint CTS-2026-00024', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 02:17:15'),
+(390, 4, 'view', 'complaint', 24, 'Viewed complaint CTS-2026-00024', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 02:19:03'),
+(391, 4, 'view', 'complaint', 24, 'Viewed complaint CTS-2026-00024', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 02:20:45'),
+(392, 4, 'view', 'complaint', 25, 'Viewed complaint CTS-2026-00025', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 02:21:35'),
+(393, 4, 'view', 'complaint', 25, 'Viewed complaint CTS-2026-00025', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 02:52:55'),
+(394, 4, 'view', 'complaint', 25, 'Viewed complaint CTS-2026-00025', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 02:58:46'),
+(395, 4, 'view', 'complaint', 22, 'Viewed complaint CTS-2026-00022', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 02:58:57'),
+(396, 4, 'view', 'complaint', 22, 'Viewed complaint CTS-2026-00022', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 02:59:05'),
+(397, 4, 'view', 'complaint', 25, 'Viewed complaint CTS-2026-00025', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 02:59:12'),
+(398, 4, 'view', 'complaint', 17, 'Viewed complaint CTS-2026-00017', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 02:59:18'),
+(399, 4, 'view', 'complaint', 26, 'Viewed complaint CTS-2026-00026', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 03:00:17'),
+(400, 4, 'view', 'complaint', 27, 'Viewed complaint CTS-2026-00027', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 03:20:23'),
+(401, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 03:20:54'),
+(402, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 03:20:59'),
+(403, 4, 'view', 'complaint', 27, 'Viewed complaint CTS-2026-00027', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:02:28'),
+(404, 4, 'view', 'complaint', 27, 'Viewed complaint CTS-2026-00027', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:03:21'),
+(405, 4, 'view', 'complaint', 24, 'Viewed complaint CTS-2026-00024', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:03:26'),
+(406, 4, 'view', 'complaint', 24, 'Viewed complaint CTS-2026-00024', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:37:32'),
+(407, 4, 'view', 'complaint', 27, 'Viewed complaint CTS-2026-00027', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:37:41'),
+(408, 4, 'view', 'complaint', 25, 'Viewed complaint CTS-2026-00025', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:38:34'),
+(409, 4, 'view', 'complaint', 25, 'Viewed complaint CTS-2026-00025', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:43:47'),
+(410, 4, 'view', 'complaint', 26, 'Viewed complaint CTS-2026-00026', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:43:51'),
+(411, 4, 'view', 'complaint', 24, 'Viewed complaint CTS-2026-00024', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:44:01'),
+(412, 4, 'view', 'complaint', 25, 'Viewed complaint CTS-2026-00025', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:44:06'),
+(413, 4, 'view', 'complaint', 18, 'Viewed complaint CTS-2026-00018', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:44:17'),
+(414, 4, 'view', 'complaint', 27, 'Viewed complaint CTS-2026-00027', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:44:21'),
+(415, 4, 'view', 'complaint', 24, 'Viewed complaint CTS-2026-00024', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:44:27'),
+(416, 4, 'view', 'complaint', 24, 'Viewed complaint CTS-2026-00024', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:44:33'),
+(417, 4, 'view', 'complaint', 27, 'Viewed complaint CTS-2026-00027', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:44:37'),
+(418, 4, 'view', 'complaint', 19, 'Viewed complaint CTS-2026-00019', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:45:39'),
+(419, 4, 'view', 'complaint', 15, 'Viewed complaint CTS-2026-00015', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:45:43'),
+(420, 4, 'view', 'complaint', 14, 'Viewed complaint CTS-2026-00014', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:45:47'),
+(421, 4, 'view', 'complaint', 16, 'Viewed complaint CTS-2026-00016', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:45:56'),
+(422, 4, 'view', 'complaint', 26, 'Viewed complaint CTS-2026-00026', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:46:02'),
+(423, 4, 'view', 'complaint', 27, 'Viewed complaint CTS-2026-00027', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:46:17'),
+(424, 4, 'view', 'complaint', 27, 'Viewed complaint CTS-2026-00027', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:46:33'),
+(425, 4, 'view', 'complaint', 28, 'Viewed complaint CTS-2026-00028', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:48:32'),
+(426, 4, 'view', 'complaint', 28, 'Viewed complaint CTS-2026-00028', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:58:36'),
+(427, 4, 'view', 'complaint', 28, 'Viewed complaint CTS-2026-00028', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:58:49'),
+(428, 4, 'view', 'complaint', 27, 'Viewed complaint CTS-2026-00027', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 04:58:51'),
+(429, 4, 'view', 'complaint', 27, 'Viewed complaint CTS-2026-00027', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 05:06:15'),
+(430, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-09 07:53:36'),
+(431, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-11 13:50:46'),
+(432, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-11 13:51:01'),
+(433, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-11 13:51:07'),
+(434, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-11 13:51:10'),
+(435, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-11 13:51:29'),
+(436, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-11 13:51:34'),
+(437, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-11 13:51:46'),
+(438, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-11 13:51:49'),
+(439, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 00:43:10'),
+(440, 4, 'view', 'complaint', 28, 'Viewed complaint CTS-2026-00028', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 02:35:53'),
+(441, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 02:37:03'),
+(442, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 02:37:13'),
+(443, 4, 'view', 'complaint', 28, 'Viewed complaint CTS-2026-00028', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 02:39:55'),
+(444, 4, 'accept', 'complaint', 28, 'Accepted complaint CTS-2026-00028', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 02:39:58'),
+(445, 4, 'view', 'complaint', 28, 'Viewed complaint CTS-2026-00028', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 02:39:58'),
+(446, 4, 'view', 'complaint', 28, 'Viewed complaint CTS-2026-00028', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 02:40:57');
+INSERT INTO `activity_log` (`id`, `user_id`, `action_type`, `entity_type`, `entity_id`, `description`, `old_value`, `new_value`, `ip_address`, `user_agent`, `created_at`) VALUES
+(447, 4, 'update', 'user', 5, 'Activated user: escall dev', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 02:52:43'),
+(448, 4, 'update', 'user', 5, 'Deactivated user: escall dev', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 02:56:09'),
+(449, 4, 'update', 'user', 5, 'Activated user: escall dev', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 02:56:24'),
+(450, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 03:16:25'),
+(451, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 03:17:06'),
+(452, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 03:35:18'),
+(453, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 03:35:26'),
+(454, 4, 'delete', 'user', NULL, 'Deleted user: System Administrator', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 04:02:03'),
+(455, 4, 'create', 'user', 9, 'Created user: goku', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 04:55:07'),
+(456, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 04:59:33'),
+(457, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 04:59:57'),
+(458, 4, 'update', 'user', 5, 'Updated user: escall dev', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 05:00:20'),
+(459, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 05:00:24'),
+(460, 5, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 05:00:33'),
+(461, 5, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 05:00:38'),
+(462, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 05:00:43'),
+(463, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 05:01:04'),
+(464, 6, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 05:01:15'),
+(465, 6, 'view', 'complaint', 28, 'Viewed complaint CTS-2026-00028', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 05:01:48'),
+(466, 6, 'view', 'complaint', 28, 'Viewed complaint CTS-2026-00028', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 05:01:52'),
+(467, 6, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 05:02:01'),
+(468, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 05:02:05'),
+(469, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 05:03:24'),
+(470, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 05:03:29'),
+(471, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 05:03:31'),
+(472, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 05:04:05'),
+(473, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 07:14:24'),
+(474, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 07:19:08'),
+(475, 4, 'view', 'complaint', 26, 'Viewed complaint CTS-2026-00026', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 07:56:02'),
+(476, 4, 'view', 'complaint', 23, 'Viewed complaint CTS-2026-00023', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 07:56:06'),
+(477, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 07:56:14'),
+(478, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 11:59:24'),
+(479, 4, 'view', 'complaint', 20, 'Viewed complaint CTS-2026-00020', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 11:59:26'),
+(480, 4, 'view', 'complaint', 28, 'Viewed complaint CTS-2026-00028', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 12:14:22'),
+(481, 4, '', 'system', NULL, 'Test email sent to escall.byte@gmail.com', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 12:23:49'),
+(482, 4, '', 'system', NULL, 'Test email sent to escall.byte@gmail.com', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 12:37:15'),
+(483, 4, 'view', 'complaint', 29, 'Viewed complaint CTS-2026-00029', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 12:45:47'),
+(484, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:12:59'),
+(485, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:13:10'),
+(486, 4, 'view', 'complaint', 28, 'Viewed complaint CTS-2026-00028', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:13:27'),
+(487, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:13:32'),
+(488, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:16:33'),
+(489, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:16:39'),
+(490, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:23:51'),
+(491, 4, 'view', 'complaint', 30, 'Viewed complaint CTS-2026-00030', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:25:11'),
+(492, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:25:16'),
+(493, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:25:22'),
+(494, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:25:51'),
+(495, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:26:03'),
+(496, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:26:17'),
+(497, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:26:54'),
+(498, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:27:01'),
+(499, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:27:13'),
+(500, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:27:29'),
+(501, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:27:42'),
+(502, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:27:48'),
+(503, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:32:12'),
+(504, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:33:20'),
+(505, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:36:04'),
+(506, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:36:23'),
+(507, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:36:34'),
+(508, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:36:43'),
+(509, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:37:21'),
+(510, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:37:25'),
+(511, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:37:25'),
+(512, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:37:25'),
+(513, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:37:25'),
+(514, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:37:41'),
+(515, 4, 'view', 'complaint', 31, 'Viewed complaint CTS-2026-00031', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:39:37'),
+(516, 4, 'view', 'complaint', 10, 'Viewed complaint CTS-2026-00010', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:58:48'),
+(517, 4, 'view', 'complaint', 34, 'Viewed complaint CTS-2026-00034', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 13:58:57'),
+(518, 4, 'view', 'complaint', 30, 'Viewed complaint CTS-2026-00030', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 14:00:56'),
+(519, 4, 'accept', 'complaint', 30, 'Accepted complaint CTS-2026-00030', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 14:01:02'),
+(520, 4, 'view', 'complaint', 30, 'Viewed complaint CTS-2026-00030', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 14:01:02'),
+(521, 4, 'status_change', 'complaint', 30, 'Changed status to In Progress for CTS-2026-00030', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 14:02:55'),
+(522, 4, 'view', 'complaint', 30, 'Viewed complaint CTS-2026-00030', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 14:02:55'),
+(523, 4, 'status_change', 'complaint', 30, 'Changed status to Resolved for CTS-2026-00030', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 14:02:57'),
+(524, 4, 'view', 'complaint', 30, 'Viewed complaint CTS-2026-00030', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 14:03:01'),
+(525, 4, 'view', 'complaint', 35, 'Viewed complaint CTS-2026-00035', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 14:11:18'),
+(526, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 15:24:20'),
+(527, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 15:24:35'),
+(528, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 15:24:59'),
+(529, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 15:25:00'),
+(530, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-12 15:25:46'),
+(531, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 00:11:03'),
+(532, 4, 'view', 'complaint', 38, 'Viewed complaint CTS-2026-00038', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 01:06:25'),
+(533, 4, 'view', 'complaint', 39, 'Viewed complaint CTS-2026-00039', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 01:57:10'),
+(534, 4, 'view', 'complaint', 40, 'Viewed complaint CTS-2026-00040', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:16:00'),
+(535, 4, 'accept', 'complaint', 40, 'Accepted complaint CTS-2026-00040', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:16:05'),
+(536, 4, 'view', 'complaint', 40, 'Viewed complaint CTS-2026-00040', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:16:05'),
+(537, 4, 'status_change', 'complaint', 40, 'Changed status to In Progress for CTS-2026-00040', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:16:07'),
+(538, 4, 'view', 'complaint', 40, 'Viewed complaint CTS-2026-00040', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:16:07'),
+(539, 4, 'status_change', 'complaint', 40, 'Changed status to Resolved for CTS-2026-00040', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:16:09'),
+(540, 4, 'view', 'complaint', 40, 'Viewed complaint CTS-2026-00040', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:16:13'),
+(541, 4, 'view', 'complaint', 38, 'Viewed complaint CTS-2026-00038', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:20:10'),
+(542, 4, 'accept', 'complaint', 38, 'Accepted complaint CTS-2026-00038', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:20:29'),
+(543, 4, 'view', 'complaint', 38, 'Viewed complaint CTS-2026-00038', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:20:29'),
+(544, 4, 'status_change', 'complaint', 38, 'Changed status to In Progress for CTS-2026-00038', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:20:31'),
+(545, 4, 'view', 'complaint', 38, 'Viewed complaint CTS-2026-00038', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:20:31'),
+(546, 4, 'status_change', 'complaint', 38, 'Changed status to Resolved for CTS-2026-00038', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:20:33'),
+(547, 4, 'view', 'complaint', 38, 'Viewed complaint CTS-2026-00038', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:20:37'),
+(548, 4, 'view', 'complaint', 37, 'Viewed complaint CTS-2026-00037', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:24:26'),
+(549, 4, 'accept', 'complaint', 37, 'Accepted complaint CTS-2026-00037', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:24:29'),
+(550, 4, 'view', 'complaint', 37, 'Viewed complaint CTS-2026-00037', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:24:29'),
+(551, 4, 'status_change', 'complaint', 37, 'Changed status to In Progress for CTS-2026-00037', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:24:31'),
+(552, 4, 'view', 'complaint', 37, 'Viewed complaint CTS-2026-00037', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:24:31'),
+(553, 4, 'status_change', 'complaint', 37, 'Changed status to Resolved for CTS-2026-00037', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:24:33'),
+(554, 4, 'view', 'complaint', 37, 'Viewed complaint CTS-2026-00037', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:24:39'),
+(555, 4, 'view', 'complaint', 36, 'Viewed complaint CTS-2026-00036', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:29:51'),
+(556, 4, 'accept', 'complaint', 36, 'Accepted complaint CTS-2026-00036', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:29:56'),
+(557, 4, 'view', 'complaint', 36, 'Viewed complaint CTS-2026-00036', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:29:56'),
+(558, 4, 'status_change', 'complaint', 36, 'Changed status to In Progress for CTS-2026-00036', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:29:57'),
+(559, 4, 'view', 'complaint', 36, 'Viewed complaint CTS-2026-00036', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:29:57'),
+(560, 4, 'status_change', 'complaint', 36, 'Changed status to Resolved for CTS-2026-00036', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:30:01'),
+(561, 4, 'view', 'complaint', 36, 'Viewed complaint CTS-2026-00036', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 02:30:08'),
+(562, 4, 'view', 'complaint', 42, 'Viewed complaint CTS-2026-00042', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 03:46:17'),
+(563, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 05:43:19'),
+(564, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 05:45:35'),
+(565, 4, 'view', 'complaint', 44, 'Viewed complaint CTS-2026-00044', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 06:00:23'),
+(566, 4, 'view', 'complaint', 46, 'Viewed complaint CTS-2026-00046', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 06:08:48'),
+(567, 4, 'view', 'complaint', 34, 'Viewed complaint CTS-2026-00034', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 06:37:56'),
+(568, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 06:38:56'),
+(569, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 06:38:58'),
+(570, 4, 'view', 'complaint', 47, 'Viewed complaint CTS-2026-00047', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 06:49:26'),
+(571, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 07:27:00'),
+(572, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 07:27:07'),
+(573, 4, 'view', 'complaint', 48, 'Viewed complaint CTS-2026-00048', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 07:32:06'),
+(574, 4, 'view', 'complaint', 47, 'Viewed complaint CTS-2026-00047', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 07:32:13'),
+(575, 4, 'view', 'complaint', 49, 'Viewed complaint CTS-2026-00049', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 07:34:02'),
+(576, 4, 'view', 'complaint', 49, 'Viewed complaint CTS-2026-00049', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 07:35:16'),
+(577, 4, 'view', 'complaint', 42, 'Viewed complaint CTS-2026-00042', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 07:36:48'),
+(578, 4, 'view', 'complaint', 44, 'Viewed complaint CTS-2026-00044', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 07:36:56'),
+(579, 4, 'view', 'complaint', 49, 'Viewed complaint CTS-2026-00049', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 07:37:34'),
+(580, 4, 'view', 'complaint', 39, 'Viewed complaint CTS-2026-00039', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 07:41:37'),
+(581, 4, 'view', 'complaint', 49, 'Viewed complaint CTS-2026-00049', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 07:42:13'),
+(582, 4, 'view', 'complaint', 40, 'Viewed complaint CTS-2026-00040', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 07:42:25'),
+(583, 4, 'view', 'complaint', 49, 'Viewed complaint CTS-2026-00049', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 07:42:45'),
+(584, 4, 'view', 'complaint', 48, 'Viewed complaint CTS-2026-00048', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 07:42:52'),
+(585, 4, 'view', 'complaint', 36, 'Viewed complaint CTS-2026-00036', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 07:43:05'),
+(586, 4, 'view', 'complaint', 41, 'Viewed complaint CTS-2026-00041', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 07:43:12'),
+(587, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-13 08:27:23'),
+(588, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-14 02:02:12'),
+(589, 4, 'view', 'complaint', 50, 'Viewed complaint CTS-2026-00050', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-14 03:04:36'),
+(590, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-14 03:25:29'),
+(591, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-14 03:31:38'),
+(592, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-14 03:31:58'),
+(593, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-14 05:07:48'),
+(594, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-14 06:19:16'),
+(595, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-14 06:37:25'),
+(596, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-15 00:35:59'),
+(597, 4, '', 'system', NULL, 'Test email sent to joerenzescallente027@gmail.com', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-15 00:36:09'),
+(598, 4, 'logout', 'auth', NULL, 'User logged out', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-15 00:38:03'),
+(599, 4, 'login', 'auth', NULL, 'User logged in via email/password', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-15 00:38:06'),
+(600, 4, 'view', 'complaint', 40, 'Viewed complaint CTS-2026-00040', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-15 02:02:17'),
+(601, 4, 'status_change', 'complaint', 40, 'Changed status to Closed for CTS-2026-00040', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-15 02:02:23'),
+(602, 4, 'view', 'complaint', 40, 'Viewed complaint CTS-2026-00040', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-15 02:02:23'),
+(603, 4, 'view', 'complaint', 38, 'Viewed complaint CTS-2026-00038', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-15 02:03:13'),
+(604, 4, 'status_change', 'complaint', 38, 'Changed status to Closed for CTS-2026-00038', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-15 02:03:16'),
+(605, 4, 'view', 'complaint', 38, 'Viewed complaint CTS-2026-00038', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-15 02:03:16'),
+(606, 4, 'view', 'complaint', 50, 'Viewed complaint CTS-2026-00050', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-15 02:48:11'),
+(607, 4, 'view', 'complaint', 50, 'Viewed complaint CTS-2026-00050', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-15 02:51:39'),
+(608, 4, 'view', 'complaint', 50, 'Viewed complaint CTS-2026-00050', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-15 05:41:29'),
+(609, 4, 'view', 'complaint', 50, 'Viewed complaint CTS-2026-00050', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-15 06:00:09'),
+(610, 4, 'view', 'complaint', 50, 'Viewed complaint CTS-2026-00050', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-15 06:46:59'),
+(611, 4, 'view', 'complaint', 50, 'Viewed complaint CTS-2026-00050', NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', '2026-01-15 06:47:54');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_roles`
+--
+
+CREATE TABLE `admin_roles` (
+  `id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `permissions` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`permissions`)),
+  `is_active` tinyint(1) DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `admin_roles`
+--
+
+INSERT INTO `admin_roles` (`id`, `name`, `description`, `permissions`, `is_active`, `created_at`, `updated_at`) VALUES
+(1, 'Super Admin', 'Full system access', '{\"all\": true}', 1, '2026-01-06 03:12:00', '2026-01-06 03:12:00'),
+(2, 'Admin', 'Manage complaints and users', '{\"complaints\": true, \"users\": true, \"reports\": true}', 1, '2026-01-06 03:12:00', '2026-01-06 03:12:00'),
+(3, 'Staff', 'Process complaints', '{\"complaints\": true, \"reports\": false}', 1, '2026-01-06 03:12:00', '2026-01-06 03:12:00'),
+(4, 'Viewer', 'View only access', '{\"complaints_view\": true}', 1, '2026-01-06 03:12:00', '2026-01-06 03:12:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_users`
+--
+
+CREATE TABLE `admin_users` (
+  `id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password_hash` varchar(255) DEFAULT NULL,
+  `full_name` varchar(255) NOT NULL,
+  `role_id` int(11) NOT NULL,
+  `google_id` varchar(255) DEFAULT NULL,
+  `avatar_url` varchar(500) DEFAULT NULL,
+  `security_pin` varchar(255) DEFAULT NULL,
+  `unit` varchar(50) DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT 1,
+  `last_login` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `created_by` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `admin_users`
+--
+
+INSERT INTO `admin_users` (`id`, `email`, `password_hash`, `full_name`, `role_id`, `google_id`, `avatar_url`, `security_pin`, `unit`, `is_active`, `last_login`, `created_at`, `updated_at`, `created_by`) VALUES
+(3, 'escall@deped-sanpedro.ph', '$2y$10$89WbpOITDkUUJBAmsv7CuO0.OTr9zKdQevYPBP5PX22X4nBeRk2IS', 'System Administrator', 1, NULL, NULL, NULL, 'OSDS', 1, '2026-01-06 03:26:31', '2026-01-06 03:26:19', '2026-01-06 03:26:31', NULL),
+(4, 'joerenzescallente027@gmail.com', '$2y$10$3983W2Pb75U0hdf2PxWyPOQK9Plh440iM.bD.FfoPzCOq6Z92erg6', 'Alexander Joerenz Escallente', 1, NULL, '/SDO-cts/uploads/avatars/avatar_4_1767678739.jpg', '$2y$10$Dcd5Zra4ME3gNrhKJRlByuQYIIas0D2TtD/wlwDcYPQeHcuJKPWCm', 'SGOD', 1, '2026-01-15 00:38:06', '2026-01-06 03:37:05', '2026-01-15 00:38:06', 3),
+(5, 'escall.dev027@gmail.com', '$2y$10$ZSVi1N9fhGjA0f78.z99Kej/7zWq633rLk3WMbJb2JF.b.P2.x8aC', 'escall dev', 4, '107714000475651491856', 'https://lh3.googleusercontent.com/a/ACg8ocImqRNkaj-XNIubC4kamlFKrGKdzWwKQQWW3LW3UCtGfkE2A98=s96-c', NULL, NULL, 1, '2026-01-12 05:00:33', '2026-01-06 04:05:26', '2026-01-12 05:00:33', NULL),
+(6, 'joerenz.dev@gmail.com', '$2y$10$DGPpzC/weoc/rCMUhjYd.Ot.DNvwbXbJlurMK.dmjEg8M0AyCaafq', 'alex', 2, '108143253005440248236', '/SDO-cts/uploads/avatars/avatar_6_1767689011.jpg', NULL, 'SGOD', 1, '2026-01-12 05:01:15', '2026-01-06 08:39:34', '2026-01-12 05:01:15', NULL),
+(7, 'bagwistv09@gmail.com', NULL, 'bagwis_', 3, '115985323403557869607', 'https://lh3.googleusercontent.com/a/ACg8ocLHNmdjfyFgJklYgbNAWvXt5iwnFAq6lqZJ44fLz06O_lBdIz8=s96-c', NULL, NULL, 1, '2026-01-06 08:43:55', '2026-01-06 08:43:55', '2026-01-07 01:39:53', NULL),
+(8, 'ict.sanpedrocity@deped.com.ph', '$2y$10$fbSbmKisLpjHlpm9ykSKzei0ySmzKaRNutV1R.J72YNW3jtySpIau', 'sdo admin', 1, NULL, NULL, NULL, 'OSDS', 1, '2026-01-07 02:33:26', '2026-01-07 02:26:16', '2026-01-07 02:33:26', 4),
+(9, 'goku@gmail.com', '$2y$10$5oDdMkKT6OC/8CkWN8azEe3xJu4jvOYDC2y7dPqTKYtQLLJfo/DQa', 'goku', 1, NULL, NULL, NULL, 'SGOD', 1, NULL, '2026-01-12 04:55:07', '2026-01-12 04:55:07', 4);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `complaints`
+--
+
+CREATE TABLE `complaints` (
+  `id` int(11) NOT NULL,
+  `reference_number` varchar(20) NOT NULL,
+  `referred_to` enum('OSDS','SGOD','CID','Others') NOT NULL,
+  `referred_to_other` varchar(255) DEFAULT NULL,
+  `date_petsa` datetime NOT NULL,
+  `name_pangalan` varchar(255) NOT NULL,
+  `address_tirahan` text NOT NULL,
+  `contact_number` varchar(20) NOT NULL,
+  `email_address` varchar(255) NOT NULL,
+  `involved_full_name` varchar(255) NOT NULL,
+  `involved_position` varchar(255) NOT NULL,
+  `involved_address` text NOT NULL,
+  `involved_school_office_unit` varchar(255) NOT NULL,
+  `narration_complaint` text NOT NULL,
+  `narration_complaint_page2` text DEFAULT NULL,
+  `desired_action_relief` text NOT NULL,
+  `certification_agreed` tinyint(1) NOT NULL DEFAULT 0,
+  `printed_name_pangalan` varchar(255) NOT NULL,
+  `signature_type` enum('digital','typed') NOT NULL DEFAULT 'typed',
+  `signature_data` text DEFAULT NULL,
+  `date_signed` date NOT NULL,
+  `status` enum('pending','accepted','in_progress','resolved','returned','closed') NOT NULL DEFAULT 'pending',
+  `accepted_at` timestamp NULL DEFAULT NULL,
+  `accepted_by` int(11) DEFAULT NULL,
+  `returned_at` timestamp NULL DEFAULT NULL,
+  `returned_by` int(11) DEFAULT NULL,
+  `return_reason` text DEFAULT NULL,
+  `assigned_unit` varchar(50) DEFAULT NULL,
+  `handled_by` int(11) DEFAULT NULL,
+  `is_locked` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `complaints`
+--
+
+INSERT INTO `complaints` (`id`, `reference_number`, `referred_to`, `referred_to_other`, `date_petsa`, `name_pangalan`, `address_tirahan`, `contact_number`, `email_address`, `involved_full_name`, `involved_position`, `involved_address`, `involved_school_office_unit`, `narration_complaint`, `narration_complaint_page2`, `desired_action_relief`, `certification_agreed`, `printed_name_pangalan`, `signature_type`, `signature_data`, `date_signed`, `status`, `accepted_at`, `accepted_by`, `returned_at`, `returned_by`, `return_reason`, `assigned_unit`, `handled_by`, `is_locked`, `created_at`, `updated_at`) VALUES
+(1, 'CTS-2026-00001', 'Others', 'cysdddd', '2026-01-05 16:50:00', 'Alexander Joerenz Escallente', '#67 A. Olivarez St. Brgy Santo Niño\r\n', '09100668203', 'joerenzescallente027@gmail.com', 'Alexander Joerenz Escallente', 'staff', '#67 A. Olivarez St. Brgy Santo Niño\r\n', 'sdo', 'PRIVACY NOTICE: We collect the following personal information from you when you manually or electronically submit to us your inquiry/ies: Name, Address, E-mail address, Contact Number, ID information. The collected personal information will be utilized solely for documentation and processing of your request within DepEd and, when appropriate, endorsement to other government agency/ies that has/have jurisdiction over the subject of your inquiry. Only authorized DepEd personnel have access to this personal information, the exchange of which will be facilitated through email and/or hard copy. DepEd will only retain personal data as long as necessary for the fulfillment of the purpose. Only authorized DepEd personnel have access to this personal information, the exchange of which will be facilitated through email and/or hard copy. DepEd will only retain personal data as long as necessary for the fulfillment of the purpose.', NULL, '', 1, 'alexander', 'typed', 'Alexander Joerenz Escallente', '2026-01-05', 'closed', '2026-01-06 03:34:43', 3, NULL, NULL, NULL, 'OSDS', 4, 1, '2026-01-05 08:50:00', '2026-01-07 03:51:44'),
+(2, 'CTS-2026-00002', 'SGOD', '', '2026-01-06 08:15:26', 'Alexander Joerenz Escallente', '#67 A. Olivarez St. Brgy Santo Niño\r\n', '09100668203', 'joerenzescallente027@gmail.com', 'Alexander Joerenz Escallente', 'staff', '#67 A. Olivarez St. Brgy Santo Niño\r\n#67 A. Olivarez St. Brgy Santo Niño', 'sdo', 'PRIVACY NOTICE: We collect the following personal information from you when you manually or electronically submit to us your inquiry/ies: Name, Address, E-mail address, Contact Number, ID information. The collected personal information will be utilized solely for documentation and processing of your request within DepEd and, when appropriate, endorsement to other government agency/ies that has/have jurisdiction over the subject of your inquiry. Only authorized DepEd personnel have access to this personal information, the exchange of which will be facilitated through email and/or hard copy. DepEd will only retain personal data as long as necessary for the fulfillment of the purpose.', NULL, '', 1, 'Alexander Joerenz Escallente', 'typed', 'Alexander Joerenz Escallente', '2026-01-06', 'accepted', '2026-01-06 05:21:50', 4, NULL, NULL, NULL, NULL, 4, 1, '2026-01-06 00:15:26', '2026-01-06 05:21:50'),
+(3, 'CTS-2026-00003', 'OSDS', '', '2026-01-06 08:45:13', 'Seijun Cutie', '10 Molave St.', '09123456789', 'seijuncutie@gmail.com', 'Sei Cutie', 'Teacher', '10 Molave St.', 'School', 'PRIVACY NOTICE: We collect the following personal information from you when you manually or electronically submit to us your inquiry/ies: Name, Address, E-mail address, Contact Number, ID information. The collected personal information will be utilized solely for documentation and processing of your request within DepEd and, when appropriate, endorsement to other government agency/ies that has/have jurisdiction over the subject of your inquiry. Only authorized DepEd personnel have access to this personal information, the exchange of which will be facilitated through email and/or hard copy. DepEd will only retain personal data as long as necessary for the fulfillment of the purpose.', NULL, '', 1, 'Seijun Cutie', 'typed', 'Seijun Cutie', '2026-01-06', 'accepted', '2026-01-06 06:40:58', 4, NULL, NULL, NULL, NULL, 4, 1, '2026-01-06 00:45:13', '2026-01-06 06:40:58'),
+(4, 'CTS-2026-00004', 'SGOD', '', '2026-01-06 08:48:51', 'Spongebob', '19 Tinkerbel', '09867554632', 'spongebob@gmail.com', 'Patrick', 'Staff', 'egfbjbdgjksngjksdg', 'sdo', 'jnfdsgbuieswdfnjk sadjfgnvjdgf ', NULL, '', 1, 'Spongebob', 'typed', 'Spongebob', '2026-01-06', 'in_progress', '2026-01-06 06:51:29', 4, NULL, NULL, NULL, 'Legal', 4, 1, '2026-01-06 00:48:51', '2026-01-06 06:52:57'),
+(5, 'CTS-2026-00005', 'CID', '', '2026-01-06 08:52:21', 'Pepito Manaloto', '4 greatland', '09876456636', 'pepito@gmail.com', 'Elsa', 'Principal', '4 Greatland', 'Unit', 'dsnjgokjds kjdgnng', NULL, '', 1, 'Pepito Manaloto', 'typed', 'Pepito Manaloto', '2026-01-06', 'accepted', '2026-01-06 06:35:11', 4, NULL, NULL, NULL, NULL, 4, 1, '2026-01-06 00:52:21', '2026-01-06 06:35:11'),
+(6, 'CTS-2026-00006', 'Others', 'natatae me', '2026-01-06 08:58:24', 'Joerenz Escallente', '10 Comfort Room', '09336543123', 'joerenz@gmail.com', 'Joven Fernandez', 'Bestfriend', '23 Venjo', 'BFF', 'HAHAHAHAHHAHAHAHAHHAHAHA', NULL, '', 1, 'Joerenz Escallente', 'typed', 'Joerenz Escallente', '2026-01-06', 'in_progress', '2026-01-06 06:38:50', 4, '2026-01-06 05:20:20', 4, 'pangit', 'Legal', 4, 1, '2026-01-06 00:58:24', '2026-01-06 06:39:01'),
+(7, 'CTS-2026-00007', 'Others', 'natatae me', '2026-01-06 14:56:06', 'Al3ex', 'sfdusgfvhcdsajh', '09100668207', 'alex@gmail.com', 'Squidward', 'Octopus', '#67 A. Olivarez St. Brgy Santo Niño\r\n', 'bikini bottom', 'aabrarbwbabsxxdfdebfesgsdgdsgsPRIVACY NOTICE: We collect the following personal information from you when you manually or electronically submit to us your inquiry/ies: Name, Address, E-mail address, Contact Number, ID information. The collected personal information will be utilized solely for documentation and processing of your request within DepEd and, when appropriate, endorsement to other government agency/ies that has/have jurisdiction over the subject of your inquiry. Only authorized DepEd personnel have access to this personal information, the exchange of which will be facilitated through email and/or hard copy. DepEd will only retain personal data as long as necessary for the fulfillment of the purpose.', NULL, '', 1, 'Mr. Krabs', 'typed', 'Mr. Krabs', '2026-01-06', 'closed', '2026-01-09 01:55:08', 4, NULL, NULL, NULL, NULL, 4, 1, '2026-01-06 06:56:06', '2026-01-09 01:55:38'),
+(8, 'CTS-2026-00008', 'SGOD', '', '2026-01-07 08:44:27', 'Algen Loveres', '12 Bahay', '09765774363', 'Algen@gmail.com', 'Cedrick', 'staff', '14 House', 'School', 'gfghfjhgjhgkj', 'ghvhgvhbbjh', '', 1, 'Algen Loveres', 'typed', 'Algen Loveres', '2026-01-07', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-07 00:44:27', '2026-01-07 00:44:27'),
+(9, 'CTS-2026-00009', 'SGOD', '', '2026-01-07 09:19:39', 'Name', '23 fasfah', '09776835172', 'name@gmail.com', 'fgfsg', 'Octopus', 'gvsdhgsaf', 'bikini bottom', 'dvfhdsj', 'jsbfjknsg', '', 1, 'name', 'typed', 'name', '2026-01-07', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-07 01:19:39', '2026-01-07 01:19:39'),
+(10, 'CTS-2026-00010', 'CID', '', '2026-01-07 09:24:53', 'sandy', 'bikini bottom', '09010203040', 'sandy@gmail.com', 'patrick', 'starfish', 'bikini bottom', 'krusty krab', 'haahhahh', 'kinain burger patty ko', '', 1, 'sandy manaloto', 'typed', 'sandy manaloto', '2026-01-07', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-07 01:24:53', '2026-01-07 01:24:53'),
+(11, 'CTS-2026-00011', 'SGOD', '', '2026-01-07 09:35:41', 'spongebob', 'bikini bottom', '09122342414', 'spongebobb@gmail.com', 'patrick', 'star', 'bikini bottom', 'krusy', 'adsdasddads', 'dffefsdfdfsf', '', 1, 'sandy', 'typed', 'sandy', '2026-01-07', 'in_progress', '2026-01-07 01:37:46', 4, NULL, NULL, NULL, NULL, 4, 1, '2026-01-07 01:35:41', '2026-01-07 01:38:38'),
+(12, 'CTS-2026-00012', 'OSDS', '', '2026-01-07 10:24:06', 'Sunny', 'earth', '09887754362', 'sunny@gmail.com', 'Rainy', 'Teacher', 'School', 'Office', 'hjsfhjdsgnnkn', 'hjkfenjkfkn', '', 1, 'Sunny', 'typed', 'Sunny', '2026-01-07', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-07 02:24:06', '2026-01-07 02:24:06'),
+(13, 'CTS-2026-00013', 'OSDS', '', '2026-01-07 14:21:11', 'barney', 'bikini bottom', '09120202020', 'barneyy@gmail.com', 'thomas', 'staff', 'bikini bottom', 'sdo', '• Please attach your supporting documents / Certified true copies of documentary evidence and affidavits of witnesses if any.\r\n\r\n(Maaaring ilakip ang inyong mga suportang dokumento/Certified True Copies ng mga dokumentaryong ebidensya at mga sinumpaang salaysay ng mga saksi, kung mayroon)', '• Please attach your supporting documents / Certified true copies of documentary evidence and affidavits of witnesses if any.\r\n\r\n(Maaaring ilakip ang inyong mga suportang dokumento/Certified True Copies ng mga dokumentaryong ebidensya at mga sinumpaang salaysay ng mga saksi, kung mayroon)', '', 1, 'thomas and friends', 'typed', 'thomas and friends', '2026-01-07', 'in_progress', '2026-01-07 06:23:09', 4, NULL, NULL, NULL, 'OSDS', 4, 1, '2026-01-07 06:21:11', '2026-01-07 06:24:13'),
+(14, 'CTS-2026-00014', 'Others', 'cysd', '2026-01-07 14:38:22', 'ggs', 'sdo', '09100668203', 'haha@gmail.com', 'sdad', 'staff', '#67 A. Olivarez St. Brgy Santo Niño\r\n#67 A. Olivarez St. Brgy Santo Niño', 'gotham', 'sdasdda', 'sdasddad', '', 1, 'hahaha', 'typed', 'hahaha', '2026-01-07', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-07 06:38:22', '2026-01-07 06:38:22'),
+(15, 'CTS-2026-00015', 'OSDS', '', '2026-01-07 15:15:02', 'example', 'sdo', '09989898876', 'sample@gmail.com', 'sample', 'superhero', 'spl', 'bio', 'hahaahhaahahha', 'ahahahhaahaahh', '', 1, 'sample a', 'typed', 'sample a', '2026-01-07', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-07 07:15:02', '2026-01-07 07:15:02'),
+(16, 'CTS-2026-00016', 'OSDS', '', '2026-01-07 15:15:30', '', '', '', '', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-07', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-07 07:15:30', '2026-01-07 07:15:30'),
+(17, 'CTS-2026-00017', 'OSDS', '', '2026-01-07 15:59:54', '', '', '', '', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-07', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-07 07:59:54', '2026-01-07 07:59:54'),
+(18, 'CTS-2026-00018', 'OSDS', '', '2026-01-07 16:10:39', '', '', '', '', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-07', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-07 08:10:39', '2026-01-07 08:10:39'),
+(19, 'CTS-2026-00019', 'OSDS', '', '2026-01-07 16:36:04', '', '', '', '', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-07', 'accepted', '2026-01-08 02:37:59', 4, NULL, NULL, NULL, NULL, 4, 1, '2026-01-07 08:36:04', '2026-01-08 02:37:59'),
+(20, 'CTS-2026-00020', 'OSDS', '', '2026-01-08 11:43:53', 'Joe', 'United', '09112536473', 'joe@gmail.com', 'Jay', 'staff', 'Ewan', 'School', 'hhsgafbasdbfg dsahfvhjb', '', '', 1, 'Joe', 'typed', 'Joe', '2026-01-08', 'closed', '2026-01-08 03:54:42', 4, NULL, NULL, NULL, NULL, 4, 1, '2026-01-08 03:43:53', '2026-01-08 03:55:13'),
+(21, 'CTS-2026-00021', 'OSDS', '', '2026-01-09 10:01:41', '', '', '', '', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-09', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-09 02:01:41', '2026-01-09 02:01:41'),
+(22, 'CTS-2026-00022', 'OSDS', '', '2026-01-09 10:03:23', '', '', '', '', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-09', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-09 02:03:23', '2026-01-09 02:03:23'),
+(23, 'CTS-2026-00023', 'OSDS', '', '2026-01-09 10:04:21', '', '', '', '', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-09', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-09 02:04:21', '2026-01-09 02:04:21'),
+(24, 'CTS-2026-00024', 'OSDS', '', '2026-01-09 10:16:54', '', '', '', '', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-09', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-09 02:16:54', '2026-01-09 02:16:54'),
+(25, 'CTS-2026-00025', 'OSDS', '', '2026-01-09 10:21:30', '', '', '', '', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-09', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-09 02:21:30', '2026-01-09 02:21:30'),
+(26, 'CTS-2026-00026', 'OSDS', '', '2026-01-09 11:00:12', '', '', '', '', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-09', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-09 03:00:12', '2026-01-09 03:00:12'),
+(27, 'CTS-2026-00027', 'OSDS', '', '2026-01-09 11:20:12', 'AJ', 'Tabi tabi', '09768558375', 'aj@gmail.com', 'Poopie', 'teacher', 'Everywhere', 'School', 'dghdhjsg', 'hfjkenngjn', '', 1, 'AJ', 'typed', 'AJ', '2026-01-09', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-09 03:20:12', '2026-01-09 03:20:12'),
+(28, 'CTS-2026-00028', 'OSDS', '', '2026-01-09 12:48:28', '', '', '', '', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-09', 'accepted', '2026-01-12 02:39:58', 4, NULL, NULL, NULL, NULL, 4, 1, '2026-01-09 04:48:28', '2026-01-12 02:39:58'),
+(29, 'CTS-2026-00029', 'OSDS', '', '2026-01-12 20:29:28', 'budoy', 'encantadia', '09102937456', 'escall.byte@gmail.com', 'budoy ngani', 'tao', 'hjsahsjdhasdhjsadjsahdgsadsadasdqwdqw', 'sdo', 'depende pero pwede', 'sinigenggeng', '', 1, 'budoydoy', 'typed', 'budoydoy', '2026-01-12', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-12 12:29:28', '2026-01-12 12:29:28'),
+(30, 'CTS-2026-00030', 'OSDS', '', '2026-01-12 21:09:37', '', '', '', 'bagwistv09@gmail.com', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-12', 'resolved', '2026-01-12 14:01:02', 4, NULL, NULL, NULL, NULL, 4, 1, '2026-01-12 13:09:37', '2026-01-12 14:02:57'),
+(31, 'CTS-2026-00031', 'OSDS', '', '2026-01-12 21:11:43', '', '', '', 'bagwistv09@gmail.com', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-12', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-12 13:11:43', '2026-01-12 13:11:43'),
+(32, 'CTS-2026-00032', 'OSDS', '', '2026-01-12 21:46:46', '', '', '', 'bagwistv09@gmail.com', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-12', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-12 13:46:46', '2026-01-12 13:46:46'),
+(33, 'CTS-2026-00033', 'OSDS', '', '2026-01-12 21:50:27', '', '', '', 'escall.byte@gmail.com', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-12', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-12 13:50:27', '2026-01-12 13:50:27'),
+(34, 'CTS-2026-00034', 'OSDS', '', '2026-01-12 21:54:11', '', '', '', 'escall.byte@gmail.com', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-12', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-12 13:54:11', '2026-01-12 13:54:11'),
+(35, 'CTS-2026-00035', 'OSDS', '', '2026-01-12 22:09:41', 'lenovo', 'lababo spl', '09299090988', 'escall.dev027@gmail.com', 'hewlley packet', 'brand', 'united states of sanpedro', 'southville ', 'mang aagaw', 'lala mo', '', 1, 'lenovo', 'typed', 'lenovo', '2026-01-12', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-12 14:09:41', '2026-01-12 14:09:41'),
+(36, 'CTS-2026-00036', 'OSDS', '', '2026-01-12 22:21:55', 'vecna', 'upside down', '09199267561', 'escall.dev027@gmail.com', 'henry creel', 'dark wizard', 'upside down, the abyss', 'hawkins', 'hahahahaah malala kana', 'lalalalalalala', '', 1, 'henry creel', 'typed', 'henry creel', '2026-01-12', 'resolved', '2026-01-13 02:29:56', 4, NULL, NULL, NULL, NULL, 4, 1, '2026-01-12 14:21:55', '2026-01-13 02:30:01'),
+(37, 'CTS-2026-00037', 'OSDS', '', '2026-01-12 22:33:13', 'victor creel', 'hawkins', '09878878790', 'escall.dev027@gmail.com', 'victor creel', 'father', 'hawkins', 'hawkins post', 'anak ko baliw', 'ngalan ay henry', '', 1, 'henry creel', 'typed', 'henry creel', '2026-01-12', 'resolved', '2026-01-13 02:24:29', 4, NULL, NULL, NULL, NULL, 4, 1, '2026-01-12 14:33:13', '2026-01-13 02:24:33'),
+(38, 'CTS-2026-00038', 'OSDS', '', '2026-01-12 22:55:23', 'el', 'hawkins', '09999999999', 'escall.dev027@gmail.com', 'vecna', 'dark wizard', 'up[side down', 'sdo', 'hahhhhhahhahsahh', 'jasdbakjsdhsadkjadhaksjdhak j', '', 1, 'jane hopper', 'typed', 'jane hopper', '2026-01-12', 'closed', '2026-01-13 02:20:29', 4, NULL, NULL, NULL, NULL, 4, 1, '2026-01-12 14:55:23', '2026-01-15 02:03:16'),
+(39, 'CTS-2026-00039', 'OSDS', '', '2026-01-13 09:40:28', '', '', '', 'ejict0113@gmail.com', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-13', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-13 01:40:28', '2026-01-13 01:40:28'),
+(40, 'CTS-2026-00040', 'OSDS', '', '2026-01-13 10:08:42', '', '', '', 'loveresalgen@gmail.com', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-13', 'closed', '2026-01-13 02:16:05', 4, NULL, NULL, NULL, NULL, 4, 1, '2026-01-13 02:08:42', '2026-01-15 02:02:23'),
+(41, 'CTS-2026-00041', 'OSDS', '', '2026-01-13 11:01:29', 'phineas', '', '09090987876', 'escall.dev027@gmail.com', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-13', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-13 03:01:29', '2026-01-13 03:01:29'),
+(42, 'CTS-2026-00042', 'OSDS', '', '2026-01-13 11:45:51', 'ferb', 'ewan', '0999909898', 'escall.dev027@gmail.com', 'phineas', 'scientist', 'ewan', 'sdo', 'hahah', 'jajsjdakjdiuwduw g  dvvadgiwudgqiudv iuwdgqiudg', '', 1, 'ferb', 'typed', 'ferb', '2026-01-13', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-13 03:45:51', '2026-01-13 03:45:51'),
+(43, 'CTS-2026-00043', 'OSDS', '', '2026-01-13 11:59:27', 'red', '', '09989898989', 'redginepinedes09@gmail.com', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-13', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-13 03:59:27', '2026-01-13 03:59:27'),
+(44, 'CTS-2026-00044', 'OSDS', '', '2026-01-13 14:00:17', 'pula', '', '09988776655', 'redginepinedes09@gmail.com', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-13', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-13 06:00:17', '2026-01-13 06:00:17'),
+(45, 'CTS-2026-00045', 'OSDS', '', '2026-01-13 14:04:11', 'algen', '', '09878987656', 'loveresalgen@gmail.com', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-13', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-13 06:04:11', '2026-01-13 06:04:11'),
+(46, 'CTS-2026-00046', 'OSDS', '', '2026-01-13 14:07:31', 'ej', '', '09898987656', 'ejict0113@gmail.com', '', '', '', '', '', '', '', 0, '', '', NULL, '2026-01-13', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-13 06:07:31', '2026-01-13 06:07:31'),
+(47, 'CTS-2026-00047', 'OSDS', '', '2026-01-13 14:47:25', 'seijunqt', '', '09989800987', 'redginepinedes09@gmail.com', '', '', '', 'Legal', '', '', '', 0, '', '', NULL, '2026-01-13', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-13 06:47:25', '2026-01-13 06:47:25'),
+(48, 'CTS-2026-00048', 'OSDS', '', '2026-01-13 15:30:10', 'ej', '', '09878987656', 'escall.dev027@gmail.com', '', '', '', 'SGOD', '', '', '', 0, '', '', NULL, '2026-01-13', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-13 07:30:10', '2026-01-13 07:30:10'),
+(49, 'CTS-2026-00049', 'OSDS', '', '2026-01-13 15:32:42', 'Alexander Joerenz Escallente', '', '09100668203', 'joerenzescallente027@gmail.com', '', '', '', 'Admin', '', '', '', 0, '', '', NULL, '2026-01-13', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-13 07:32:42', '2026-01-13 07:32:42'),
+(50, 'CTS-2026-00050', 'OSDS', '', '2026-01-13 15:51:39', 'sdo ict', '', '09100668203', 'joerenzescallente027@gmail.com', '', '', '', 'ASDS', '', '', '', 0, '', '', NULL, '2026-01-13', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2026-01-13 07:51:39', '2026-01-13 07:51:39');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `complaint_assignments`
+--
+
+CREATE TABLE `complaint_assignments` (
+  `id` int(11) NOT NULL,
+  `complaint_id` int(11) NOT NULL,
+  `assigned_to_unit` varchar(50) NOT NULL,
+  `assigned_by` int(11) NOT NULL,
+  `notes` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `complaint_assignments`
+--
+
+INSERT INTO `complaint_assignments` (`id`, `complaint_id`, `assigned_to_unit`, `assigned_by`, `notes`, `created_at`) VALUES
+(1, 1, 'OSDS', 3, '', '2026-01-06 03:36:08'),
+(2, 6, 'Legal', 4, '', '2026-01-06 06:38:54'),
+(3, 4, 'Legal', 4, 'for legal na', '2026-01-06 06:52:57'),
+(4, 13, 'OSDS', 4, 'for osds na', '2026-01-07 06:24:13');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `complaint_documents`
+--
+
+CREATE TABLE `complaint_documents` (
+  `id` int(11) NOT NULL,
+  `complaint_id` int(11) NOT NULL,
+  `file_name` varchar(255) NOT NULL,
+  `file_path` varchar(500) NOT NULL DEFAULT '',
+  `original_name` varchar(255) NOT NULL,
+  `file_type` varchar(50) NOT NULL,
+  `file_size` int(11) NOT NULL,
+  `category` varchar(50) DEFAULT 'supporting',
+  `upload_date` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `complaint_documents`
+--
+
+INSERT INTO `complaint_documents` (`id`, `complaint_id`, `file_name`, `file_path`, `original_name`, `file_type`, `file_size`, `category`, `upload_date`) VALUES
+(1, 8, 'f2d92pmq069alsmnnrhqn5m7rq_695dac6153d8c.pdf', '', 'ACCOMPLISHMENT-REPORT-PRACTICUM WEEK 1.pdf', 'application/pdf', 282544, 'supporting', '2026-01-07 00:44:27'),
+(2, 14, '1csvm6g6cpogl026rq64r90efk_695dff56c6d94.pdf', '', 'WEEK-4.pdf', 'application/pdf', 734725, 'supporting', '2026-01-07 06:38:22'),
+(3, 16, '1csvm6g6cpogl026rq64r90efk_695e08072d327.png', '', 'Christmas Party-contributions.png', 'image/png', 88355, 'supporting', '2026-01-07 07:15:30'),
+(4, 17, '1csvm6g6cpogl026rq64r90efk_695e12602b3f3.pdf', '', 'resume-alexander-joerenz-escallente.pdf-2.pdf', 'application/pdf', 150515, 'supporting', '2026-01-07 07:59:54'),
+(5, 18, '1csvm6g6cpogl026rq64r90efk_695e14f158b1e.jpg', '', 'COMPLAINT-ASSISTED-FORM_1.jpg', 'image/jpeg', 988915, 'supporting', '2026-01-07 08:10:39'),
+(6, 19, '1csvm6g6cpogl026rq64r90efk_695e1af152384.jpg', '', 'COMPLAINT-ASSISTED-FORM_1 (1).jpg', 'image/jpeg', 988915, 'supporting', '2026-01-07 08:36:04'),
+(7, 20, 'rmpad40ad1iheuq0ol7htfiin5_695f27f49d276.pdf', '', 'SIA2_WEEK2.pdf', 'application/pdf', 507310, 'supporting', '2026-01-08 03:43:53'),
+(8, 21, '3dj52i5955oaf6lj7lttpai0cd_6960616d9c2c6.png', '', 'attendance monitoring system architecture diagram.png', 'image/png', 5796059, 'supporting', '2026-01-09 02:01:41'),
+(9, 21, '3dj52i5955oaf6lj7lttpai0cd_6960616d9c4df.png', '', 'attendance monitoring system architecture diagram.png', 'image/png', 5796059, 'supporting', '2026-01-09 02:01:41'),
+(10, 22, '3dj52i5955oaf6lj7lttpai0cd_696061e9a76b7.pdf', '', 'resume-alexander-joerenz-escallente.pdf-2.pdf', 'application/pdf', 150515, 'supporting', '2026-01-09 02:03:23'),
+(11, 22, '3dj52i5955oaf6lj7lttpai0cd_696061e9a78bc.png', '', 'student enrollment system architecture diagram.png', 'image/png', 5782385, 'supporting', '2026-01-09 02:03:23'),
+(12, 23, '3dj52i5955oaf6lj7lttpai0cd_69606216c0277.pdf', '', 'resume-alexander-joerenz-escallente.pdf-2.pdf', 'application/pdf', 150515, 'supporting', '2026-01-09 02:04:21'),
+(13, 23, '3dj52i5955oaf6lj7lttpai0cd_69606216c0413.png', '', 'attendance monitoring system architecture diagram.png', 'image/png', 5796059, 'supporting', '2026-01-09 02:04:21'),
+(14, 24, '3dj52i5955oaf6lj7lttpai0cd_696064aa483df.pdf', '', 'resume-alexander-joerenz-escallente.pdf-2.pdf', 'application/pdf', 150515, 'valid_id', '2026-01-09 02:16:54'),
+(15, 24, '3dj52i5955oaf6lj7lttpai0cd_696064aa485b7.png', '', 'attendance monitoring system architecture diagram.png', 'image/png', 5796059, 'handwritten_form', '2026-01-09 02:16:54'),
+(16, 25, '3dj52i5955oaf6lj7lttpai0cd_6960661f393d9.pdf', '', 'resume-alexander-joerenz-escallente.pdf-2.pdf', 'application/pdf', 150515, 'valid_id', '2026-01-09 02:21:30'),
+(17, 25, '3dj52i5955oaf6lj7lttpai0cd_6960661f3959b.png', '', 'student enrollment system architecture diagram.png', 'image/png', 5782385, 'handwritten_form', '2026-01-09 02:21:30'),
+(18, 26, '3dj52i5955oaf6lj7lttpai0cd_69606f39c70a5.jpg', '', 'powerlines.jpg', 'image/jpeg', 70436, 'valid_id', '2026-01-09 03:00:12'),
+(19, 26, '3dj52i5955oaf6lj7lttpai0cd_69606f39c74c7.jpg', '', 'aokigahara-forest-dark-style.jpg', 'image/jpeg', 2867169, 'handwritten_form', '2026-01-09 03:00:12'),
+(20, 27, '3dj52i5955oaf6lj7lttpai0cd_6960704dbb50d.jpg', '', 'webcam-toy-photo2.jpg', 'image/jpeg', 38756, 'supporting', '2026-01-09 03:20:12'),
+(21, 27, '3dj52i5955oaf6lj7lttpai0cd_696070c1b4e3d.jpg', '', 'webcam-toy-photo1.jpg', 'image/jpeg', 53409, 'valid_id', '2026-01-09 03:20:12'),
+(22, 28, '3dj52i5955oaf6lj7lttpai0cd_6960888f308ba.png', '', 'wmremove-transformed.png', 'image/png', 6259666, 'valid_id', '2026-01-09 04:48:28'),
+(23, 28, '3dj52i5955oaf6lj7lttpai0cd_6960888f312fb.jpg', '', 'dark queen pic.jpg', 'image/jpeg', 324427, 'handwritten_form', '2026-01-09 04:48:28'),
+(24, 29, '4gps9ivjjm3qith6ojteqhgbmb_6964e8d01c197.jpg', '', 'windows-11-dark-mode-abstract-background-black-background-3840x2160-8710.jpg', 'image/jpeg', 526059, 'valid_id', '2026-01-12 12:29:28'),
+(25, 30, '4gps9ivjjm3qith6ojteqhgbmb_6964f27f65a51.png', '', 'student enrollment system architecture diagram.png', 'image/png', 5782385, 'valid_id', '2026-01-12 13:09:37'),
+(26, 30, '4gps9ivjjm3qith6ojteqhgbmb_6964f27f660fa.jpg', '', 'windows-11-dark-mode-abstract-background-black-background-3840x2160-8710.jpg', 'image/jpeg', 526059, 'handwritten_form', '2026-01-12 13:09:37'),
+(27, 31, '4gps9ivjjm3qith6ojteqhgbmb_6964f30202e87.jpg', '', 'windows-11-dark-mode-abstract-background-black-background-3840x2160-8710.jpg', 'image/jpeg', 526059, 'valid_id', '2026-01-12 13:11:43'),
+(28, 31, '4gps9ivjjm3qith6ojteqhgbmb_6964f302030a1.png', '', 'attendance monitoring system architecture diagram.png', 'image/png', 5796059, 'handwritten_form', '2026-01-12 13:11:43'),
+(29, 32, '4gps9ivjjm3qith6ojteqhgbmb_6964fb382fd16.png', '', 'Gemini_Generated_Image_ohlaiiohlaiiohla.png', 'image/png', 6403814, 'valid_id', '2026-01-12 13:46:46'),
+(30, 32, '4gps9ivjjm3qith6ojteqhgbmb_6964fb383066c.pdf', '', 'resume-alexander-joerenz-escallente.pdf-2.pdf', 'application/pdf', 150515, 'handwritten_form', '2026-01-12 13:46:46'),
+(31, 33, '4gps9ivjjm3qith6ojteqhgbmb_6964fc10e0e0a.png', '', 'student enrollment system architecture diagram.png', 'image/png', 5782385, 'valid_id', '2026-01-12 13:50:27'),
+(32, 33, '4gps9ivjjm3qith6ojteqhgbmb_6964fc10e1a1f.png', '', 'Christmas Party-contributions.png', 'image/png', 88355, 'handwritten_form', '2026-01-12 13:50:27'),
+(33, 34, '4gps9ivjjm3qith6ojteqhgbmb_6964fcf507bd3.png', '', 'wmremove-transformed.png', 'image/png', 6259666, 'valid_id', '2026-01-12 13:54:11'),
+(34, 34, '4gps9ivjjm3qith6ojteqhgbmb_6964fcf508484.jpg', '', 'powerlines.jpg', 'image/jpeg', 70436, 'handwritten_form', '2026-01-12 13:54:11'),
+(35, 35, '4gps9ivjjm3qith6ojteqhgbmb_6965009f04313.png', '', 'attendance monitoring system architecture diagram.png', 'image/png', 5796059, 'supporting', '2026-01-12 14:09:41'),
+(36, 35, '4gps9ivjjm3qith6ojteqhgbmb_6965009f04b68.jpg', '', 'dark magic skull.jpg', 'image/jpeg', 322320, 'valid_id', '2026-01-12 14:09:41'),
+(37, 36, '4gps9ivjjm3qith6ojteqhgbmb_6965037dc9fe0.png', '', 'student enrollment system architecture diagram.png', 'image/png', 5782385, 'valid_id', '2026-01-12 14:21:55'),
+(38, 37, '4gps9ivjjm3qith6ojteqhgbmb_696505bbbcf54.jpg', '', 'aokigahara-forest-dark-style.jpg', 'image/jpeg', 2867169, 'valid_id', '2026-01-12 14:33:13'),
+(39, 38, '4gps9ivjjm3qith6ojteqhgbmb_69650b587dc8c.jpg', '', 'dark magic skull.jpg', 'image/jpeg', 322320, 'supporting', '2026-01-12 14:55:23'),
+(40, 38, '4gps9ivjjm3qith6ojteqhgbmb_69650b587e1ff.png', '', 'attendance monitoring system architecture diagram.png', 'image/png', 5796059, 'valid_id', '2026-01-12 14:55:23'),
+(41, 39, 'mk40vt3hogcai1nfm6j9hi6g52_6965a26e0291d.png', '', 'student enrollment system architecture diagram.png', 'image/png', 5782385, 'valid_id', '2026-01-13 01:40:28'),
+(42, 39, 'mk40vt3hogcai1nfm6j9hi6g52_6965a26e02ccc.jpg', '', 'dark magic skull.jpg', 'image/jpeg', 322320, 'handwritten_form', '2026-01-13 01:40:28'),
+(43, 40, 'mk40vt3hogcai1nfm6j9hi6g52_6965a91b10860.jpg', '', 'powerlines.jpg', 'image/jpeg', 70436, 'valid_id', '2026-01-13 02:08:42'),
+(44, 40, 'mk40vt3hogcai1nfm6j9hi6g52_6965a91b11314.png', '', 'student enrollment system architecture diagram.png', 'image/png', 5782385, 'handwritten_form', '2026-01-13 02:08:42'),
+(45, 41, 'mk40vt3hogcai1nfm6j9hi6g52_6965b44435993.png', '', 'student enrollment system architecture diagram.png', 'image/png', 5782385, 'valid_id', '2026-01-13 03:01:29'),
+(46, 41, 'mk40vt3hogcai1nfm6j9hi6g52_6965b44435b1e.jpg', '', '532010.jpg', 'image/jpeg', 101183, 'handwritten_form', '2026-01-13 03:01:29'),
+(47, 42, 'complaint_42_valid_id_1768275951_6965bfef66922.jpg', 'assets/uploads/images/complaint_42_valid_id_1768275951_6965bfef66922.jpg', '532010.jpg', 'image/jpeg', 101183, 'valid_id', '2026-01-13 03:45:51'),
+(48, 43, 'complaint_43_valid_id_1768276767_6965c31f48d15.jpg', 'assets/uploads/images/complaint_43_valid_id_1768276767_6965c31f48d15.jpg', 'windows-11-dark-mode-abstract-background-black-background-3840x2160-8710.jpg', 'image/jpeg', 526059, 'valid_id', '2026-01-13 03:59:27'),
+(49, 43, 'complaint_43_handwritten_form_1768276767_6965c31f4a8f7.jpg', 'assets/uploads/images/complaint_43_handwritten_form_1768276767_6965c31f4a8f7.jpg', 'dark magic skull.jpg', 'image/jpeg', 322320, 'handwritten_form', '2026-01-13 03:59:27'),
+(50, 44, 'complaint_44_valid_id_1768284017_6965df71a2f83.png', 'assets/uploads/images/complaint_44_valid_id_1768284017_6965df71a2f83.png', 'Gemini_Generated_Image_ohlaiiohlaiiohla.png', 'image/png', 6403814, 'valid_id', '2026-01-13 06:00:17'),
+(51, 44, 'complaint_44_handwritten_form_1768284017_6965df71a4ad2.jpg', 'assets/uploads/images/complaint_44_handwritten_form_1768284017_6965df71a4ad2.jpg', '532010.jpg', 'image/jpeg', 101183, 'handwritten_form', '2026-01-13 06:00:17'),
+(52, 45, 'complaint_45_valid_id_1768284251_6965e05bd0afe.jpg', 'assets/uploads/images/complaint_45_valid_id_1768284251_6965e05bd0afe.jpg', 'bagwis sigma.jpg', 'image/jpeg', 35331, 'valid_id', '2026-01-13 06:04:11'),
+(53, 45, 'complaint_45_handwritten_form_1768284251_6965e05bd1e67.pdf', 'assets/uploads/documents/complaint_45_handwritten_form_1768284251_6965e05bd1e67.pdf', 'COMPLAINT-ASSISTED-FORM.pdf', 'application/pdf', 213968, 'handwritten_form', '2026-01-13 06:04:11'),
+(54, 46, 'complaint_46_valid_id_1768284451_6965e12367277.jpg', 'assets/uploads/images/complaint_46_valid_id_1768284451_6965e12367277.jpg', 'bagwis sigma.jpg', 'image/jpeg', 35331, 'valid_id', '2026-01-13 06:07:31'),
+(55, 46, 'complaint_46_handwritten_form_1768284451_6965e123680d6.pdf', 'assets/uploads/documents/complaint_46_handwritten_form_1768284451_6965e123680d6.pdf', 'Cisco Networking Academy_ Introduction to Cybersecurity.pdf', 'application/pdf', 149158, 'handwritten_form', '2026-01-13 06:07:31'),
+(56, 47, 'complaint_47_valid_id_1768286845_6965ea7d67538.jpg', 'assets/uploads/images/complaint_47_valid_id_1768286845_6965ea7d67538.jpg', 'aokigahara-forest-dark-style.jpg', 'image/jpeg', 2867169, 'valid_id', '2026-01-13 06:47:25'),
+(57, 47, 'complaint_47_handwritten_form_1768286845_6965ea7d69d25.pdf', 'assets/uploads/documents/complaint_47_handwritten_form_1768286845_6965ea7d69d25.pdf', 'resume-alexander-joerenz-escallente.pdf-2.pdf', 'application/pdf', 150515, 'handwritten_form', '2026-01-13 06:47:25'),
+(58, 48, 'complaint_48_valid_id_1768289410_6965f48258ae3.jpg', 'assets/uploads/images/complaint_48_valid_id_1768289410_6965f48258ae3.jpg', '532010.jpg', 'image/jpeg', 101183, 'valid_id', '2026-01-13 07:30:10'),
+(59, 48, 'complaint_48_handwritten_form_1768289410_6965f4825b3a9.png', 'assets/uploads/images/complaint_48_handwritten_form_1768289410_6965f4825b3a9.png', 'Gemini_Generated_Image_ohlaiiohlaiiohla.png', 'image/png', 6403814, 'handwritten_form', '2026-01-13 07:30:10'),
+(60, 49, 'complaint_49_valid_id_1768289562_6965f51ad368d.png', 'assets/uploads/images/complaint_49_valid_id_1768289562_6965f51ad368d.png', 'student enrollment system architecture diagram.png', 'image/png', 5782385, 'valid_id', '2026-01-13 07:32:42'),
+(61, 49, 'complaint_49_handwritten_form_1768289562_6965f51ad6225.jpg', 'assets/uploads/images/complaint_49_handwritten_form_1768289562_6965f51ad6225.jpg', 'powerlines.jpg', 'image/jpeg', 70436, 'handwritten_form', '2026-01-13 07:32:42'),
+(62, 50, 'complaint_50_valid_id_1768290699_6965f98ba148b.png', 'assets/uploads/images/complaint_50_valid_id_1768290699_6965f98ba148b.png', 'student enrollment system architecture diagram.png', 'image/png', 5782385, 'valid_id', '2026-01-13 07:51:39'),
+(63, 50, 'complaint_50_handwritten_form_1768290699_6965f98ba2c65.jpg', 'assets/uploads/images/complaint_50_handwritten_form_1768290699_6965f98ba2c65.jpg', 'dark queen pic.jpg', 'image/jpeg', 324427, 'handwritten_form', '2026-01-13 07:51:39');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `complaint_history`
+--
+
+CREATE TABLE `complaint_history` (
+  `id` int(11) NOT NULL,
+  `complaint_id` int(11) NOT NULL,
+  `status` enum('pending','accepted','in_progress','resolved','returned','closed') NOT NULL,
+  `notes` text DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT 'System',
+  `admin_user_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `complaint_history`
+--
+
+INSERT INTO `complaint_history` (`id`, `complaint_id`, `status`, `notes`, `updated_by`, `admin_user_id`, `created_at`) VALUES
+(1, 1, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-05 08:50:00'),
+(2, 2, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-06 00:15:26'),
+(3, 3, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-06 00:45:13'),
+(4, 4, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-06 00:48:51'),
+(5, 5, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-06 00:52:21'),
+(6, 6, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-06 00:58:24'),
+(7, 1, 'accepted', 'ok noted', 'System Administrator', 3, '2026-01-06 03:34:43'),
+(8, 1, 'in_progress', 'okk', 'System Administrator', 3, '2026-01-06 03:35:08'),
+(9, 1, 'in_progress', 'Forwarded to Office of the Schools Division Superintendent: ', 'System Administrator', 3, '2026-01-06 03:36:08'),
+(10, 6, 'returned', 'pangit', 'Alexander Joerenz Escallente', 4, '2026-01-06 05:20:20'),
+(11, 2, 'accepted', 'tae', 'Alexander Joerenz Escallente', 4, '2026-01-06 05:21:50'),
+(12, 5, 'accepted', 'Complaint accepted for processing', 'Alexander Joerenz Escallente', 4, '2026-01-06 06:35:11'),
+(13, 1, 'resolved', '', 'Alexander Joerenz Escallente', 4, '2026-01-06 06:37:30'),
+(14, 6, 'pending', '', 'Alexander Joerenz Escallente', 4, '2026-01-06 06:38:47'),
+(15, 6, 'accepted', 'Complaint accepted for processing', 'Alexander Joerenz Escallente', 4, '2026-01-06 06:38:50'),
+(16, 6, 'accepted', 'Forwarded to Legal Unit: ', 'Alexander Joerenz Escallente', 4, '2026-01-06 06:38:54'),
+(17, 6, 'in_progress', '', 'Alexander Joerenz Escallente', 4, '2026-01-06 06:39:01'),
+(18, 3, 'accepted', 'Complaint accepted for processing', 'Alexander Joerenz Escallente', 4, '2026-01-06 06:40:58'),
+(19, 4, 'accepted', 'okay sige', 'Alexander Joerenz Escallente', 4, '2026-01-06 06:51:29'),
+(20, 4, 'in_progress', '', 'Alexander Joerenz Escallente', 4, '2026-01-06 06:52:03'),
+(21, 4, 'in_progress', 'Forwarded to Legal Unit: for legal na', 'Alexander Joerenz Escallente', 4, '2026-01-06 06:52:57'),
+(22, 7, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-06 06:56:06'),
+(23, 8, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-07 00:44:27'),
+(24, 9, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-07 01:19:39'),
+(25, 10, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-07 01:24:53'),
+(26, 11, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-07 01:35:41'),
+(27, 11, 'accepted', 'okay na', 'Alexander Joerenz Escallente', 4, '2026-01-07 01:37:46'),
+(28, 11, 'in_progress', '', 'Alexander Joerenz Escallente', 4, '2026-01-07 01:38:38'),
+(29, 12, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-07 02:24:06'),
+(30, 1, 'closed', '', 'Alexander Joerenz Escallente', 4, '2026-01-07 03:51:44'),
+(31, 13, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-07 06:21:11'),
+(32, 13, 'accepted', 'okay noted', 'Alexander Joerenz Escallente', 4, '2026-01-07 06:23:09'),
+(33, 13, 'in_progress', 'forwarding', 'Alexander Joerenz Escallente', 4, '2026-01-07 06:23:41'),
+(34, 13, 'in_progress', 'Forwarded to Office of the Schools Division Superintendent: for osds na', 'Alexander Joerenz Escallente', 4, '2026-01-07 06:24:13'),
+(35, 14, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-07 06:38:22'),
+(36, 15, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-07 07:15:02'),
+(37, 16, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-07 07:15:30'),
+(38, 17, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-07 07:59:54'),
+(39, 18, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-07 08:10:39'),
+(40, 19, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-07 08:36:04'),
+(41, 19, 'accepted', 'okay na', 'Alexander Joerenz Escallente', 4, '2026-01-08 02:37:59'),
+(42, 20, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-08 03:43:53'),
+(43, 20, 'accepted', 'Complaint accepted for processing', 'Alexander Joerenz Escallente', 4, '2026-01-08 03:54:42'),
+(44, 20, 'in_progress', '', 'Alexander Joerenz Escallente', 4, '2026-01-08 03:55:01'),
+(45, 20, 'resolved', '', 'Alexander Joerenz Escallente', 4, '2026-01-08 03:55:09'),
+(46, 20, 'closed', '', 'Alexander Joerenz Escallente', 4, '2026-01-08 03:55:13'),
+(47, 7, 'accepted', 'gege', 'Alexander Joerenz Escallente', 4, '2026-01-09 01:55:08'),
+(48, 7, 'in_progress', 'otw', 'Alexander Joerenz Escallente', 4, '2026-01-09 01:55:16'),
+(49, 7, 'resolved', '', 'Alexander Joerenz Escallente', 4, '2026-01-09 01:55:32'),
+(50, 7, 'closed', '', 'Alexander Joerenz Escallente', 4, '2026-01-09 01:55:38'),
+(51, 21, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-09 02:01:41'),
+(52, 22, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-09 02:03:23'),
+(53, 23, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-09 02:04:21'),
+(54, 24, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-09 02:16:54'),
+(55, 25, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-09 02:21:30'),
+(56, 26, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-09 03:00:12'),
+(57, 27, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-09 03:20:12'),
+(58, 28, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-09 04:48:28'),
+(59, 28, 'accepted', 'Complaint accepted for processing', 'Alexander Joerenz Escallente', 4, '2026-01-12 02:39:58'),
+(60, 29, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-12 12:29:28'),
+(61, 30, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-12 13:09:37'),
+(62, 31, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-12 13:11:43'),
+(63, 32, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-12 13:46:46'),
+(64, 33, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-12 13:50:27'),
+(65, 34, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-12 13:54:11'),
+(66, 30, 'accepted', 'gege', 'Alexander Joerenz Escallente', 4, '2026-01-12 14:01:02'),
+(67, 30, 'in_progress', '', 'Alexander Joerenz Escallente', 4, '2026-01-12 14:02:55'),
+(68, 30, 'resolved', '', 'Alexander Joerenz Escallente', 4, '2026-01-12 14:02:57'),
+(69, 35, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-12 14:09:41'),
+(70, 36, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-12 14:21:55'),
+(71, 37, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-12 14:33:13'),
+(72, 38, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-12 14:55:23'),
+(73, 39, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-13 01:40:28'),
+(74, 40, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-13 02:08:42'),
+(75, 40, 'accepted', 'Complaint accepted for processing', 'Alexander Joerenz Escallente', 4, '2026-01-13 02:16:05'),
+(76, 40, 'in_progress', '', 'Alexander Joerenz Escallente', 4, '2026-01-13 02:16:07'),
+(77, 40, 'resolved', '', 'Alexander Joerenz Escallente', 4, '2026-01-13 02:16:09'),
+(78, 38, 'accepted', 'Complaint accepted for processing', 'Alexander Joerenz Escallente', 4, '2026-01-13 02:20:29'),
+(79, 38, 'in_progress', '', 'Alexander Joerenz Escallente', 4, '2026-01-13 02:20:31'),
+(80, 38, 'resolved', '', 'Alexander Joerenz Escallente', 4, '2026-01-13 02:20:33'),
+(81, 37, 'accepted', 'Complaint accepted for processing', 'Alexander Joerenz Escallente', 4, '2026-01-13 02:24:29'),
+(82, 37, 'in_progress', '', 'Alexander Joerenz Escallente', 4, '2026-01-13 02:24:31'),
+(83, 37, 'resolved', '', 'Alexander Joerenz Escallente', 4, '2026-01-13 02:24:33'),
+(84, 36, 'accepted', 'Complaint accepted for processing', 'Alexander Joerenz Escallente', 4, '2026-01-13 02:29:56'),
+(85, 36, 'in_progress', '', 'Alexander Joerenz Escallente', 4, '2026-01-13 02:29:57'),
+(86, 36, 'resolved', '', 'Alexander Joerenz Escallente', 4, '2026-01-13 02:30:01'),
+(87, 41, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-13 03:01:29'),
+(88, 42, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-13 03:45:51'),
+(89, 43, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-13 03:59:27'),
+(90, 44, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-13 06:00:17'),
+(91, 45, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-13 06:04:11'),
+(92, 46, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-13 06:07:31'),
+(93, 47, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-13 06:47:25'),
+(94, 48, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-13 07:30:10'),
+(95, 49, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-13 07:32:42'),
+(96, 50, 'pending', 'Complaint submitted successfully', 'System', NULL, '2026-01-13 07:51:39'),
+(97, 40, 'closed', '', 'Alexander Joerenz Escallente', 4, '2026-01-15 02:02:23'),
+(98, 38, 'closed', '', 'Alexander Joerenz Escallente', 4, '2026-01-15 02:03:16');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `email_logs`
+--
+
+CREATE TABLE `email_logs` (
+  `id` int(11) NOT NULL,
+  `recipient_email` varchar(255) NOT NULL,
+  `subject` varchar(500) NOT NULL,
+  `event_type` varchar(100) NOT NULL COMMENT 'Type of event that triggered the email',
+  `reference_id` int(11) DEFAULT NULL COMMENT 'Reference to complaint ID if applicable',
+  `status` enum('sent','failed','skipped') NOT NULL DEFAULT 'sent',
+  `error_message` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `email_logs`
+--
+
+INSERT INTO `email_logs` (`id`, `recipient_email`, `subject`, `event_type`, `reference_id`, `status`, `error_message`, `created_at`) VALUES
+(1, 'joerenzescallente027@gmail.com', 'SDO CTS - Test Email', 'test_email', NULL, 'failed', 'SMTP Error: Could not authenticate.', '2026-01-12 12:17:00'),
+(2, 'joerenzescallente027@gmail.com', 'SDO CTS - Test Email', 'test_email', NULL, 'failed', 'SMTP Error: Could not authenticate.', '2026-01-12 12:17:49'),
+(3, 'joerenzescallente027@gmail.com', 'SDO CTS - Test Email', 'test_email', NULL, 'failed', 'SMTP Error: Could not authenticate.', '2026-01-12 12:21:42'),
+(4, 'joerenzescallente027@gmail.com', 'SDO CTS - Test Email', 'test_email', NULL, 'failed', 'SMTP Error: Could not authenticate.', '2026-01-12 12:21:44'),
+(5, 'escall.byte@gmail.com', 'SDO CTS - Test Email', 'test_email', NULL, 'failed', 'SMTP Error: Could not authenticate.', '2026-01-12 12:21:58'),
+(6, 'escall.byte@gmail.com', 'SDO CTS - Test Email', 'test_email', NULL, 'sent', NULL, '2026-01-12 12:23:49'),
+(7, 'escall.byte@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00029', 'complaint_submitted_complainant', 29, 'sent', NULL, '2026-01-12 12:29:33'),
+(8, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00029', 'complaint_submitted_admin', 29, 'sent', NULL, '2026-01-12 12:29:36'),
+(9, 'escall.byte@gmail.com', 'SDO CTS - Test Email', 'test_email', NULL, 'sent', NULL, '2026-01-12 12:37:15'),
+(10, 'bagwistv09@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00030', 'complaint_submitted_complainant', 30, 'sent', NULL, '2026-01-12 13:09:41'),
+(11, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00030', 'complaint_submitted_admin', 30, 'sent', NULL, '2026-01-12 13:09:45'),
+(12, 'bagwistv09@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00031', 'complaint_submitted_complainant', 31, 'failed', 'SMTP Error: Could not authenticate.', '2026-01-12 13:11:45'),
+(13, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00031', 'complaint_submitted_admin', 31, 'failed', 'SMTP Error: Could not authenticate.', '2026-01-12 13:11:47'),
+(14, 'bagwistv09@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00032', 'complaint_submitted_complainant', 32, 'failed', 'SMTP Error: Could not authenticate.', '2026-01-12 13:46:49'),
+(15, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00032', 'complaint_submitted_admin', 32, 'failed', 'SMTP Error: Could not authenticate.', '2026-01-12 13:46:51'),
+(16, 'escall.byte@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00033', 'complaint_submitted_complainant', 33, 'sent', NULL, '2026-01-12 13:50:32'),
+(17, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00033', 'complaint_submitted_admin', 33, 'sent', NULL, '2026-01-12 13:50:37'),
+(18, 'escall.byte@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00034', 'complaint_submitted_complainant', 34, 'sent', NULL, '2026-01-12 13:54:16'),
+(19, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00034', 'complaint_submitted_admin', 34, 'sent', NULL, '2026-01-12 13:54:19'),
+(20, 'bagwistv09@gmail.com', 'Complaint Resolved - Reference: CTS-2026-00030', 'complaint_resolved', 30, 'sent', NULL, '2026-01-12 14:03:01'),
+(21, 'escall.dev027@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00035', 'complaint_submitted_complainant', 35, 'sent', NULL, '2026-01-12 14:10:12'),
+(22, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00035', 'complaint_submitted_admin', 35, 'sent', NULL, '2026-01-12 14:10:16'),
+(23, 'escall.dev027@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00036', 'complaint_submitted_complainant', 36, 'sent', NULL, '2026-01-12 14:22:31'),
+(24, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00036', 'complaint_submitted_admin', 36, 'sent', NULL, '2026-01-12 14:22:36'),
+(25, 'escall.dev027@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00037', 'complaint_submitted_complainant', 37, 'sent', NULL, '2026-01-12 14:33:37'),
+(26, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00037', 'complaint_submitted_admin', 37, 'sent', NULL, '2026-01-12 14:33:41'),
+(27, 'escall.dev027@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00038', 'complaint_submitted_complainant', 38, 'sent', NULL, '2026-01-12 14:55:54'),
+(28, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00038', 'complaint_submitted_admin', 38, 'sent', NULL, '2026-01-12 14:55:58'),
+(29, 'ejict0113@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00039', 'complaint_submitted_complainant', 39, 'failed', 'SMTP Error: Could not authenticate.', '2026-01-13 01:40:31'),
+(30, 'ict.sanpedrocity@deped.gov.ph', 'New Complaint Received - Reference: CTS-2026-00039', 'complaint_submitted_admin', 39, 'failed', 'SMTP Error: Could not authenticate.', '2026-01-13 01:40:33'),
+(31, 'loveresalgen@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00040', 'complaint_submitted_complainant', 40, 'sent', NULL, '2026-01-13 02:09:21'),
+(32, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00040', 'complaint_submitted_admin', 40, 'sent', NULL, '2026-01-13 02:09:26'),
+(33, 'loveresalgen@gmail.com', 'Complaint Resolved - Reference: CTS-2026-00040', 'complaint_resolved', 40, 'sent', NULL, '2026-01-13 02:16:13'),
+(34, 'escall.dev027@gmail.com', 'Complaint Resolved - Reference: CTS-2026-00038', 'complaint_resolved', 38, 'sent', NULL, '2026-01-13 02:20:37'),
+(35, 'escall.dev027@gmail.com', 'Complaint Resolved - Reference: CTS-2026-00037', 'complaint_resolved', 37, 'sent', NULL, '2026-01-13 02:24:39'),
+(36, 'escall.dev027@gmail.com', 'Complaint Resolved - Reference: CTS-2026-00036', 'complaint_resolved', 36, 'sent', NULL, '2026-01-13 02:30:08'),
+(37, 'escall.dev027@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00041', 'complaint_submitted_complainant', 41, 'sent', NULL, '2026-01-13 03:02:10'),
+(38, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00041', 'complaint_submitted_admin', 41, 'sent', NULL, '2026-01-13 03:02:16'),
+(39, 'escall.dev027@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00042', 'complaint_submitted_complainant', 42, 'sent', NULL, '2026-01-13 03:45:57'),
+(40, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00042', 'complaint_submitted_admin', 42, 'sent', NULL, '2026-01-13 03:46:03'),
+(41, 'redginepinedes09@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00043', 'complaint_submitted_complainant', 43, 'sent', NULL, '2026-01-13 03:59:39'),
+(42, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00043', 'complaint_submitted_admin', 43, 'sent', NULL, '2026-01-13 03:59:44'),
+(43, 'redginepinedes09@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00044', 'complaint_submitted_complainant', 44, 'sent', NULL, '2026-01-13 06:01:02'),
+(44, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00044', 'complaint_submitted_admin', 44, 'sent', NULL, '2026-01-13 06:01:08'),
+(45, 'loveresalgen@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00045', 'complaint_submitted_complainant', 45, 'sent', NULL, '2026-01-13 06:04:20'),
+(46, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00045', 'complaint_submitted_admin', 45, 'sent', NULL, '2026-01-13 06:04:27'),
+(47, 'ejict0113@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00046', 'complaint_submitted_complainant', 46, 'sent', NULL, '2026-01-13 06:07:38'),
+(48, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00046', 'complaint_submitted_admin', 46, 'sent', NULL, '2026-01-13 06:07:44'),
+(49, 'redginepinedes09@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00047', 'complaint_submitted_complainant', 47, 'sent', NULL, '2026-01-13 06:47:49'),
+(50, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00047', 'complaint_submitted_admin', 47, 'sent', NULL, '2026-01-13 06:47:55'),
+(51, 'escall.dev027@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00048', 'complaint_submitted_complainant', 48, 'sent', NULL, '2026-01-13 07:30:56'),
+(52, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00048', 'complaint_submitted_admin', 48, 'sent', NULL, '2026-01-13 07:31:02'),
+(53, 'joerenzescallente027@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00049', 'complaint_submitted_complainant', 49, 'sent', NULL, '2026-01-13 07:33:22'),
+(54, 'joerenz.dev@gmail.com', 'New Complaint Received - Reference: CTS-2026-00049', 'complaint_submitted_admin', 49, 'sent', NULL, '2026-01-13 07:33:27'),
+(55, 'joerenzescallente027@gmail.com', 'Complaint Submitted - Reference: CTS-2026-00050', 'complaint_submitted_complainant', 50, 'sent', NULL, '2026-01-13 07:52:20'),
+(56, 'ict.sanpedrocity@deped.gov.ph', 'New Complaint Received - Reference: CTS-2026-00050', 'complaint_submitted_admin', 50, 'sent', NULL, '2026-01-13 07:52:25'),
+(57, 'joerenzescallente027@gmail.com', 'SDO CTS - Test Email', 'test_email', NULL, 'sent', NULL, '2026-01-15 00:36:09');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `password_reset_tokens`
+--
+
+CREATE TABLE `password_reset_tokens` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `expires_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `used` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `activity_log`
+--
+ALTER TABLE `activity_log`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_user_id` (`user_id`),
+  ADD KEY `idx_action_type` (`action_type`),
+  ADD KEY `idx_entity` (`entity_type`,`entity_id`),
+  ADD KEY `idx_created_at` (`created_at`);
+
+--
+-- Indexes for table `admin_roles`
+--
+ALTER TABLE `admin_roles`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`);
+
+--
+-- Indexes for table `admin_users`
+--
+ALTER TABLE `admin_users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `role_id` (`role_id`),
+  ADD KEY `created_by` (`created_by`),
+  ADD KEY `idx_email` (`email`),
+  ADD KEY `idx_google_id` (`google_id`);
+
+--
+-- Indexes for table `complaints`
+--
+ALTER TABLE `complaints`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `reference_number` (`reference_number`),
+  ADD KEY `idx_reference` (`reference_number`),
+  ADD KEY `idx_status` (`status`),
+  ADD KEY `idx_date_petsa` (`date_petsa`);
+
+--
+-- Indexes for table `complaint_assignments`
+--
+ALTER TABLE `complaint_assignments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `assigned_by` (`assigned_by`),
+  ADD KEY `idx_complaint_id` (`complaint_id`);
+
+--
+-- Indexes for table `complaint_documents`
+--
+ALTER TABLE `complaint_documents`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_complaint_id` (`complaint_id`);
+
+--
+-- Indexes for table `complaint_history`
+--
+ALTER TABLE `complaint_history`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_complaint_id` (`complaint_id`);
+
+--
+-- Indexes for table `email_logs`
+--
+ALTER TABLE `email_logs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_recipient` (`recipient_email`),
+  ADD KEY `idx_event_type` (`event_type`),
+  ADD KEY `idx_reference_id` (`reference_id`),
+  ADD KEY `idx_status` (`status`),
+  ADD KEY `idx_created_at` (`created_at`),
+  ADD KEY `idx_duplicate_check` (`recipient_email`,`event_type`,`reference_id`,`status`);
+
+--
+-- Indexes for table `password_reset_tokens`
+--
+ALTER TABLE `password_reset_tokens`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `idx_token` (`token`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `activity_log`
+--
+ALTER TABLE `activity_log`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=612;
+
+--
+-- AUTO_INCREMENT for table `admin_roles`
+--
+ALTER TABLE `admin_roles`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT for table `admin_users`
+--
+ALTER TABLE `admin_users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `complaints`
+--
+ALTER TABLE `complaints`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+
+--
+-- AUTO_INCREMENT for table `complaint_assignments`
+--
+ALTER TABLE `complaint_assignments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `complaint_documents`
+--
+ALTER TABLE `complaint_documents`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+
+--
+-- AUTO_INCREMENT for table `complaint_history`
+--
+ALTER TABLE `complaint_history`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
+
+--
+-- AUTO_INCREMENT for table `email_logs`
+--
+ALTER TABLE `email_logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+
+--
+-- AUTO_INCREMENT for table `password_reset_tokens`
+--
+ALTER TABLE `password_reset_tokens`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `activity_log`
+--
+ALTER TABLE `activity_log`
+  ADD CONSTRAINT `activity_log_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `admin_users` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `admin_users`
+--
+ALTER TABLE `admin_users`
+  ADD CONSTRAINT `admin_users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `admin_roles` (`id`),
+  ADD CONSTRAINT `admin_users_ibfk_2` FOREIGN KEY (`created_by`) REFERENCES `admin_users` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `complaint_assignments`
+--
+ALTER TABLE `complaint_assignments`
+  ADD CONSTRAINT `complaint_assignments_ibfk_1` FOREIGN KEY (`complaint_id`) REFERENCES `complaints` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `complaint_assignments_ibfk_2` FOREIGN KEY (`assigned_by`) REFERENCES `admin_users` (`id`);
+
+--
+-- Constraints for table `complaint_documents`
+--
+ALTER TABLE `complaint_documents`
+  ADD CONSTRAINT `complaint_documents_ibfk_1` FOREIGN KEY (`complaint_id`) REFERENCES `complaints` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `complaint_history`
+--
+ALTER TABLE `complaint_history`
+  ADD CONSTRAINT `complaint_history_ibfk_1` FOREIGN KEY (`complaint_id`) REFERENCES `complaints` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `password_reset_tokens`
+--
+ALTER TABLE `password_reset_tokens`
+  ADD CONSTRAINT `password_reset_tokens_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `admin_users` (`id`) ON DELETE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
