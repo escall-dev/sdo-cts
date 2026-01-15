@@ -335,5 +335,331 @@ class ComplaintAdmin {
         $result = $this->db->query($sql)->fetch();
         return $result['latest'];
     }
+
+    /**
+     * Build analytics WHERE clause and params
+     */
+    private function buildAnalyticsWhere($filters) {
+        $where = " WHERE 1=1";
+        $params = [];
+
+        if (!empty($filters['status'])) {
+            $where .= " AND c.status = ?";
+            $params[] = $filters['status'];
+        }
+
+        if (!empty($filters['unit'])) {
+            $where .= " AND c.assigned_unit = ?";
+            $params[] = $filters['unit'];
+        }
+
+        if (!empty($filters['department'])) {
+            $where .= " AND c.referred_to = ?";
+            $params[] = $filters['department'];
+        }
+
+        if (!empty($filters['school'])) {
+            $where .= " AND c.involved_school_office_unit = ?";
+            $params[] = $filters['school'];
+        }
+
+        if (!empty($filters['date_from'])) {
+            $where .= " AND DATE(c.created_at) >= ?";
+            $params[] = $filters['date_from'];
+        }
+
+        if (!empty($filters['date_to'])) {
+            $where .= " AND DATE(c.created_at) <= ?";
+            $params[] = $filters['date_to'];
+        }
+
+        return [$where, $params];
+    }
+
+    /**
+     * Build SQL CASE expression for complaint type
+     */
+    private function buildComplaintTypeCase() {
+        $keywordConditions = [];
+        foreach (COMPLAINT_TYPE_KEYWORDS as $keyword) {
+            $keyword = strtolower($keyword);
+            $keywordConditions[] = "LOWER(c.referred_to_other) LIKE '%" . $keyword . "%'";
+        }
+        $keywordSql = implode(' OR ', $keywordConditions);
+
+        $case = "CASE ";
+        if (!empty($keywordSql)) {
+            $case .= "WHEN c.referred_to = 'Others' AND (" . $keywordSql . ") THEN 'it' ";
+        }
+
+        foreach (COMPLAINT_TYPE_MAP as $referredTo => $type) {
+            $case .= "WHEN c.referred_to = '" . $referredTo . "' THEN '" . $type . "' ";
+        }
+
+        $case .= "ELSE 'admin' END";
+        return $case;
+    }
+
+    /**
+     * Build a keyword frequency list from narration
+     */
+    private function buildKeywordFrequency($rows, $limit = 10) {
+        $stopwords = [
+            'the','and','for','with','that','this','have','has','had','not','you','your','yours','are','was','were',
+            'from','their','they','them','she','his','her','its','into','out','about','there','here','what','when',
+            'where','which','who','whom','will','would','shall','should','can','could','may','might','been','being',
+            'also','because','while','upon','after','before','than','then','just','only','other','some','more',
+            'complaint','complaints','please','attach','attached','documents','document','certified','true','copies',
+            'evidence','affidavits','witnesses','privacy','notice','personal','information','deped','office','school'
+        ];
+        $stopwords = array_flip($stopwords);
+        $counts = [];
+
+        foreach ($rows as $row) {
+            $text = strtolower((string)($row['narration_complaint'] ?? ''));
+            if ($text === '') {
+                continue;
+            }
+            $text = preg_replace('/[^a-z0-9\s]/', ' ', $text);
+            $words = preg_split('/\s+/', $text, -1, PREG_SPLIT_NO_EMPTY);
+
+            foreach ($words as $word) {
+                if (strlen($word) < 3) {
+                    continue;
+                }
+                if (isset($stopwords[$word])) {
+                    continue;
+                }
+                $counts[$word] = ($counts[$word] ?? 0) + 1;
+            }
+        }
+
+        arsort($counts);
+        $result = [];
+        foreach (array_slice($counts, 0, $limit, true) as $word => $count) {
+            $result[] = ['keyword' => $word, 'count' => $count];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get analytics payload for dashboard
+     */
+    public function getAnalytics($filters = []) {
+        [$whereSql, $params] = $this->buildAnalyticsWhere($filters);
+        $typeCase = $this->buildComplaintTypeCase();
+        $unitReceivedExpr = "COALESCE(NULLIF(c.assigned_unit, ''), c.referred_to)";
+
+        $daily = $this->db->query(
+            "SELECT DATE(c.created_at) as period, COUNT(*) as total
+             FROM complaints c {$whereSql}
+             GROUP BY DATE(c.created_at)
+             ORDER BY period ASC",
+            $params
+        )->fetchAll();
+
+        $weekly = $this->db->query(
+            "SELECT YEARWEEK(c.created_at, 3) as period, MIN(DATE(c.created_at)) as start_date, COUNT(*) as total
+             FROM complaints c {$whereSql}
+             GROUP BY YEARWEEK(c.created_at, 3)
+             ORDER BY period ASC",
+            $params
+        )->fetchAll();
+
+        $monthly = $this->db->query(
+            "SELECT DATE_FORMAT(c.created_at, '%Y-%m') as period, COUNT(*) as total
+             FROM complaints c {$whereSql}
+             GROUP BY DATE_FORMAT(c.created_at, '%Y-%m')
+             ORDER BY period ASC",
+            $params
+        )->fetchAll();
+
+        $statusTotals = $this->db->query(
+            "SELECT c.status, COUNT(*) as total
+             FROM complaints c {$whereSql}
+             GROUP BY c.status",
+            $params
+        )->fetchAll();
+
+        $statusAvgTimes = $this->db->query(
+            "SELECT ch.status, AVG(TIMESTAMPDIFF(HOUR, c.created_at, ch.status_at)) as avg_hours
+             FROM complaints c
+             JOIN (
+                 SELECT complaint_id, status, MIN(created_at) as status_at
+                 FROM complaint_history
+                 GROUP BY complaint_id, status
+             ) ch ON ch.complaint_id = c.id
+             {$whereSql}
+             GROUP BY ch.status",
+            $params
+        )->fetchAll();
+
+        $firstResponse = $this->db->query(
+            "SELECT AVG(TIMESTAMPDIFF(HOUR, c.created_at, COALESCE(c.accepted_at, fr.first_response_at))) as avg_hours
+             FROM complaints c
+             LEFT JOIN (
+                 SELECT complaint_id, MIN(created_at) as first_response_at
+                 FROM complaint_history
+                 WHERE status IN ('accepted','in_progress','resolved','closed')
+                 GROUP BY complaint_id
+             ) fr ON fr.complaint_id = c.id
+             {$whereSql}
+             AND (c.accepted_at IS NOT NULL OR fr.first_response_at IS NOT NULL)",
+            $params
+        )->fetch();
+
+        $resolutionTime = $this->db->query(
+            "SELECT AVG(TIMESTAMPDIFF(HOUR, c.created_at, r.resolved_at)) as avg_hours
+             FROM complaints c
+             JOIN (
+                 SELECT complaint_id, MIN(created_at) as resolved_at
+                 FROM complaint_history
+                 WHERE status IN ('resolved','closed')
+                 GROUP BY complaint_id
+             ) r ON r.complaint_id = c.id
+             {$whereSql}",
+            $params
+        )->fetch();
+
+        $targetDays = max(1, intval($filters['target_days'] ?? 14));
+        $overdueParams = array_merge($params, [$targetDays]);
+        $overdueCount = $this->db->query(
+            "SELECT COUNT(*) as total
+             FROM complaints c {$whereSql}
+             AND c.status NOT IN ('resolved','closed')
+             AND DATEDIFF(CURRENT_DATE(), DATE(c.created_at)) > ?",
+            $overdueParams
+        )->fetch();
+
+        $overdueList = $this->db->query(
+            "SELECT c.id, c.reference_number, c.status,
+                    DATEDIFF(CURRENT_DATE(), DATE(c.created_at)) as days_open
+             FROM complaints c {$whereSql}
+             AND c.status NOT IN ('resolved','closed')
+             AND DATEDIFF(CURRENT_DATE(), DATE(c.created_at)) > ?
+             ORDER BY days_open DESC
+             LIMIT 10",
+            $overdueParams
+        )->fetchAll();
+
+        $typeDistribution = $this->db->query(
+            "SELECT {$typeCase} as type, COUNT(*) as total
+             FROM complaints c {$whereSql}
+             GROUP BY type
+             ORDER BY total DESC",
+            $params
+        )->fetchAll();
+
+        $typeTrends = $this->db->query(
+            "SELECT DATE_FORMAT(c.created_at, '%Y-%m') as period, {$typeCase} as type, COUNT(*) as total
+             FROM complaints c {$whereSql}
+             GROUP BY period, type
+             ORDER BY period ASC",
+            $params
+        )->fetchAll();
+
+        $filedByUnit = $this->db->query(
+            "SELECT c.involved_school_office_unit as unit, COUNT(*) as total
+             FROM complaints c {$whereSql}
+             GROUP BY c.involved_school_office_unit
+             ORDER BY total DESC",
+            $params
+        )->fetchAll();
+
+        $receivedByUnit = $this->db->query(
+            "SELECT {$unitReceivedExpr} as unit, COUNT(*) as total
+             FROM complaints c {$whereSql}
+             GROUP BY unit
+             ORDER BY total DESC",
+            $params
+        )->fetchAll();
+
+        $resolutionRateByUnit = $this->db->query(
+            "SELECT {$unitReceivedExpr} as unit,
+                    COUNT(*) as total,
+                    SUM(CASE WHEN c.status IN ('resolved','closed') THEN 1 ELSE 0 END) as resolved_total
+             FROM complaints c {$whereSql}
+             GROUP BY unit
+             ORDER BY total DESC",
+            $params
+        )->fetchAll();
+
+        $handlingTimeByUnit = $this->db->query(
+            "SELECT {$unitReceivedExpr} as unit,
+                    AVG(TIMESTAMPDIFF(HOUR, COALESCE(c.accepted_at, c.created_at), r.resolved_at)) as avg_hours
+             FROM complaints c
+             JOIN (
+                 SELECT complaint_id, MIN(created_at) as resolved_at
+                 FROM complaint_history
+                 WHERE status IN ('resolved','closed')
+                 GROUP BY complaint_id
+             ) r ON r.complaint_id = c.id
+             {$whereSql}
+             GROUP BY unit
+             ORDER BY avg_hours ASC",
+            $params
+        )->fetchAll();
+
+        $repeatComplainants = $this->db->query(
+            "SELECT c.email_address, c.name_pangalan, COUNT(*) as total
+             FROM complaints c {$whereSql}
+             AND c.email_address <> ''
+             GROUP BY c.email_address, c.name_pangalan
+             HAVING COUNT(*) > 1
+             ORDER BY total DESC
+             LIMIT 10",
+            $params
+        )->fetchAll();
+
+        $narrations = $this->db->query(
+            "SELECT c.narration_complaint FROM complaints c {$whereSql}",
+            $params
+        )->fetchAll();
+        $keywordFrequency = $this->buildKeywordFrequency($narrations, 12);
+
+        $locationCounts = $this->db->query(
+            "SELECT c.involved_school_office_unit as location, COUNT(*) as total
+             FROM complaints c {$whereSql}
+             GROUP BY c.involved_school_office_unit
+             ORDER BY total DESC
+             LIMIT 12",
+            $params
+        )->fetchAll();
+
+        return [
+            'volume' => [
+                'daily' => $daily,
+                'weekly' => $weekly,
+                'monthly' => $monthly
+            ],
+            'status' => [
+                'totals' => $statusTotals,
+                'avg_times' => $statusAvgTimes
+            ],
+            'response' => [
+                'avg_first_response_hours' => $firstResponse['avg_hours'] ?? null,
+                'avg_resolution_hours' => $resolutionTime['avg_hours'] ?? null,
+                'overdue_count' => $overdueCount['total'] ?? 0,
+                'overdue_list' => $overdueList,
+                'target_days' => $targetDays
+            ],
+            'types' => [
+                'distribution' => $typeDistribution,
+                'trends' => $typeTrends
+            ],
+            'units' => [
+                'filed' => $filedByUnit,
+                'received' => $receivedByUnit,
+                'resolution' => $resolutionRateByUnit,
+                'handling_time' => $handlingTimeByUnit
+            ],
+            'users' => [
+                'repeat' => $repeatComplainants,
+                'keywords' => $keywordFrequency
+            ],
+            'locations' => $locationCounts
+        ];
+    }
 }
 

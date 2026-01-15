@@ -107,6 +107,25 @@ define('UNITS', [
     'SGOD' => 'SGOD: School Governance and Operations Division (M&E, SocMob, Planning & Research, HRD, Facilities, School Health)'
 ]);
 
+// Complaint type mapping (derived from referred_to + referred_to_other)
+define('COMPLAINT_TYPE_MAP', [
+    'OSDS' => 'admin',
+    'SGOD' => 'facility',
+    'CID' => 'academic',
+    'Others' => 'admin'
+]);
+
+define('COMPLAINT_TYPE_LABELS', [
+    'facility' => 'Facility',
+    'academic' => 'Academic',
+    'it' => 'IT',
+    'admin' => 'Admin'
+]);
+
+define('COMPLAINT_TYPE_KEYWORDS', [
+    'it', 'ict', 'computer', 'network', 'internet', 'wifi', 'email', 'system', 'server'
+]);
+
 // Permission definitions
 define('PERMISSIONS', [
     'complaints.view' => 'View complaints',
@@ -130,6 +149,21 @@ if (!function_exists('getUnitDisplayName')) {
             return '-';
         }
         return defined('UNITS') && isset(UNITS[$unitCode]) ? UNITS[$unitCode] : $unitCode;
+    }
+}
+
+if (!function_exists('getComplaintType')) {
+    function getComplaintType($referredTo, $referredOther = '') {
+        $type = COMPLAINT_TYPE_MAP[$referredTo] ?? 'admin';
+        $other = strtolower(trim((string)$referredOther));
+        if ($referredTo === 'Others' && $other !== '') {
+            foreach (COMPLAINT_TYPE_KEYWORDS as $keyword) {
+                if (strpos($other, $keyword) !== false) {
+                    return 'it';
+                }
+            }
+        }
+        return $type;
     }
 }
 

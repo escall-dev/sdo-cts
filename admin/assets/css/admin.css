@@ -330,6 +330,39 @@ body {
     min-height: 44px;
 }
 
+.nav-group {
+    margin-bottom: 6px;
+}
+
+.nav-submenu {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    margin: 4px 0 8px 36px;
+}
+
+.nav-group.open .nav-submenu {
+    display: flex;
+}
+
+.nav-subitem {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-base);
+}
+
+.nav-subitem:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar.collapsed .nav-submenu {
+    display: none !important;
+}
+
 .nav-item:hover {
     background: rgba(255, 255, 255, 0.1);
     color: white;

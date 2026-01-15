@@ -29,6 +29,7 @@ try {
 // Get page title
 $pageTitles = [
     'index' => 'Dashboard',
+    'analytics' => 'Analytics',
     'complaints' => 'Complaint Management',
     'complaint-view' => 'View Complaint',
     'users' => 'User Management',
@@ -80,6 +81,13 @@ $pageTitle = $pageTitles[$currentPage] ?? 'Admin Panel';
                     <span class="nav-text">Dashboard</span>
                 </a>
                 
+                <?php if ($auth->hasPermission('reports.view') || $auth->hasPermission('complaints.view')): ?>
+                <a href="/SDO-cts/admin/analytics.php" class="nav-item <?php echo $currentPage === 'analytics' ? 'active' : ''; ?>" data-tooltip="Analytics">
+                    <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+                    <span class="nav-text">Analytics</span>
+                </a>
+                <?php endif; ?>
+
                 <?php if ($auth->hasPermission('complaints.view')): ?>
                 <a href="/SDO-cts/admin/complaints.php" class="nav-item <?php echo in_array($currentPage, ['complaints', 'complaint-view']) ? 'active' : ''; ?>" data-tooltip="Complaints" id="nav-complaints">
                     <span class="nav-icon">
