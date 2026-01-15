@@ -1379,7 +1379,7 @@ function isPrintablePdf($filename) {
                             <div class="print-header">
                                 <img src="/SDO-cts/assets/img/sdo-logo.jpg" alt="SDO Logo" class="sdo-logo">
                                 <div>
-                                    <div class="print-title">San Pedro Division Office</div>
+                                    <div class="print-title">Schools Division office of San Pedro City</div>
                                     <div class="print-subtitle">${categoryLabel}</div>
                                 </div>
                                 <img src="/SDO-cts/assets/img/bagongpilpinas-logo.png" alt="Bagong Pilipinas">
