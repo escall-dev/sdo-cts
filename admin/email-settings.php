@@ -195,7 +195,7 @@ include __DIR__ . '/includes/header.php';
                     <label for="test_email">Recipient Email Address</label>
                     <input type="email" id="test_email" name="test_email" class="form-control" 
                            placeholder="Enter email to send test" required
-                           value="<?php echo htmlspecialchars($auth->getUser()['email'] ?? ''); ?>">
+                           value="<?php echo htmlspecialchars($_POST['test_email'] ?? 'ict.sanpedrocity@deped.gov.ph'); ?>">
                     <small class="form-help">A test email will be sent to this address to verify the configuration.</small>
                 </div>
 
