@@ -31,6 +31,9 @@ $totalPages = ceil($totalCount / $perPage);
 
 // Status config
 $statusConfig = STATUS_CONFIG;
+if (isset($statusConfig['resolved'])) {
+    $statusConfig['resolved']['label'] = 'Closed';
+}
 
 include __DIR__ . '/includes/header.php';
 ?>

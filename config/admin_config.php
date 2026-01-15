@@ -79,7 +79,7 @@ define('STATUS_CONFIG', [
         'label' => 'Resolved',
         'color' => '#10b981',
         'bg' => '#d1fae5',
-        'icon' => '<i class="fas fa-check-double"></i>'
+        'icon' => '<i class="fas fa-lock"></i>'
     ],
     'returned' => [
         'label' => 'Returned',
