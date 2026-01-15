@@ -117,13 +117,6 @@ $pageTitle = $pageTitles[$currentPage] ?? 'Admin Panel';
                     <span class="nav-text">My Profile</span>
                 </a>
                 
-                <?php if ($auth->hasPermission('settings.view')): ?>
-                <a href="/SDO-cts/admin/email-settings.php" class="nav-item <?php echo in_array($currentPage, ['email-settings', 'email-logs']) ? 'active' : ''; ?>" data-tooltip="Email Settings">
-                    <span class="nav-icon"><i class="fas fa-envelope"></i></span>
-                    <span class="nav-text">Email Settings</span>
-                </a>
-                <?php endif; ?>
-                
                 <a href="/SDO-cts/" class="nav-item" target="_blank" data-tooltip="View Public Site">
                     <span class="nav-icon"><i class="fas fa-globe"></i></span>
                     <span class="nav-text">View CTS</span>

@@ -41,8 +41,7 @@ $logs = $emailLogModel->getAll($filters, $page, $perPage);
 $totalLogs = $emailLogModel->getCount($filters);
 $totalPages = ceil($totalLogs / $perPage);
 
-// Get stats directly from database to ensure they work
-$db = Database::getInstance();
+// Stats based on the same filters used for the table (exclude status for breakdown)
 $stats = [
     'total_sent' => 0,
     'total_failed' => 0,
@@ -50,18 +49,18 @@ $stats = [
     'today' => 0
 ];
 
-// Direct queries for statistics
-$result = $db->query("SELECT COUNT(*) as cnt FROM email_logs WHERE status = 'sent'", [])->fetch();
-$stats['total_sent'] = (int)($result['cnt'] ?? 0);
+$statFilters = $filters;
+unset($statFilters['status']);
 
-$result = $db->query("SELECT COUNT(*) as cnt FROM email_logs WHERE status = 'failed'", [])->fetch();
-$stats['total_failed'] = (int)($result['cnt'] ?? 0);
+$stats['total_sent'] = $emailLogModel->getCount(array_merge($statFilters, ['status' => 'sent']));
+$stats['total_failed'] = $emailLogModel->getCount(array_merge($statFilters, ['status' => 'failed']));
+$stats['total_skipped'] = $emailLogModel->getCount(array_merge($statFilters, ['status' => 'skipped']));
 
-$result = $db->query("SELECT COUNT(*) as cnt FROM email_logs WHERE status = 'skipped'", [])->fetch();
-$stats['total_skipped'] = (int)($result['cnt'] ?? 0);
-
-$result = $db->query("SELECT COUNT(*) as cnt FROM email_logs WHERE DATE(created_at) = CURDATE()", [])->fetch();
-$stats['today'] = (int)($result['cnt'] ?? 0);
+$today = date('Y-m-d');
+$todayFilters = $statFilters;
+$todayFilters['date_from'] = $today;
+$todayFilters['date_to'] = $today;
+$stats['today'] = $emailLogModel->getCount($todayFilters);
 
 // Include header
 include __DIR__ . '/includes/header.php';
