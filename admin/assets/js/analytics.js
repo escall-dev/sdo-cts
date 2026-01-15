@@ -266,6 +266,9 @@ function updateUnitPerformance(unitsData) {
         }));
     }
 
+    const totalRowIndex = rows.findIndex(row => row.unit === '-' || row.unit === '');
+    const totalRow = totalRowIndex >= 0 ? rows.splice(totalRowIndex, 1)[0] : null;
+
     if (analyticsState.sort === 'response') {
         rows.sort((a, b) => (a.avg_hours ?? Infinity) - (b.avg_hours ?? Infinity));
     } else if (analyticsState.sort === 'resolution') {
@@ -274,9 +277,14 @@ function updateUnitPerformance(unitsData) {
         rows.sort((a, b) => (b.total ?? 0) - (a.total ?? 0));
     }
 
-    rows.slice(0, 10).forEach(row => {
+    const displayRows = rows.slice(0, totalRow ? 9 : 10);
+    if (totalRow) {
+        displayRows.push(totalRow);
+    }
+
+    displayRows.forEach(row => {
         const tr = document.createElement('tr');
-        const unitLabel = window.analyticsConfig.unitLabels[row.unit] || row.unit;
+        const unitLabel = row.unit === '-' || row.unit === '' ? 'Total' : (window.analyticsConfig.unitLabels[row.unit] || row.unit);
         tr.innerHTML = `
             <td>${unitLabel}</td>
             <td>${formatNumber(row.total)}</td>
@@ -313,8 +321,22 @@ function updateUserAnalytics(usersData) {
 }
 
 function updateLocationChart(locations) {
-    const labels = locations.map(row => row.location || '-');
-    const totals = locations.map(row => row.total);
+    const normalRows = [];
+    let totalRow = null;
+
+    locations.forEach(row => {
+        const rawLocation = row.location ?? '';
+        const isTotal = rawLocation === '' || rawLocation === '-';
+        if (isTotal) {
+            totalRow = { label: 'Total', total: row.total };
+        } else {
+            normalRows.push({ label: rawLocation, total: row.total });
+        }
+    });
+
+    const orderedRows = totalRow ? [...normalRows, totalRow] : normalRows;
+    const labels = orderedRows.map(row => row.label);
+    const totals = orderedRows.map(row => row.total);
     const config = buildBarConfig(labels, totals, 'Complaints by Location', '#1b6ca8');
 
     if (!analyticsState.charts.location) {
