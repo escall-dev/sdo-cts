@@ -479,6 +479,28 @@ function bindFilters() {
         loadAnalytics();
     });
 
+    // Ensure Enter key triggers form submission on all inputs and selects
+    // Use capture phase to handle before admin.js generic handler
+    form.querySelectorAll('input, select').forEach(input => {
+        input.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+                loadAnalytics();
+            }
+        }, true);
+    });
+
+    // Also handle keypress on the form level
+    form.addEventListener('keypress', event => {
+        if (event.key === 'Enter' && event.target.tagName !== 'TEXTAREA') {
+            event.preventDefault();
+            event.stopPropagation();
+            loadAnalytics();
+        }
+    }, true);
+
     resetBtn.addEventListener('click', () => {
         form.reset();
         document.getElementById('filterTargetDays').value = 14;
