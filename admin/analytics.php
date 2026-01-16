@@ -40,7 +40,6 @@ include __DIR__ . '/includes/header.php';
         <button class="tab-button" data-target="response">Response</button>
         <button class="tab-button" data-target="categories">Categories</button>
         <button class="tab-button" data-target="units">Units</button>
-        <button class="tab-button" data-target="users">Users</button>
         <button class="tab-button" data-target="locations">Locations</button>
         <button class="tab-button" data-target="trends">Trends</button>
         <button class="tab-button" data-target="exports">Exports</button>
@@ -228,43 +227,6 @@ include __DIR__ . '/includes/header.php';
                         </thead>
                         <tbody></tbody>
                     </table>
-                </div>
-            </div>
-        </section>
-
-        <section class="dashboard-card" id="users">
-            <div class="card-header">
-                <h2><i class="fas fa-users"></i> User Analytics</h2>
-            </div>
-            <div class="card-body analytics-two-col">
-                <div class="analytics-table-card">
-                    <h3>Repeat Complainants</h3>
-                    <div class="table-responsive">
-                        <table class="data-table" id="repeatComplainantsTable">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Count</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="analytics-table-card">
-                    <h3>Most Frequent Issues</h3>
-                    <div class="table-responsive">
-                        <table class="data-table" id="frequentIssuesTable">
-                            <thead>
-                                <tr>
-                                    <th>Keyword</th>
-                                    <th>Mentions</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
                 </div>
             </div>
         </section>

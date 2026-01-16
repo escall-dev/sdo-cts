@@ -295,31 +295,6 @@ function updateUnitPerformance(unitsData) {
     });
 }
 
-function updateUserAnalytics(usersData) {
-    const repeatBody = document.querySelector('#repeatComplainantsTable tbody');
-    repeatBody.innerHTML = '';
-    usersData.repeat.forEach(row => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${row.name_pangalan || '-'}</td>
-            <td>${row.email_address}</td>
-            <td>${formatNumber(row.total)}</td>
-        `;
-        repeatBody.appendChild(tr);
-    });
-
-    const keywordBody = document.querySelector('#frequentIssuesTable tbody');
-    keywordBody.innerHTML = '';
-    usersData.keywords.forEach(row => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${row.keyword}</td>
-            <td>${formatNumber(row.count)}</td>
-        `;
-        keywordBody.appendChild(tr);
-    });
-}
-
 function updateLocationChart(locations) {
     const normalRows = [];
     let totalRow = null;
@@ -442,7 +417,6 @@ async function loadAnalytics() {
     updateResponseMetrics(data.analytics.response);
     updateTypeCharts(data.analytics.types);
     updateUnitPerformance(data.analytics.units);
-    updateUserAnalytics(data.analytics.users);
     updateLocationChart(data.analytics.locations);
     updateForecast(data.analytics.trends, data.analytics.volume);
     updateSummary(data.analytics);
