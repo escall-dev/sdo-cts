@@ -1437,29 +1437,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 <head>
                     <title>Print Document</title>
                     <style>
-                        body { margin: 0; color: #111827; font-family: Arial, sans-serif; }
-                        .print-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 2px solid #111827; }
-                        .print-header img { height: 48px; width: auto; }
-                        .print-header .sdo-logo { border-radius: 50%; }
-                        .print-title { text-align: center; flex: 1; font-size: 14px; font-weight: 700; text-transform: uppercase; }
-                        .print-subtitle { text-align: center; font-size: 12px; font-weight: 600; margin-top: 4px; }
-                        .print-body { padding: 18px 24px; }
-                        .doc-image { width: 100%; height: auto; display: block; border: 1px solid #e5e7eb; }
+                        body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+                        img { max-width: 100%; max-height: 100vh; object-fit: contain; }
                         @media print { body { margin: 0; } img { max-width: 100%; height: auto; } }
                     </style>
                 </head>
                 <body>
-                    <div class="print-header">
-                        <img src="/SDO-cts/assets/img/sdo-logo.jpg" alt="SDO Logo" class="sdo-logo">
-                        <div>
-                            <div class="print-title">School Division Office of San Pedro City - Complaint Tracking System</div>
-                            <div class="print-subtitle">Complaint Attachment</div>
-                        </div>
-                        <img src="/SDO-cts/assets/img/bagongpilpinas-logo.png" alt="Bagong Pilipinas">
-                    </div>
-                    <div class="print-body">
-                        <img class="doc-image" src="${url}" onload="window.print(); window.close();" />
-                    </div>
+                    <img src="${url}" onload="window.print(); window.close();" />
                 </body>
                 </html>
             `);
