@@ -321,6 +321,8 @@ include __DIR__ . '/includes/header.php';
         page-break-inside: avoid;
         break-before: page;
         break-inside: avoid;
+        clear: both;
+        display: block;
     }
     
     .additional-page-header {
@@ -388,7 +390,7 @@ include __DIR__ . '/includes/header.php';
     }
     
     @page {
-        size: auto;
+        size: A4;
         margin: 0;
     }
     
@@ -442,6 +444,7 @@ include __DIR__ . '/includes/header.php';
             max-width: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
+            overflow: visible !important;
         }
         
         /* Form container styling for print */
@@ -459,9 +462,59 @@ include __DIR__ . '/includes/header.php';
         
         /* Additional page print styling */
         .additional-page {
+            width: 850px !important;
+            max-width: 100% !important;
+            margin: 0 auto !important;
+            padding: 30px 40px !important;
             box-shadow: none !important;
+            page-break-before: always !important;
+            break-before: page !important;
+            position: relative !important;
+            background: #fff !important;
+            box-sizing: border-box !important;
+            overflow: visible !important;
+            /* Ensure content fits within page with proper borders */
+        }
+        
+        /* Ensure header and content fit within the page */
+        .additional-page-header,
+        .additional-page-content {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
+        .additional-page-header {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            border: 1px solid #000 !important;
+            border-left: 3px solid #000 !important;
+            border-right: 3px solid #000 !important;
+            border-bottom: none !important;
+            padding: 10px !important;
+            background: #fff !important;
             margin: 0 !important;
-            page-break-before: always;
+            overflow: visible !important;
+        }
+        
+        .additional-page-content {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            border: 1px solid #000 !important;
+            border-left: 3px solid #000 !important;
+            border-right: 3px solid #000 !important;
+            border-bottom: 3px solid #000 !important;
+            padding: 5px 10px !important;
+            margin: 0 !important;
+            background: repeating-linear-gradient(
+                transparent,
+                transparent 27px,
+                #000 27px,
+                #000 28px
+            ) !important;
+            overflow: visible !important;
         }
         
         .page-indicator {
@@ -1261,10 +1314,7 @@ function saveAsPDF(button) {
                 orientation: 'portrait',
                 compress: true
             },
-            pagebreak: { 
-                mode: ['avoid-all', 'css'],
-                avoid: '.form-container, .additional-page'
-            }
+          
         };
         
         // Generate and download PDF from the visible element
@@ -1385,9 +1435,11 @@ function printDocument() {
         printWin.document.write(styles);
         printWin.document.write('<style>');
         printWin.document.write('body { margin: 0; padding: 20px; background: #fff; }');
-        printWin.document.write('.form-container { margin: 0 auto 20px; }');
-        printWin.document.write('.additional-page { margin: 20px auto; }');
-        printWin.document.write('@media print { body { padding: 0; } .form-container, .additional-page { box-shadow: none !important; } }');
+        printWin.document.write('.form-container { margin: 0 auto 20px; width: 850px; max-width: 100%; }');
+        printWin.document.write('.additional-page { margin: 20px auto; width: 850px; max-width: 100%; padding: 30px 40px; position: relative; background: #fff; page-break-before: always; }');
+        printWin.document.write('.additional-page-header { border: 1px solid #000; border-left: 3px solid #000; border-right: 3px solid #000; border-bottom: none; padding: 10px; background: #fff; }');
+        printWin.document.write('.additional-page-content { border: 1px solid #000; border-left: 3px solid #000; border-right: 3px solid #000; border-bottom: 3px solid #000; padding: 5px 10px; background: repeating-linear-gradient(transparent, transparent 27px, #000 27px, #000 28px); }');
+        printWin.document.write('@media print { body { padding: 0; margin: 0; } .form-container, .additional-page { box-shadow: none !important; } .additional-page { margin: 0 auto !important; page-break-before: always !important; } }');
         printWin.document.write('</style>');
         printWin.document.write('</head><body>');
         printWin.document.write(printContent);
