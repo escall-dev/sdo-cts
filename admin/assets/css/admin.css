@@ -1082,7 +1082,21 @@ body {
 }
 
 .unit-breakdown {
-    margin-top: 16px;
+    margin-top: 12px;
+    padding-left: 8px;
+    border-left: 2px solid var(--border-light);
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 500px;
+    }
 }
 
 .unit-breakdown h4 {
@@ -1107,6 +1121,28 @@ body {
 .unit-count {
     font-weight: 600;
     color: var(--text-primary);
+}
+
+.quick-stat-item.dropdown-toggle {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s;
+}
+
+.quick-stat-item.dropdown-toggle:hover {
+    background-color: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+}
+
+.quick-stat-item.dropdown-toggle.active .dropdown-icon {
+    transform: rotate(180deg);
+}
+
+.dropdown-icon {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    transition: transform 0.3s;
+    flex-shrink: 0;
 }
 
 /* Activity List */

@@ -293,6 +293,44 @@ class ComplaintAdmin {
         $result = $this->db->query("SELECT COUNT(*) as total FROM complaints WHERE YEARWEEK(created_at) = YEARWEEK(CURRENT_DATE())")->fetch();
         $stats['this_week'] = $result['total'];
 
+        // Filed and received by unit totals
+        $filedResult = $this->db->query(
+            "SELECT COUNT(*) as total
+             FROM complaints
+             WHERE involved_school_office_unit IS NOT NULL
+             AND involved_school_office_unit <> ''"
+        )->fetch();
+        $stats['filed_by_unit_total'] = $filedResult['total'] ?? 0;
+
+        $receivedResult = $this->db->query(
+            "SELECT COUNT(*) as total
+             FROM complaints
+             WHERE COALESCE(NULLIF(assigned_unit, ''), referred_to) IS NOT NULL
+             AND COALESCE(NULLIF(assigned_unit, ''), referred_to) <> ''"
+        )->fetch();
+        $stats['received_by_unit_total'] = $receivedResult['total'] ?? 0;
+
+        // Top offices/units involved and received (for dashboard highlights)
+        $stats['filed_by_unit_breakdown'] = $this->db->query(
+            "SELECT involved_school_office_unit as unit, COUNT(*) as total
+             FROM complaints
+             WHERE involved_school_office_unit IS NOT NULL
+             AND involved_school_office_unit <> ''
+             GROUP BY involved_school_office_unit
+             ORDER BY total DESC
+             LIMIT 5"
+        )->fetchAll();
+
+        $stats['received_by_unit_breakdown'] = $this->db->query(
+            "SELECT COALESCE(NULLIF(assigned_unit, ''), referred_to) as unit, COUNT(*) as total
+             FROM complaints
+             WHERE COALESCE(NULLIF(assigned_unit, ''), referred_to) IS NOT NULL
+             AND COALESCE(NULLIF(assigned_unit, ''), referred_to) <> ''
+             GROUP BY unit
+             ORDER BY total DESC
+             LIMIT 5"
+        )->fetchAll();
+
         // Recent trends (last 7 days)
         $result = $this->db->query("
             SELECT DATE(created_at) as date, COUNT(*) as count 

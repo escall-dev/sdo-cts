@@ -107,6 +107,66 @@ include __DIR__ . '/includes/header.php';
 
         <!-- Sidebar -->
         <div class="dashboard-sidebar">
+            <!-- Unit Routing Summary -->
+            <div class="dashboard-card quick-stats unit-routing-summary">
+                <div class="card-header">
+                    <h2><i class="fas fa-sitemap"></i> Unit Routing Summary</h2>
+                </div>
+                <div class="card-body">
+                    <div class="quick-stat-item dropdown-toggle" data-target="filed-breakdown">
+                        <span class="quick-stat-label">Filed to Unit (Office Involved)</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="quick-stat-value"><?php echo number_format($stats['filed_by_unit_total'] ?? 0); ?></span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </div>
+                    </div>
+                    <div class="unit-breakdown" id="filed-breakdown" style="display: none;">
+                        <?php if (!empty($stats['filed_by_unit_breakdown'])): ?>
+                            <?php foreach ($stats['filed_by_unit_breakdown'] as $row): ?>
+                                <?php
+                                $unitKey = $row['unit'] ?? '';
+                                $unitLabel = UNITS[$unitKey] ?? $unitKey;
+                                ?>
+                                <div class="unit-item">
+                                    <span class="unit-name"><?php echo htmlspecialchars($unitLabel ?: '-'); ?></span>
+                                    <span class="unit-count"><?php echo number_format($row['total'] ?? 0); ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="unit-item">
+                                <span class="unit-name">No data</span>
+                                <span class="unit-count">0</span>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                    <div class="quick-stat-item dropdown-toggle" data-target="received-breakdown">
+                        <span class="quick-stat-label">Received by Unit (Routed)</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="quick-stat-value"><?php echo number_format($stats['received_by_unit_total'] ?? 0); ?></span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </div>
+                    </div>
+                    <div class="unit-breakdown" id="received-breakdown" style="display: none;">
+                        <?php if (!empty($stats['received_by_unit_breakdown'])): ?>
+                            <?php foreach ($stats['received_by_unit_breakdown'] as $row): ?>
+                                <?php
+                                $unitKey = $row['unit'] ?? '';
+                                $unitLabel = UNITS[$unitKey] ?? $unitKey;
+                                ?>
+                                <div class="unit-item">
+                                    <span class="unit-name"><?php echo htmlspecialchars($unitLabel ?: '-'); ?></span>
+                                    <span class="unit-count"><?php echo number_format($row['total'] ?? 0); ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="unit-item">
+                                <span class="unit-name">No data</span>
+                                <span class="unit-count">0</span>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
             <!-- Quick Stats -->
             <div class="dashboard-card quick-stats">
                 <div class="card-header">
@@ -212,6 +272,22 @@ include __DIR__ . '/includes/header.php';
     
     setInterval(checkDashboardUpdates, REFRESH_INTERVAL);
 })();
+
+// Unit routing dropdown toggles
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const target = document.getElementById(targetId);
+            if (target) {
+                const isHidden = target.style.display === 'none';
+                target.style.display = isHidden ? 'block' : 'none';
+                this.classList.toggle('active', isHidden);
+            }
+        });
+    });
+});
 </script>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>
