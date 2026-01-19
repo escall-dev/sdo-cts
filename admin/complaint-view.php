@@ -56,7 +56,7 @@ $statusWorkflow = STATUS_WORKFLOW;
 // As a safety net for older/edge records, also treat it as uploaded-form
 // when core complainant fields are blank but there is at least one document.
 // Note: email_address is excluded from this check since bypass mode now captures email separately.
-$hasCoreFieldsEmpty = 
+$hasCoreFieldsEmpty =
     empty(trim($complaint['name_pangalan'] ?? '')) &&
     empty(trim($complaint['address_tirahan'] ?? '')) &&
     empty(trim($complaint['contact_number'] ?? '')) &&
@@ -558,407 +558,409 @@ include __DIR__ . '/includes/header.php';
     <!-- Main Content -->
     <div class="complaint-main">
         <?php if ($isUploadedForm): ?>
-            <!-- UPLOADED FORM MODE: show uploaded document(s) instead of blank template -->
-            <?php if (!empty($documents)): ?>
-            <?php
-                // Separate documents by category
-                $formDocs = [];      // handwritten_form category (complaint form)
-                $validIdDocs = [];   // valid_id category
-                $supportingDocs = []; // supporting category
-                
-                foreach ($documents as $doc) {
-                    $cat = $doc['category'] ?? 'supporting';
-                    if ($cat === 'handwritten_form') {
-                        $formDocs[] = $doc;
-                    } elseif ($cat === 'valid_id') {
-                        $validIdDocs[] = $doc;
-                    } else {
-                        $supportingDocs[] = $doc;
-                    }
-                }
-                
-                // Fallback for old records without category: use file type
-                // Images are complaint forms, others are attachments
-                if (empty($formDocs) && empty($validIdDocs) && empty($supportingDocs)) {
+                <!-- UPLOADED FORM MODE: show uploaded document(s) instead of blank template -->
+                <?php if (!empty($documents)): ?>
+                    <?php
+                    // Separate documents by category
+                    $formDocs = [];      // handwritten_form category (complaint form)
+                    $validIdDocs = [];   // valid_id category
+                    $supportingDocs = []; // supporting category
+            
                     foreach ($documents as $doc) {
-                        $ext = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
-                        if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])) {
+                        $cat = $doc['category'] ?? 'supporting';
+                        if ($cat === 'handwritten_form') {
                             $formDocs[] = $doc;
+                        } elseif ($cat === 'valid_id') {
+                            $validIdDocs[] = $doc;
                         } else {
                             $supportingDocs[] = $doc;
                         }
                     }
-                }
-                
-                // Use the first form document as the primary uploaded complaint form
-                $primaryDoc = !empty($formDocs) ? $formDocs[0] : null;
-                // Use relative path from file_path column, fallback to old structure for backward compatibility
-                $primaryUrl = $primaryDoc ? (!empty($primaryDoc['file_path']) ? "/SDO-cts/" . $primaryDoc['file_path'] : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $primaryDoc['file_name']) : '';
-                $primaryExt = $primaryDoc ? strtolower(pathinfo($primaryDoc['file_name'], PATHINFO_EXTENSION)) : '';
-                $primaryIsImage = in_array($primaryExt, ['jpg','jpeg','png','gif']);
-                $primaryIsPdf = ($primaryExt === 'pdf');
-            ?>
-            <div class="uploaded-documents-section" style="padding:20px 0;">
-                <!-- Complainant Contact Info (Email captured during bypass submission) -->
-                <?php if (!empty($complaint['email_address'])): ?>
-                <div class="complainant-contact-card" style="margin-bottom:24px;padding:16px 20px;background:linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);border:1px solid #bae6fd;border-radius:10px;display:flex;align-items:center;gap:16px;">
-                    <div style="width:44px;height:44px;background:linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                        <i class="	fas fa-envelope-open-text" style="color:#fff;font-size:18px;"></i>
-                    </div>
-                    <div style="flex:1;min-width:0;">
-                        <div style="font-size:12px;font-weight:600;color:#0369a1;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Complainant Email</div>
-                        <div style="font-size:15px;font-weight:500;color:#0c4a6e;">
-                            <a href="mailto:<?php echo htmlspecialchars($complaint['email_address']); ?>" style="color:#0c4a6e;text-decoration:none;">
-                                <?php echo htmlspecialchars($complaint['email_address']); ?>
-                            </a>
-                        </div>
-                    </div>
-                    <a href="https://mail.google.com/mail/?view=cm&to=<?php echo urlencode($complaint['email_address']); ?>" target="_blank" class="btn btn-sm btn-primary" title="Send Email via Gmail" style="color:#fff !important;">
-                        <i class="fab fa-google" style="color:#fff;"></i>
-                    </a>
-                </div>
-                <?php endif; ?>
 
-                <!-- Uploaded Complaint Form -->
-                <?php if ($primaryDoc): ?>
-                <div class="doc-category-section" style="margin-bottom:24px;">
-                    <h4 style="margin:0 0 12px;font-size:14px;font-weight:600;color:#374151;display:flex;align-items:center;gap:8px;">
-                        <i class="fas fa-file-alt" style="color:#0f4c75;"></i> Uploaded Complaint-Assisted Form:
-                    </h4>
-                    <ul class="doc-list" style="list-style:none;padding:0;margin:0;">
-                        <?php
-                            $fileExt = strtolower(pathinfo($primaryDoc['file_name'], PATHINFO_EXTENSION));
-                            $isImage = in_array($fileExt, ['jpg','jpeg','png','gif','webp']);
-                            $isPdf = ($fileExt === 'pdf');
-                            $docType = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
-                            // Use relative path from file_path column, fallback to old structure for backward compatibility
-                            $fileUrl = !empty($primaryDoc['file_path']) ? "/SDO-cts/" . $primaryDoc['file_path'] : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $primaryDoc['file_name'];
-                            $iconClass = $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file');
-                            $iconColor = $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280');
-                        ?>
-                        <li class="doc-item" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:8px;flex-wrap:nowrap;gap:12px;">
-                            <div class="doc-info" style="display:flex;align-items:center;gap:12px;min-width:0;flex:1;overflow:hidden;">
-                                <i class="fas <?php echo $iconClass; ?>" style="font-size:24px;color:<?php echo $iconColor; ?>;flex-shrink:0;"></i>
-                                <div style="min-width:0;flex:1;overflow:hidden;">
-                                    <div style="font-weight:500;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                        <?php echo htmlspecialchars($primaryDoc['original_name']); ?>
-                                    </div>
-                                    <div style="font-size:12px;color:#6b7280;">
-                                        <?php echo number_format($primaryDoc['file_size'] / 1024, 1); ?> KB
+                    // Fallback for old records without category: use file type
+                    // Images are complaint forms, others are attachments
+                    if (empty($formDocs) && empty($validIdDocs) && empty($supportingDocs)) {
+                        foreach ($documents as $doc) {
+                            $ext = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
+                            if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])) {
+                                $formDocs[] = $doc;
+                            } else {
+                                $supportingDocs[] = $doc;
+                            }
+                        }
+                    }
+
+                    // Use the first form document as the primary uploaded complaint form
+                    $primaryDoc = !empty($formDocs) ? $formDocs[0] : null;
+                    // Use relative path from file_path column, fallback to old structure for backward compatibility
+                    $primaryUrl = $primaryDoc ? (!empty($primaryDoc['file_path']) ? "/SDO-cts/" . $primaryDoc['file_path'] : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $primaryDoc['file_name']) : '';
+                    $primaryExt = $primaryDoc ? strtolower(pathinfo($primaryDoc['file_name'], PATHINFO_EXTENSION)) : '';
+                    $primaryIsImage = in_array($primaryExt, ['jpg', 'jpeg', 'png', 'gif']);
+                    $primaryIsPdf = ($primaryExt === 'pdf');
+                    ?>
+                    <div class="uploaded-documents-section" style="padding:20px 0;">
+                        <!-- Complainant Contact Info (Email captured during bypass submission) -->
+                        <?php if (!empty($complaint['email_address'])): ?>
+                            <div class="complainant-contact-card" style="margin-bottom:24px;padding:16px 20px;background:linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);border:1px solid #bae6fd;border-radius:10px;display:flex;align-items:center;gap:16px;">
+                                <div style="width:44px;height:44px;background:linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <i class="	fas fa-envelope-open-text" style="color:#fff;font-size:18px;"></i>
+                                </div>
+                                <div style="flex:1;min-width:0;">
+                                    <div style="font-size:12px;font-weight:600;color:#0369a1;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Complainant Email</div>
+                                    <div style="font-size:15px;font-weight:500;color:#0c4a6e;">
+                                        <a href="mailto:<?php echo htmlspecialchars($complaint['email_address']); ?>" style="color:#0c4a6e;text-decoration:none;">
+                                            <?php echo htmlspecialchars($complaint['email_address']); ?>
+                                        </a>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="doc-actions" style="display:flex;align-items:center;gap:8px;flex-shrink:0;flex-grow:0;">
-                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" 
-                                        data-url="<?php echo htmlspecialchars($fileUrl); ?>" 
-                                        data-type="<?php echo $docType; ?>" 
-                                        data-name="<?php echo htmlspecialchars($primaryDoc['original_name']); ?>" 
-                                        data-doc-category="Uploaded Complaint-Assisted Form"
-                                        title="View in popup">
-                                    <i class="fas fa-expand"></i> View
-                                </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $docType; ?>" data-doc-category="Uploaded Complaint-Assisted Form" title="Print">
-                                    <i class="fas fa-print"></i>
-                                </button>
-                                <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($primaryDoc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
-                                    <i class="fas fa-download" style="color:#fff;"></i> <span class="d-none d-sm-inline">Download</span>
+                                <a href="https://mail.google.com/mail/?view=cm&to=<?php echo urlencode($complaint['email_address']); ?>" target="_blank" class="btn btn-sm btn-primary" title="Send Email via Gmail" style="color:#fff !important;">
+                                    <i class="fab fa-google" style="color:#fff;"></i>
                                 </a>
                             </div>
-                        </li>
-                    </ul>
-                </div>
+                        <?php endif; ?>
+
+                        <!-- Uploaded Complaint Form -->
+                        <?php if ($primaryDoc): ?>
+                            <div class="doc-category-section" style="margin-bottom:24px;">
+                                <h4 style="margin:0 0 12px;font-size:14px;font-weight:600;color:#374151;display:flex;align-items:center;gap:8px;">
+                                    <i class="fas fa-file-alt" style="color:#0f4c75;"></i> Uploaded Complaint-Assisted Form:
+                                </h4>
+                                <ul class="doc-list" style="list-style:none;padding:0;margin:0;">
+                                    <?php
+                                    $fileExt = strtolower(pathinfo($primaryDoc['file_name'], PATHINFO_EXTENSION));
+                                    $isImage = in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                                    $isPdf = ($fileExt === 'pdf');
+                                    $docType = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
+                                    // Use relative path from file_path column, fallback to old structure for backward compatibility
+                                    $fileUrl = !empty($primaryDoc['file_path']) ? "/SDO-cts/" . $primaryDoc['file_path'] : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $primaryDoc['file_name'];
+                                    $iconClass = $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file');
+                                    $iconColor = $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280');
+                                    ?>
+                                    <li class="doc-item" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:8px;flex-wrap:nowrap;gap:12px;">
+                                        <div class="doc-info" style="display:flex;align-items:center;gap:12px;min-width:0;flex:1;overflow:hidden;">
+                                            <i class="fas <?php echo $iconClass; ?>" style="font-size:24px;color:<?php echo $iconColor; ?>;flex-shrink:0;"></i>
+                                            <div style="min-width:0;flex:1;overflow:hidden;">
+                                                <div style="font-weight:500;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                                    <?php echo htmlspecialchars($primaryDoc['original_name']); ?>
+                                                </div>
+                                                <div style="font-size:12px;color:#6b7280;">
+                                                    <?php echo number_format($primaryDoc['file_size'] / 1024, 1); ?> KB
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="doc-actions" style="display:flex;align-items:center;gap:8px;flex-shrink:0;flex-grow:0;">
+                                            <button type="button" class="btn btn-sm btn-outline doc-modal-btn" 
+                                                    data-url="<?php echo htmlspecialchars($fileUrl); ?>" 
+                                                    data-type="<?php echo $docType; ?>" 
+                                                    data-name="<?php echo htmlspecialchars($primaryDoc['original_name']); ?>" 
+                                                    data-doc-category="Uploaded Complaint-Assisted Form"
+                                                    title="View in popup">
+                                                <i class="fas fa-expand"></i> View
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $docType; ?>" data-doc-category="Uploaded Complaint-Assisted Form" title="Print">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                            <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($primaryDoc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
+                                                <i class="fas fa-download" style="color:#fff;"></i> <span class="d-none d-sm-inline">Download</span>
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        <?php else: ?>
+                            <p style="color:#666;margin-bottom:20px;">No uploaded complaint form found.</p>
+                        <?php endif; ?>
+
+                        <!-- Valid ID / Credentials -->
+                        <?php if (!empty($validIdDocs)): ?>
+                            <div class="doc-category-section" style="margin-bottom:24px;">
+                                <h4 style="margin:0 0 12px;font-size:14px;font-weight:600;color:#374151;display:flex;align-items:center;gap:8px;">
+                                    <i class="fas fa-id-card" style="color:#0f4c75;"></i> Valid ID / Credentials:
+                                </h4>
+                                <ul class="doc-list" style="list-style:none;padding:0;margin:0;">
+                                    <?php foreach ($validIdDocs as $doc):
+                                        $fileExt = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
+                                        $isImage = in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                                        $isPdf = ($fileExt === 'pdf');
+                                        $docType = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
+                                        // Use relative path from file_path column, fallback to old structure for backward compatibility
+                                        $fileUrl = !empty($doc['file_path']) ? "/SDO-cts/" . $doc['file_path'] : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
+                                        $iconClass = $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file');
+                                        $iconColor = $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280');
+                                        ?>
+                                        <li class="doc-item" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:8px;flex-wrap:nowrap;gap:12px;">
+                                            <div class="doc-info" style="display:flex;align-items:center;gap:12px;min-width:0;flex:1;overflow:hidden;">
+                                                <i class="fas <?php echo $iconClass; ?>" style="font-size:24px;color:<?php echo $iconColor; ?>;flex-shrink:0;"></i>
+                                                <div style="min-width:0;flex:1;overflow:hidden;">
+                                                    <div style="font-weight:500;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                                        <?php echo htmlspecialchars($doc['original_name']); ?>
+                                                    </div>
+                                                    <div style="font-size:12px;color:#6b7280;">
+                                                        <?php echo number_format($doc['file_size'] / 1024, 1); ?> KB
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="doc-actions" style="display:flex;align-items:center;gap:8px;flex-shrink:0;flex-grow:0;">
+                                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" 
+                                                        data-url="<?php echo htmlspecialchars($fileUrl); ?>" 
+                                                        data-type="<?php echo $docType; ?>" 
+                                                        data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" 
+                                                        data-doc-category="Valid ID / Credentials"
+                                                        title="View in popup">
+                                                    <i class="fas fa-expand"></i> View
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $docType; ?>" data-doc-category="Valid ID / Credentials" title="Print">
+                                                    <i class="fas fa-print"></i>
+                                                </button>
+                                                <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($doc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
+                                                    <i class="fas fa-download" style="color:#fff;"></i> <span class="d-none d-sm-inline">Download</span>
+                                                </a>
+                                            </div>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
+
+                        <!-- Supporting Documents -->
+                        <?php if (!empty($supportingDocs)): ?>
+                            <div class="doc-category-section" style="margin-bottom:24px;">
+                                <h4 style="margin:0 0 12px;font-size:14px;font-weight:600;color:#374151;display:flex;align-items:center;gap:8px;">
+                                    <i class="fas fa-paperclip" style="color:#0f4c75;"></i> Supporting Documents:
+                                </h4>
+                                <ul class="doc-list" style="list-style:none;padding:0;margin:0;">
+                                    <?php foreach ($supportingDocs as $doc):
+                                        $fileExt = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
+                                        $isImage = in_array($fileExt, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+                                        $isPdf = ($fileExt === 'pdf');
+                                        $docType = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
+                                        // Use relative path from file_path column, fallback to old structure for backward compatibility
+                                        $fileUrl = !empty($doc['file_path']) ? "/SDO-cts/" . $doc['file_path'] : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
+                                        $iconClass = $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file');
+                                        $iconColor = $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280');
+                                        ?>
+                                        <li class="doc-item" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:8px;flex-wrap:nowrap;gap:12px;">
+                                            <div class="doc-info" style="display:flex;align-items:center;gap:12px;min-width:0;flex:1;overflow:hidden;">
+                                                <i class="fas <?php echo $iconClass; ?>" style="font-size:24px;color:<?php echo $iconColor; ?>;flex-shrink:0;"></i>
+                                                <div style="min-width:0;flex:1;overflow:hidden;">
+                                                    <div style="font-weight:500;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                                        <?php echo htmlspecialchars($doc['original_name']); ?>
+                                                    </div>
+                                                    <div style="font-size:12px;color:#6b7280;">
+                                                        <?php echo number_format($doc['file_size'] / 1024, 1); ?> KB
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="doc-actions" style="display:flex;align-items:center;gap:8px;flex-shrink:0;flex-grow:0;">
+                                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" 
+                                                        data-url="<?php echo htmlspecialchars($fileUrl); ?>" 
+                                                        data-type="<?php echo $docType; ?>" 
+                                                        data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" 
+                                                        data-doc-category="Supporting Documents"
+                                                        title="View in popup">
+                                                    <i class="fas fa-expand"></i> View
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $docType; ?>" data-doc-category="Supporting Documents" title="Print">
+                                                    <i class="fas fa-print"></i>
+                                                </button>
+                                                <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($doc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
+                                                    <i class="fas fa-download" style="color:#fff;"></i> <span class="d-none d-sm-inline">Download</span>
+                                                </a>
+                                            </div>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 <?php else: ?>
-                <p style="color:#666;margin-bottom:20px;">No uploaded complaint form found.</p>
+                    <p>No uploaded documents found for this complaint.</p>
                 <?php endif; ?>
-
-                <!-- Valid ID / Credentials -->
-                <?php if (!empty($validIdDocs)): ?>
-                <div class="doc-category-section" style="margin-bottom:24px;">
-                    <h4 style="margin:0 0 12px;font-size:14px;font-weight:600;color:#374151;display:flex;align-items:center;gap:8px;">
-                        <i class="fas fa-id-card" style="color:#0f4c75;"></i> Valid ID / Credentials:
-                    </h4>
-                    <ul class="doc-list" style="list-style:none;padding:0;margin:0;">
-                        <?php foreach ($validIdDocs as $doc): 
-                            $fileExt = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
-                            $isImage = in_array($fileExt, ['jpg','jpeg','png','gif','webp']);
-                            $isPdf = ($fileExt === 'pdf');
-                            $docType = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
-                            // Use relative path from file_path column, fallback to old structure for backward compatibility
-                            $fileUrl = !empty($doc['file_path']) ? "/SDO-cts/" . $doc['file_path'] : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
-                            $iconClass = $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file');
-                            $iconColor = $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280');
-                        ?>
-                        <li class="doc-item" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:8px;flex-wrap:nowrap;gap:12px;">
-                            <div class="doc-info" style="display:flex;align-items:center;gap:12px;min-width:0;flex:1;overflow:hidden;">
-                                <i class="fas <?php echo $iconClass; ?>" style="font-size:24px;color:<?php echo $iconColor; ?>;flex-shrink:0;"></i>
-                                <div style="min-width:0;flex:1;overflow:hidden;">
-                                    <div style="font-weight:500;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                        <?php echo htmlspecialchars($doc['original_name']); ?>
-                                    </div>
-                                    <div style="font-size:12px;color:#6b7280;">
-                                        <?php echo number_format($doc['file_size'] / 1024, 1); ?> KB
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="doc-actions" style="display:flex;align-items:center;gap:8px;flex-shrink:0;flex-grow:0;">
-                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" 
-                                        data-url="<?php echo htmlspecialchars($fileUrl); ?>" 
-                                        data-type="<?php echo $docType; ?>" 
-                                        data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" 
-                                        data-doc-category="Valid ID / Credentials"
-                                        title="View in popup">
-                                    <i class="fas fa-expand"></i> View
-                                </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $docType; ?>" data-doc-category="Valid ID / Credentials" title="Print">
-                                    <i class="fas fa-print"></i>
-                                </button>
-                                <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($doc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
-                                    <i class="fas fa-download" style="color:#fff;"></i> <span class="d-none d-sm-inline">Download</span>
-                                </a>
-                            </div>
-                        </li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-                <?php endif; ?>
-
-                <!-- Supporting Documents -->
-                <?php if (!empty($supportingDocs)): ?>
-                <div class="doc-category-section" style="margin-bottom:24px;">
-                    <h4 style="margin:0 0 12px;font-size:14px;font-weight:600;color:#374151;display:flex;align-items:center;gap:8px;">
-                        <i class="fas fa-paperclip" style="color:#0f4c75;"></i> Supporting Documents:
-                    </h4>
-                    <ul class="doc-list" style="list-style:none;padding:0;margin:0;">
-                        <?php foreach ($supportingDocs as $doc): 
-                            $fileExt = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
-                            $isImage = in_array($fileExt, ['jpg','jpeg','png','gif','webp']);
-                            $isPdf = ($fileExt === 'pdf');
-                            $docType = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
-                            // Use relative path from file_path column, fallback to old structure for backward compatibility
-                            $fileUrl = !empty($doc['file_path']) ? "/SDO-cts/" . $doc['file_path'] : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
-                            $iconClass = $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file');
-                            $iconColor = $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280');
-                        ?>
-                        <li class="doc-item" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:8px;flex-wrap:nowrap;gap:12px;">
-                            <div class="doc-info" style="display:flex;align-items:center;gap:12px;min-width:0;flex:1;overflow:hidden;">
-                                <i class="fas <?php echo $iconClass; ?>" style="font-size:24px;color:<?php echo $iconColor; ?>;flex-shrink:0;"></i>
-                                <div style="min-width:0;flex:1;overflow:hidden;">
-                                    <div style="font-weight:500;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                        <?php echo htmlspecialchars($doc['original_name']); ?>
-                                    </div>
-                                    <div style="font-size:12px;color:#6b7280;">
-                                        <?php echo number_format($doc['file_size'] / 1024, 1); ?> KB
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="doc-actions" style="display:flex;align-items:center;gap:8px;flex-shrink:0;flex-grow:0;">
-                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" 
-                                        data-url="<?php echo htmlspecialchars($fileUrl); ?>" 
-                                        data-type="<?php echo $docType; ?>" 
-                                        data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" 
-                                        data-doc-category="Supporting Documents"
-                                        title="View in popup">
-                                    <i class="fas fa-expand"></i> View
-                                </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $docType; ?>" data-doc-category="Supporting Documents" title="Print">
-                                    <i class="fas fa-print"></i>
-                                </button>
-                                <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($doc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
-                                    <i class="fas fa-download" style="color:#fff;"></i> <span class="d-none d-sm-inline">Download</span>
-                                </a>
-                            </div>
-                        </li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-                <?php endif; ?>
-            </div>
-            <?php else: ?>
-            <p>No uploaded documents found for this complaint.</p>
-            <?php endif; ?>
         <?php else: ?>
-            <!-- STANDARD TYPED FORM MODE: show official template with overlay -->
-            <!-- FORM WITH IMAGE BACKGROUND AND TEXT OVERLAY -->
-            <div class="form-container">
-                <!-- Background Image (Official Form) -->
-                <img src="/SDO-cts/reference/COMPLAINT-ASSISTED-FORM_1.jpg" 
-                     alt="Complaint Assisted Form" 
-                     class="form-background">
+                <!-- STANDARD TYPED FORM MODE: show official template with overlay -->
+                <!-- FORM WITH IMAGE BACKGROUND AND TEXT OVERLAY -->
+                <div class="form-container">
+                    <!-- Background Image (Official Form) -->
+                    <img src="/SDO-cts/reference/COMPLAINT-ASSISTED-FORM_1.jpg" 
+                         alt="Complaint Assisted Form" 
+                         class="form-background">
                 
-                <!-- Text Overlay Layer with Positioned Field Boxes -->
-                <div class="form-overlay">
+                    <!-- Text Overlay Layer with Positioned Field Boxes -->
+                    <div class="form-overlay">
                     
-                    <!-- CTS Ticket Number -->
-                    <div class="field-box cts-ticket-box">CTS No: <?php echo htmlspecialchars($complaint['reference_number']); ?></div>
+                        <!-- CTS Ticket Number -->
+                        <div class="field-box cts-ticket-box">CTS No: <?php echo htmlspecialchars($complaint['reference_number']); ?></div>
                     
-                    <!-- Date -->
-                    <div class="field-box date-box"><?php echo date('F j, Y', strtotime($complaint['date_petsa'])); ?></div>
+                        <!-- Date -->
+                        <div class="field-box date-box"><?php echo date('F j, Y', strtotime($complaint['date_petsa'])); ?></div>
                     
-                    <!-- Complainant Information -->
-                    <div class="field-box complainant-name-box"><?php echo htmlspecialchars($complaint['name_pangalan']); ?></div>
-                    <div class="field-box complainant-address-box"><?php echo htmlspecialchars($complaint['address_tirahan']); ?></div>
-                    <div class="field-box complainant-contact-box"><?php echo htmlspecialchars($complaint['contact_number']); ?></div>
-                    <div class="field-box complainant-email-box"><?php echo htmlspecialchars($complaint['email_address']); ?></div>
+                        <!-- Complainant Information -->
+                        <div class="field-box complainant-name-box"><?php echo htmlspecialchars($complaint['name_pangalan']); ?></div>
+                        <div class="field-box complainant-address-box"><?php echo htmlspecialchars($complaint['address_tirahan']); ?></div>
+                        <div class="field-box complainant-contact-box"><?php echo htmlspecialchars($complaint['contact_number']); ?></div>
+                        <div class="field-box complainant-email-box"><?php echo htmlspecialchars($complaint['email_address']); ?></div>
                     
-                    <!-- Involved Person/Office -->
-                    <div class="field-box involved-name-box"><?php echo htmlspecialchars($complaint['involved_full_name']); ?></div>
-                    <div class="field-box involved-position-box"><?php echo htmlspecialchars($complaint['involved_position']); ?></div>
-                    <div class="field-box involved-address-box"><?php echo htmlspecialchars($complaint['involved_address']); ?></div>
-                    <div class="field-box involved-school-box"><?php echo htmlspecialchars(getUnitDisplayName($complaint['involved_school_office_unit'])); ?></div>
+                        <!-- Involved Person/Office -->
+                        <div class="field-box involved-name-box"><?php echo htmlspecialchars($complaint['involved_full_name']); ?></div>
+                        <div class="field-box involved-position-box"><?php echo htmlspecialchars($complaint['involved_position']); ?></div>
+                        <div class="field-box involved-address-box"><?php echo htmlspecialchars($complaint['involved_address']); ?></div>
+                        <div class="field-box involved-school-box"><?php echo htmlspecialchars(getUnitDisplayName($complaint['involved_school_office_unit'])); ?></div>
                     
-                    <!-- Narration (Multi-line, Controlled) -->
-                    <div class="field-box narration-box"><?php echo htmlspecialchars($complaint['narration_complaint']); ?></div>
+                        <!-- Narration (Multi-line, Controlled) -->
+                        <div class="field-box narration-box"><?php echo htmlspecialchars($complaint['narration_complaint']); ?></div>
                     
-                    <!-- Signature -->
-                    <div class="field-box signature-box"><?php echo htmlspecialchars($complaint['signature_data'] ?? $complaint['printed_name_pangalan']); ?></div>
+                        <!-- Signature -->
+                        <div class="field-box signature-box"><?php echo htmlspecialchars($complaint['signature_data'] ?? $complaint['printed_name_pangalan']); ?></div>
                     
+                    </div>
                 </div>
-            </div>
-            <div class="page-indicator no-print">Page 1 of <?php echo !empty($complaint['narration_complaint_page2']) ? '2' : '1'; ?></div>
+                <div class="page-indicator no-print">Page 1 of <?php echo !empty($complaint['narration_complaint_page2']) ? '2' : '1'; ?></div>
 
-            <!-- PAGE 2: ADDITIONAL PAGE FOR NARRATION CONTINUATION (Only if content exists) -->
-            <?php if (!empty($complaint['narration_complaint_page2'])): ?>
-            <div class="additional-page">
-                <div class="page-number-label">CTS No: <?php echo htmlspecialchars($complaint['reference_number']); ?> | Page 2</div>
+                <!-- PAGE 2: ADDITIONAL PAGE FOR NARRATION CONTINUATION (Only if content exists) -->
+                <?php if (!empty($complaint['narration_complaint_page2'])): ?>
+                    <div class="additional-page">
+                        <div class="page-number-label">CTS No: <?php echo htmlspecialchars($complaint['reference_number']); ?> | Page 2</div>
                 
-                <div class="additional-page-header">
-                    <h2>NARRATION OF COMPLAINT/INQUIRY AND RELIEF</h2>
-                    <p>(Ano ang iyong reklamo, tanong, request o suhestiyon? Ano ang gusto mong aksiyon?)</p>
-                </div>
+                        <div class="additional-page-header">
+                            <h2>NARRATION OF COMPLAINT/INQUIRY AND RELIEF</h2>
+                            <p>(Ano ang iyong reklamo, tanong, request o suhestiyon? Ano ang gusto mong aksiyon?)</p>
+                        </div>
                 
-                <div class="additional-page-content"><?php echo htmlspecialchars($complaint['narration_complaint_page2']); ?></div>
-            </div>
-            <div class="page-indicator no-print">Page 2 of 2</div>
-            <?php endif; ?>
-
-            <!-- Attached Files (Below Form) -->
-            <?php if (!empty($documents)): ?>
-            <?php
-                // Separate documents by category
-                $handwrittenDocs = array_filter($documents, function($d) { return ($d['category'] ?? '') === 'handwritten_form'; });
-                $validIdDocs = array_filter($documents, function($d) { return ($d['category'] ?? '') === 'valid_id'; });
-                $supportingDocs = array_filter($documents, function($d) { 
-                    $cat = $d['category'] ?? 'supporting';
-                    return $cat === 'supporting' || $cat === '';
-                });
-                $docIndex = 0;
-            ?>
-            <div class="attached-notice no-print">
-                <?php if (!empty($handwrittenDocs)): ?>
-                <div style="margin-bottom:16px;">
-                    <strong>📝 Uploaded Completed Complaint-Assisted Form:</strong>
-                    <ul style="margin-top:8px;list-style:none;padding:0;">
-                        <?php foreach ($handwrittenDocs as $doc): ?>
-                        <?php
-                            // Use relative path from file_path column, fallback to old structure for backward compatibility
-                            $fileUrl = !empty($doc['file_path']) ? "/SDO-cts/" . $doc['file_path'] : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
-                            $ext = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
-                            $isImage = in_array($ext, ['jpg','jpeg','png','gif']);
-                            $isPdf = ($ext === 'pdf');
-                            $type = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
-                        ?>
-                        <li style="margin-bottom:10px;padding:10px;background:#f8f9fa;border-radius:6px;display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:12px;">
-                            <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;overflow:hidden;">
-                                <i class="fas <?php echo $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file'); ?>" style="color:<?php echo $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280'); ?>;font-size:1.2rem;flex-shrink:0;"></i>
-                                <div style="min-width:0;flex:1;overflow:hidden;">
-                                    <span style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;"><?php echo htmlspecialchars($doc['original_name']); ?></span>
-                                    <span style="color:#666;font-size:12px;display:block;"><?php echo number_format($doc['file_size'] / 1024, 1); ?> KB</span>
-                                </div>
-                            </div>
-                            <div style="display:flex;gap:6px;flex-shrink:0;flex-grow:0;">
-                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" data-doc-category="Uploaded Completed Complaint-Assisted Form" title="View in popup">
-                                    <i class="fas fa-expand"></i> View
-                                </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-doc-category="Uploaded Completed Complaint-Assisted Form" title="Print">
-                                    <i class="fas fa-print"></i>
-                                </button>
-                                <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($doc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
-                                    <i class="fas fa-download" style="color:#fff;"></i> <span class="d-none d-sm-inline">Download</span>
-                                </a>
-                            </div>
-                        </li>
-                        <?php $docIndex++; endforeach; ?>
-                    </ul>
-                </div>
+                        <div class="additional-page-content"><?php echo htmlspecialchars($complaint['narration_complaint_page2']); ?></div>
+                    </div>
+                    <div class="page-indicator no-print">Page 2 of 2</div>
                 <?php endif; ?>
 
-                <?php if (!empty($validIdDocs)): ?>
-                <div style="margin-bottom:16px;">
-                    <strong>🪪 Valid ID / Credentials:</strong>
-                    <ul style="margin-top:8px;list-style:none;padding:0;">
-                        <?php foreach ($validIdDocs as $doc): ?>
-                        <?php
-                            // Use relative path from file_path column, fallback to old structure for backward compatibility
-                            $fileUrl = !empty($doc['file_path']) ? "/SDO-cts/" . $doc['file_path'] : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
-                            $ext = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
-                            $isImage = in_array($ext, ['jpg','jpeg','png','gif']);
-                            $isPdf = ($ext === 'pdf');
-                            $type = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
-                        ?>
-                        <li style="margin-bottom:10px;padding:10px;background:#f8f9fa;border-radius:6px;display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:12px;">
-                            <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;overflow:hidden;">
-                                <i class="fas <?php echo $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file'); ?>" style="color:<?php echo $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280'); ?>;font-size:1.2rem;flex-shrink:0;"></i>
-                                <div style="min-width:0;flex:1;overflow:hidden;">
-                                    <span style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;"><?php echo htmlspecialchars($doc['original_name']); ?></span>
-                                    <span style="color:#666;font-size:12px;display:block;"><?php echo number_format($doc['file_size'] / 1024, 1); ?> KB</span>
-                                </div>
+                <!-- Attached Files (Below Form) -->
+                <?php if (!empty($documents)): ?>
+                    <?php
+                    // Separate documents by category
+                    $handwrittenDocs = array_filter($documents, function ($d) {
+                        return ($d['category'] ?? '') === 'handwritten_form'; });
+                    $validIdDocs = array_filter($documents, function ($d) {
+                        return ($d['category'] ?? '') === 'valid_id'; });
+                    $supportingDocs = array_filter($documents, function ($d) {
+                        $cat = $d['category'] ?? 'supporting';
+                        return $cat === 'supporting' || $cat === '';
+                    });
+                    $docIndex = 0;
+                    ?>
+                    <div class="attached-notice no-print">
+                        <?php if (!empty($handwrittenDocs)): ?>
+                            <div style="margin-bottom:16px;">
+                                <strong>📝 Uploaded Completed Complaint-Assisted Form:</strong>
+                                <ul style="margin-top:8px;list-style:none;padding:0;">
+                                    <?php foreach ($handwrittenDocs as $doc): ?>
+                                        <?php
+                                        // Use relative path from file_path column, fallback to old structure for backward compatibility
+                                        $fileUrl = !empty($doc['file_path']) ? "/SDO-cts/" . $doc['file_path'] : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
+                                        $ext = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
+                                        $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif']);
+                                        $isPdf = ($ext === 'pdf');
+                                        $type = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
+                                        ?>
+                                        <li style="margin-bottom:10px;padding:10px;background:#f8f9fa;border-radius:6px;display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:12px;">
+                                            <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;overflow:hidden;">
+                                                <i class="fas <?php echo $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file'); ?>" style="color:<?php echo $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280'); ?>;font-size:1.2rem;flex-shrink:0;"></i>
+                                                <div style="min-width:0;flex:1;overflow:hidden;">
+                                                    <span style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;"><?php echo htmlspecialchars($doc['original_name']); ?></span>
+                                                    <span style="color:#666;font-size:12px;display:block;"><?php echo number_format($doc['file_size'] / 1024, 1); ?> KB</span>
+                                                </div>
+                                            </div>
+                                            <div style="display:flex;gap:6px;flex-shrink:0;flex-grow:0;">
+                                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" data-doc-category="Uploaded Completed Complaint-Assisted Form" title="View in popup">
+                                                    <i class="fas fa-expand"></i> View
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-doc-category="Uploaded Completed Complaint-Assisted Form" title="Print">
+                                                    <i class="fas fa-print"></i>
+                                                </button>
+                                                <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($doc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
+                                                    <i class="fas fa-download" style="color:#fff;"></i> <span class="d-none d-sm-inline">Download</span>
+                                                </a>
+                                            </div>
+                                        </li>
+                                        <?php $docIndex++; endforeach; ?>
+                                </ul>
                             </div>
-                            <div style="display:flex;gap:6px;flex-shrink:0;flex-grow:0;">
-                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" data-doc-category="Valid ID / Credentials" title="View in popup">
-                                    <i class="fas fa-expand"></i> View
-                                </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-doc-category="Valid ID / Credentials" title="Print">
-                                    <i class="fas fa-print"></i>
-                                </button>
-                                <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($doc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
-                                    <i class="fas fa-download" style="color:#fff;"></i> <span class="d-none d-sm-inline">Download</span>
-                                </a>
-                            </div>
-                        </li>
-                        <?php $docIndex++; endforeach; ?>
-                    </ul>
-                </div>
-                <?php endif; ?>
+                        <?php endif; ?>
 
-                <?php if (!empty($supportingDocs)): ?>
-                <div style="margin-bottom:16px;">
-                    <strong>📎 Supporting Documents:</strong>
-                    <ul style="margin-top:8px;list-style:none;padding:0;">
-                        <?php foreach ($supportingDocs as $doc): ?>
-                        <?php
-                            // Use relative path from file_path column, fallback to old structure for backward compatibility
-                            $fileUrl = !empty($doc['file_path']) ? "/SDO-cts/" . $doc['file_path'] : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
-                            $ext = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
-                            $isImage = in_array($ext, ['jpg','jpeg','png','gif']);
-                            $isPdf = ($ext === 'pdf');
-                            $type = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
-                        ?>
-                        <li style="margin-bottom:10px;padding:10px;background:#f8f9fa;border-radius:6px;display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:12px;">
-                            <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;overflow:hidden;">
-                                <i class="fas <?php echo $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file'); ?>" style="color:<?php echo $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280'); ?>;font-size:1.2rem;flex-shrink:0;"></i>
-                                <div style="min-width:0;flex:1;overflow:hidden;">
-                                    <span style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;"><?php echo htmlspecialchars($doc['original_name']); ?></span>
-                                    <span style="color:#666;font-size:12px;display:block;"><?php echo number_format($doc['file_size'] / 1024, 1); ?> KB</span>
-                                </div>
+                        <?php if (!empty($validIdDocs)): ?>
+                            <div style="margin-bottom:16px;">
+                                <strong>🪪 Valid ID / Credentials:</strong>
+                                <ul style="margin-top:8px;list-style:none;padding:0;">
+                                    <?php foreach ($validIdDocs as $doc): ?>
+                                        <?php
+                                        // Use relative path from file_path column, fallback to old structure for backward compatibility
+                                        $fileUrl = !empty($doc['file_path']) ? "/SDO-cts/" . $doc['file_path'] : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
+                                        $ext = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
+                                        $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif']);
+                                        $isPdf = ($ext === 'pdf');
+                                        $type = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
+                                        ?>
+                                        <li style="margin-bottom:10px;padding:10px;background:#f8f9fa;border-radius:6px;display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:12px;">
+                                            <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;overflow:hidden;">
+                                                <i class="fas <?php echo $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file'); ?>" style="color:<?php echo $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280'); ?>;font-size:1.2rem;flex-shrink:0;"></i>
+                                                <div style="min-width:0;flex:1;overflow:hidden;">
+                                                    <span style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;"><?php echo htmlspecialchars($doc['original_name']); ?></span>
+                                                    <span style="color:#666;font-size:12px;display:block;"><?php echo number_format($doc['file_size'] / 1024, 1); ?> KB</span>
+                                                </div>
+                                            </div>
+                                            <div style="display:flex;gap:6px;flex-shrink:0;flex-grow:0;">
+                                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" data-doc-category="Valid ID / Credentials" title="View in popup">
+                                                    <i class="fas fa-expand"></i> View
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-doc-category="Valid ID / Credentials" title="Print">
+                                                    <i class="fas fa-print"></i>
+                                                </button>
+                                                <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($doc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
+                                                    <i class="fas fa-download" style="color:#fff;"></i> <span class="d-none d-sm-inline">Download</span>
+                                                </a>
+                                            </div>
+                                        </li>
+                                        <?php $docIndex++; endforeach; ?>
+                                </ul>
                             </div>
-                            <div style="display:flex;gap:6px;flex-shrink:0;flex-grow:0;">
-                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" data-doc-category="Supporting Documents" title="View in popup">
-                                    <i class="fas fa-expand"></i> View
-                                </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-doc-category="Supporting Documents" title="Print">
-                                    <i class="fas fa-print"></i>
-                                </button>
-                                <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($doc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
-                                    <i class="fas fa-download" style="color:#fff;"></i> <span class="d-none d-sm-inline">Download</span>
-                                </a>
+                        <?php endif; ?>
+
+                        <?php if (!empty($supportingDocs)): ?>
+                            <div style="margin-bottom:16px;">
+                                <strong>📎 Supporting Documents:</strong>
+                                <ul style="margin-top:8px;list-style:none;padding:0;">
+                                    <?php foreach ($supportingDocs as $doc): ?>
+                                        <?php
+                                        // Use relative path from file_path column, fallback to old structure for backward compatibility
+                                        $fileUrl = !empty($doc['file_path']) ? "/SDO-cts/" . $doc['file_path'] : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
+                                        $ext = strtolower(pathinfo($doc['file_name'], PATHINFO_EXTENSION));
+                                        $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif']);
+                                        $isPdf = ($ext === 'pdf');
+                                        $type = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
+                                        ?>
+                                        <li style="margin-bottom:10px;padding:10px;background:#f8f9fa;border-radius:6px;display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:12px;">
+                                            <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;overflow:hidden;">
+                                                <i class="fas <?php echo $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file'); ?>" style="color:<?php echo $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280'); ?>;font-size:1.2rem;flex-shrink:0;"></i>
+                                                <div style="min-width:0;flex:1;overflow:hidden;">
+                                                    <span style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;"><?php echo htmlspecialchars($doc['original_name']); ?></span>
+                                                    <span style="color:#666;font-size:12px;display:block;"><?php echo number_format($doc['file_size'] / 1024, 1); ?> KB</span>
+                                                </div>
+                                            </div>
+                                            <div style="display:flex;gap:6px;flex-shrink:0;flex-grow:0;">
+                                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" data-doc-category="Supporting Documents" title="View in popup">
+                                                    <i class="fas fa-expand"></i> View
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-doc-category="Supporting Documents" title="Print">
+                                                    <i class="fas fa-print"></i>
+                                                </button>
+                                                <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($doc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
+                                                    <i class="fas fa-download" style="color:#fff;"></i> <span class="d-none d-sm-inline">Download</span>
+                                                </a>
+                                            </div>
+                                        </li>
+                                        <?php $docIndex++; endforeach; ?>
+                                </ul>
                             </div>
-                        </li>
-                        <?php $docIndex++; endforeach; ?>
-                    </ul>
-                </div>
+                        <?php endif; ?>
+                    </div>
                 <?php endif; ?>
-            </div>
-            <?php endif; ?>
         <?php endif; ?>
     </div>
 
@@ -966,33 +968,33 @@ include __DIR__ . '/includes/header.php';
     <div class="complaint-sidebar">
         <!-- Actions -->
         <?php if ($auth->hasPermission('complaints.update')): ?>
-        <div class="detail-card action-card">
-            <div class="detail-card-header">
-                <h3><i class=""></i> Actions</h3>
+            <div class="detail-card action-card">
+                <div class="detail-card-header">
+                    <h3><i class=""></i> Actions</h3>
+                </div>
+                <div class="detail-card-body">
+                    <?php $allowedTransitions = $statusWorkflow[$complaint['status']] ?? []; ?>
+                
+                    <?php if ($complaint['status'] === 'pending' && $auth->hasPermission('complaints.accept')): ?>
+                        <button type="button" class="btn btn-success btn-block" onclick="openActionModal('accept')">
+                            <i class=""></i> Accept Complaint
+                        </button>
+                        <button type="button" class="btn btn-outline btn-block btn-danger-outline" onclick="openActionModal('return')">
+                            <i class=""></i> Return Complaint
+                        </button>
+                    <?php endif; ?>
+                
+                    <?php if (!empty($allowedTransitions) && $complaint['status'] !== 'pending'): ?>
+                        <button type="button" class="btn btn-primary btn-block" onclick="openStatusModal()">
+                            <i class=""></i> Update Status
+                        </button>
+                    <?php endif; ?>
+                
+                    <?php if (empty($allowedTransitions) && $complaint['status'] !== 'pending'): ?>
+                        <p class="action-note">No further actions available for this status.</p>
+                    <?php endif; ?>
+                </div>
             </div>
-            <div class="detail-card-body">
-                <?php $allowedTransitions = $statusWorkflow[$complaint['status']] ?? []; ?>
-                
-                <?php if ($complaint['status'] === 'pending' && $auth->hasPermission('complaints.accept')): ?>
-                <button type="button" class="btn btn-success btn-block" onclick="openActionModal('accept')">
-                    <i class=""></i> Accept Complaint
-                </button>
-                <button type="button" class="btn btn-outline btn-block btn-danger-outline" onclick="openActionModal('return')">
-                    <i class=""></i> Return Complaint
-                </button>
-                <?php endif; ?>
-                
-                <?php if (!empty($allowedTransitions) && $complaint['status'] !== 'pending'): ?>
-                <button type="button" class="btn btn-primary btn-block" onclick="openStatusModal()">
-                    <i class=""></i> Update Status
-                </button>
-                <?php endif; ?>
-                
-                <?php if (empty($allowedTransitions) && $complaint['status'] !== 'pending'): ?>
-                <p class="action-note">No further actions available for this status.</p>
-                <?php endif; ?>
-            </div>
-        </div>
         <?php endif; ?>
 
         <!-- Progress Tracker -->
@@ -1010,37 +1012,37 @@ include __DIR__ . '/includes/header.php';
                 ?>
                 <div class="progress-tracker-vertical">
                     <?php foreach ($statusOrder as $index => $step): ?>
-                    <?php
-                    $stepClass = '';
-                    if ($complaint['status'] === 'returned') {
-                        $stepClass = 'returned';
-                    } elseif ($index < $currentIndex) {
-                        $stepClass = 'completed';
-                    } elseif ($index === $currentIndex) {
-                        $stepClass = 'current';
-                    }
-                    ?>
-                    <div class="progress-step <?php echo $stepClass; ?>">
-                        <div class="step-marker">
-                            <?php if ($index < $currentIndex): ?>
-                                <i class="fas fa-check"></i>
-                            <?php else: ?>
-                                <?php echo $statusConfig[$step]['icon']; ?>
-                            <?php endif; ?>
+                        <?php
+                        $stepClass = '';
+                        if ($complaint['status'] === 'returned') {
+                            $stepClass = 'returned';
+                        } elseif ($index < $currentIndex) {
+                            $stepClass = 'completed';
+                        } elseif ($index === $currentIndex) {
+                            $stepClass = 'current';
+                        }
+                        ?>
+                        <div class="progress-step <?php echo $stepClass; ?>">
+                            <div class="step-marker">
+                                <?php if ($index < $currentIndex): ?>
+                                        <i class="fas fa-check"></i>
+                                <?php else: ?>
+                                        <?php echo $statusConfig[$step]['icon']; ?>
+                                <?php endif; ?>
+                            </div>
+                            <div class="step-content">
+                                <span class="step-label"><?php echo $statusConfig[$step]['label']; ?></span>
+                            </div>
                         </div>
-                        <div class="step-content">
-                            <span class="step-label"><?php echo $statusConfig[$step]['label']; ?></span>
-                        </div>
-                    </div>
                     <?php endforeach; ?>
                     
                     <?php if ($complaint['status'] === 'returned'): ?>
-                    <div class="progress-step returned current">
-                        <div class="step-marker"><i class="fas fa-undo"></i></div>
-                        <div class="step-content">
-                            <span class="step-label">Returned</span>
+                        <div class="progress-step returned current">
+                            <div class="step-marker"><i class="fas fa-undo"></i></div>
+                            <div class="step-content">
+                                <span class="step-label">Returned</span>
+                            </div>
                         </div>
-                    </div>
                     <?php endif; ?>
                 </div>
             </div>
@@ -1054,21 +1056,21 @@ include __DIR__ . '/includes/header.php';
             <div class="detail-card-body">
                 <div class="timeline">
                     <?php foreach ($history as $entry): ?>
-                    <div class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                            <div class="timeline-status">
-                                <?php echo $statusConfig[$entry['status']]['icon'] . ' ' . $statusConfig[$entry['status']]['label']; ?>
-                            </div>
-                            <?php if ($entry['notes']): ?>
-                            <div class="timeline-notes"><?php echo htmlspecialchars($entry['notes']); ?></div>
-                            <?php endif; ?>
-                            <div class="timeline-meta">
-                                <span><?php echo htmlspecialchars($entry['admin_name'] ?? $entry['updated_by']); ?></span>
-                                <span><?php echo date('M j, Y g:i A', strtotime($entry['created_at'])); ?></span>
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-status">
+                                    <?php echo $statusConfig[$entry['status']]['icon'] . ' ' . $statusConfig[$entry['status']]['label']; ?>
+                                </div>
+                                <?php if ($entry['notes']): ?>
+                                    <div class="timeline-notes"><?php echo htmlspecialchars($entry['notes']); ?></div>
+                                <?php endif; ?>
+                                <div class="timeline-meta">
+                                    <span><?php echo htmlspecialchars($entry['admin_name'] ?? $entry['updated_by']); ?></span>
+                                    <span><?php echo date('M j, Y g:i A', strtotime($entry['created_at'])); ?></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     <?php endforeach; ?>
                 </div>
             </div>
@@ -1121,9 +1123,9 @@ include __DIR__ . '/includes/header.php';
                     <label class="form-label">New Status</label>
                     <select name="status" class="form-control" required>
                         <?php foreach ($allowedTransitions as $status): ?>
-                        <option value="<?php echo $status; ?>">
-                            <?php echo $statusConfig[$status]['label']; ?>
-                        </option>
+                            <option value="<?php echo $status; ?>">
+                                <?php echo $statusConfig[$status]['label']; ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
