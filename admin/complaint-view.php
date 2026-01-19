@@ -546,11 +546,11 @@ include __DIR__ . '/includes/header.php';
             <?php echo $statusConfig[$complaint['status']]['icon'] . ' ' . $statusConfig[$complaint['status']]['label']; ?>
         </span>
                     <button type="button" class="btn btn-outline" onclick="printDocument()">
-                        <i class="fas fa-print"></i> Print
+                        <i class="fas fa-print"></i> Print or Saved as PDF
         </button>
-        <button type="button" class="btn btn-primary" onclick="saveAsPDF(this)">
+        <!--<button type="button" class="btn btn-primary" onclick="saveAsPDF(this)">
             <i class="fas fa-file-download"></i> Save Document
-        </button>
+        </button> -->
     </div>
 </div>
 
@@ -1427,11 +1427,24 @@ function printDocument() {
         styles += style.outerHTML;
     });
     
+    // Get complainant name and CTS number for PDF filename
+    var complainantName = '<?php echo addslashes($complaint['name_pangalan'] ?? 'Complaint'); ?>';
+    var refNumber = '<?php echo htmlspecialchars($complaint['reference_number'] ?? ''); ?>';
+    
+    // Sanitize filename: remove special characters, replace spaces with underscores
+    var sanitizedName = complainantName
+        .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters
+        .replace(/\s+/g, '_') // Replace spaces with underscores
+        .substring(0, 50); // Limit length
+    
+    // Create filename: ComplainantName_CTSNumber
+    var pdfFilename = (sanitizedName || 'Complaint') + (refNumber ? '_' + refNumber : '');
+    
     // Create print window
     var printWin = window.open('', '_blank', 'width=900,height=700');
     if (printWin) {
         printWin.document.write('<!DOCTYPE html>');
-        printWin.document.write('<html><head><title>Print Complaint Form</title>');
+        printWin.document.write('<html><head><title>' + pdfFilename + '</title>');
         printWin.document.write(styles);
         printWin.document.write('<style>');
         printWin.document.write('body { margin: 0; padding: 20px; background: #fff; }');
