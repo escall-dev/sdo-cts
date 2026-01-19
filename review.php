@@ -747,6 +747,7 @@ function isPrintablePdf($filename) {
             <?php if (!empty($files)): ?>
             <?php
                 // Separate files by category for standard mode
+                $tempDirUrl = 'uploads/temp/';
                 $stdValidIdFiles = array_filter($files, function($f) {
                     return isset($f['category']) && $f['category'] === 'valid_id';
                 });
