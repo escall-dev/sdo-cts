@@ -583,11 +583,11 @@ include __DIR__ . '/includes/header.php';
                             $iconClass = $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file');
                             $iconColor = $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280');
                         ?>
-                        <li class="doc-item" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:8px;">
-                            <div class="doc-info" style="display:flex;align-items:center;gap:12px;min-width:0;flex:1;">
+                        <li class="doc-item" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:8px;flex-wrap:nowrap;gap:12px;">
+                            <div class="doc-info" style="display:flex;align-items:center;gap:12px;min-width:0;flex:1;overflow:hidden;">
                                 <i class="fas <?php echo $iconClass; ?>" style="font-size:24px;color:<?php echo $iconColor; ?>;flex-shrink:0;"></i>
-                                <div style="min-width:0;">
-                                    <div style="font-weight:500;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px;">
+                                <div style="min-width:0;flex:1;overflow:hidden;">
+                                    <div style="font-weight:500;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                                         <?php echo htmlspecialchars($primaryDoc['original_name']); ?>
                                     </div>
                                     <div style="font-size:12px;color:#6b7280;">
@@ -595,7 +595,7 @@ include __DIR__ . '/includes/header.php';
                                     </div>
                                 </div>
                             </div>
-                            <div class="doc-actions" style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                            <div class="doc-actions" style="display:flex;align-items:center;gap:8px;flex-shrink:0;flex-grow:0;">
                                 <button type="button" class="btn btn-sm btn-outline doc-modal-btn" 
                                         data-url="<?php echo htmlspecialchars($fileUrl); ?>" 
                                         data-type="<?php echo $docType; ?>" 
@@ -634,11 +634,11 @@ include __DIR__ . '/includes/header.php';
                             $iconClass = $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file');
                             $iconColor = $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280');
                         ?>
-                        <li class="doc-item" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:8px;">
-                            <div class="doc-info" style="display:flex;align-items:center;gap:12px;min-width:0;flex:1;">
+                        <li class="doc-item" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:8px;flex-wrap:nowrap;gap:12px;">
+                            <div class="doc-info" style="display:flex;align-items:center;gap:12px;min-width:0;flex:1;overflow:hidden;">
                                 <i class="fas <?php echo $iconClass; ?>" style="font-size:24px;color:<?php echo $iconColor; ?>;flex-shrink:0;"></i>
-                                <div style="min-width:0;">
-                                    <div style="font-weight:500;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px;">
+                                <div style="min-width:0;flex:1;overflow:hidden;">
+                                    <div style="font-weight:500;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                                         <?php echo htmlspecialchars($doc['original_name']); ?>
                                     </div>
                                     <div style="font-size:12px;color:#6b7280;">
@@ -646,7 +646,7 @@ include __DIR__ . '/includes/header.php';
                                     </div>
                                 </div>
                             </div>
-                            <div class="doc-actions" style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                            <div class="doc-actions" style="display:flex;align-items:center;gap:8px;flex-shrink:0;flex-grow:0;">
                                 <button type="button" class="btn btn-sm btn-outline doc-modal-btn" 
                                         data-url="<?php echo htmlspecialchars($fileUrl); ?>" 
                                         data-type="<?php echo $docType; ?>" 
@@ -684,11 +684,11 @@ include __DIR__ . '/includes/header.php';
                             $iconClass = $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file');
                             $iconColor = $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280');
                         ?>
-                        <li class="doc-item" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:8px;">
-                            <div class="doc-info" style="display:flex;align-items:center;gap:12px;min-width:0;flex:1;">
+                        <li class="doc-item" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:8px;flex-wrap:nowrap;gap:12px;">
+                            <div class="doc-info" style="display:flex;align-items:center;gap:12px;min-width:0;flex:1;overflow:hidden;">
                                 <i class="fas <?php echo $iconClass; ?>" style="font-size:24px;color:<?php echo $iconColor; ?>;flex-shrink:0;"></i>
-                                <div style="min-width:0;">
-                                    <div style="font-weight:500;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px;">
+                                <div style="min-width:0;flex:1;overflow:hidden;">
+                                    <div style="font-weight:500;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                                         <?php echo htmlspecialchars($doc['original_name']); ?>
                                     </div>
                                     <div style="font-size:12px;color:#6b7280;">
@@ -696,7 +696,7 @@ include __DIR__ . '/includes/header.php';
                                     </div>
                                 </div>
                             </div>
-                            <div class="doc-actions" style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                            <div class="doc-actions" style="display:flex;align-items:center;gap:8px;flex-shrink:0;flex-grow:0;">
                                 <button type="button" class="btn btn-sm btn-outline doc-modal-btn" 
                                         data-url="<?php echo htmlspecialchars($fileUrl); ?>" 
                                         data-type="<?php echo $docType; ?>" 
@@ -801,15 +801,15 @@ include __DIR__ . '/includes/header.php';
                             $isPdf = ($ext === 'pdf');
                             $type = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
                         ?>
-                        <li style="margin-bottom:10px;padding:10px;background:#f8f9fa;border-radius:6px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <i class="fas <?php echo $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file'); ?>" style="color:<?php echo $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280'); ?>;font-size:1.2rem;"></i>
-                                <div>
-                                    <span style="font-weight:500;"><?php echo htmlspecialchars($doc['original_name']); ?></span>
+                        <li style="margin-bottom:10px;padding:10px;background:#f8f9fa;border-radius:6px;display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:12px;">
+                            <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;overflow:hidden;">
+                                <i class="fas <?php echo $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file'); ?>" style="color:<?php echo $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280'); ?>;font-size:1.2rem;flex-shrink:0;"></i>
+                                <div style="min-width:0;flex:1;overflow:hidden;">
+                                    <span style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;"><?php echo htmlspecialchars($doc['original_name']); ?></span>
                                     <span style="color:#666;font-size:12px;display:block;"><?php echo number_format($doc['file_size'] / 1024, 1); ?> KB</span>
                                 </div>
                             </div>
-                            <div style="display:flex;gap:6px;">
+                            <div style="display:flex;gap:6px;flex-shrink:0;flex-grow:0;">
                                 <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" title="View in popup">
                                     <i class="fas fa-expand"></i> View
                                 </button>
@@ -839,15 +839,15 @@ include __DIR__ . '/includes/header.php';
                             $isPdf = ($ext === 'pdf');
                             $type = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
                         ?>
-                        <li style="margin-bottom:10px;padding:10px;background:#f8f9fa;border-radius:6px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <i class="fas <?php echo $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file'); ?>" style="color:<?php echo $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280'); ?>;font-size:1.2rem;"></i>
-                                <div>
-                                    <span style="font-weight:500;"><?php echo htmlspecialchars($doc['original_name']); ?></span>
+                        <li style="margin-bottom:10px;padding:10px;background:#f8f9fa;border-radius:6px;display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:12px;">
+                            <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;overflow:hidden;">
+                                <i class="fas <?php echo $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file'); ?>" style="color:<?php echo $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280'); ?>;font-size:1.2rem;flex-shrink:0;"></i>
+                                <div style="min-width:0;flex:1;overflow:hidden;">
+                                    <span style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;"><?php echo htmlspecialchars($doc['original_name']); ?></span>
                                     <span style="color:#666;font-size:12px;display:block;"><?php echo number_format($doc['file_size'] / 1024, 1); ?> KB</span>
                                 </div>
                             </div>
-                            <div style="display:flex;gap:6px;">
+                            <div style="display:flex;gap:6px;flex-shrink:0;flex-grow:0;">
                                 <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" title="View in popup">
                                     <i class="fas fa-expand"></i> View
                                 </button>
@@ -877,15 +877,15 @@ include __DIR__ . '/includes/header.php';
                             $isPdf = ($ext === 'pdf');
                             $type = $isImage ? 'image' : ($isPdf ? 'pdf' : 'other');
                         ?>
-                        <li style="margin-bottom:10px;padding:10px;background:#f8f9fa;border-radius:6px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <i class="fas <?php echo $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file'); ?>" style="color:<?php echo $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280'); ?>;font-size:1.2rem;"></i>
-                                <div>
-                                    <span style="font-weight:500;"><?php echo htmlspecialchars($doc['original_name']); ?></span>
+                        <li style="margin-bottom:10px;padding:10px;background:#f8f9fa;border-radius:6px;display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:12px;">
+                            <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;overflow:hidden;">
+                                <i class="fas <?php echo $isImage ? 'fa-image' : ($isPdf ? 'fa-file-pdf' : 'fa-file'); ?>" style="color:<?php echo $isImage ? '#10b981' : ($isPdf ? '#ef4444' : '#6b7280'); ?>;font-size:1.2rem;flex-shrink:0;"></i>
+                                <div style="min-width:0;flex:1;overflow:hidden;">
+                                    <span style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;"><?php echo htmlspecialchars($doc['original_name']); ?></span>
                                     <span style="color:#666;font-size:12px;display:block;"><?php echo number_format($doc['file_size'] / 1024, 1); ?> KB</span>
                                 </div>
                             </div>
-                            <div style="display:flex;gap:6px;">
+                            <div style="display:flex;gap:6px;flex-shrink:0;flex-grow:0;">
                                 <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" title="View in popup">
                                     <i class="fas fa-expand"></i> View
                                 </button>
