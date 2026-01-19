@@ -1008,7 +1008,15 @@ function isPrintablePdf($filename) {
 
         <!-- Action Buttons -->
         <div class="form-actions" style="margin-top:20px;">
-            <a href="index.php?edit=1" class="btn btn-secondary">⬅️ Go Back & Edit</a>
+            <div style="display:flex;gap:10px;">
+                <a href="index.php?edit=1" class="btn btn-secondary">⬅️ Go Back & Edit</a>
+                <button type="button" 
+                        class="btn btn-outline" 
+                        onclick="window.print();"
+                        style="border-color:#0f4c75;color:#0f4c75;">
+                    🖨️ Print Form
+                </button>
+            </div>
             <div style="display:flex;gap:10px;">
                 <button type="submit" 
                         name="confirm_submit" 
@@ -1526,7 +1534,8 @@ function isPrintablePdf($filename) {
         </script>
 
         <footer class="form-footer no-print">
-            <p>SDO CTS - San Pedro Division Office Complaint Tracking System</p>
+            <p>Complaint Tracking System - Schools Division Office of San Pedro City</p>
+            <p>Department Of Education</p>
         </footer>
     </div>
 </body>

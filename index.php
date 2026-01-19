@@ -607,8 +607,8 @@ function isChecked($field, $value) {
 
         <!-- Footer -->
         <footer class="form-footer">
-            <p>SDO CTS - San Pedro Division Office Complaint Tracking System</p>
-            <p>Department of Education - San Pedro Division</p>
+        <p>Complaint Tracking System - Schools Division Office of San Pedro City</p>
+            <p>Department of Education</p>
         </footer>
     </div>
 

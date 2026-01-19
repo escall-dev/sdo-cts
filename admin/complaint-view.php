@@ -653,10 +653,11 @@ include __DIR__ . '/includes/header.php';
                                         data-url="<?php echo htmlspecialchars($fileUrl); ?>" 
                                         data-type="<?php echo $docType; ?>" 
                                         data-name="<?php echo htmlspecialchars($primaryDoc['original_name']); ?>" 
+                                        data-doc-category="Uploaded Complaint-Assisted Form"
                                         title="View in popup">
                                     <i class="fas fa-expand"></i> View
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $docType; ?>" title="Print">
+                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $docType; ?>" data-doc-category="Uploaded Complaint-Assisted Form" title="Print">
                                     <i class="fas fa-print"></i>
                                 </button>
                                 <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($primaryDoc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
@@ -704,10 +705,11 @@ include __DIR__ . '/includes/header.php';
                                         data-url="<?php echo htmlspecialchars($fileUrl); ?>" 
                                         data-type="<?php echo $docType; ?>" 
                                         data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" 
+                                        data-doc-category="Valid ID / Credentials"
                                         title="View in popup">
                                     <i class="fas fa-expand"></i> View
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $docType; ?>" title="Print">
+                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $docType; ?>" data-doc-category="Valid ID / Credentials" title="Print">
                                     <i class="fas fa-print"></i>
                                 </button>
                                 <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($doc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
@@ -754,10 +756,11 @@ include __DIR__ . '/includes/header.php';
                                         data-url="<?php echo htmlspecialchars($fileUrl); ?>" 
                                         data-type="<?php echo $docType; ?>" 
                                         data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" 
+                                        data-doc-category="Supporting Documents"
                                         title="View in popup">
                                     <i class="fas fa-expand"></i> View
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $docType; ?>" title="Print">
+                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $docType; ?>" data-doc-category="Supporting Documents" title="Print">
                                     <i class="fas fa-print"></i>
                                 </button>
                                 <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($doc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
@@ -863,10 +866,10 @@ include __DIR__ . '/includes/header.php';
                                 </div>
                             </div>
                             <div style="display:flex;gap:6px;flex-shrink:0;flex-grow:0;">
-                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" title="View in popup">
+                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" data-doc-category="Uploaded Completed Complaint-Assisted Form" title="View in popup">
                                     <i class="fas fa-expand"></i> View
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" title="Print">
+                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-doc-category="Uploaded Completed Complaint-Assisted Form" title="Print">
                                     <i class="fas fa-print"></i>
                                 </button>
                                 <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($doc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
@@ -901,10 +904,10 @@ include __DIR__ . '/includes/header.php';
                                 </div>
                             </div>
                             <div style="display:flex;gap:6px;flex-shrink:0;flex-grow:0;">
-                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" title="View in popup">
+                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" data-doc-category="Valid ID / Credentials" title="View in popup">
                                     <i class="fas fa-expand"></i> View
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" title="Print">
+                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-doc-category="Valid ID / Credentials" title="Print">
                                     <i class="fas fa-print"></i>
                                 </button>
                                 <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($doc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
@@ -939,10 +942,10 @@ include __DIR__ . '/includes/header.php';
                                 </div>
                             </div>
                             <div style="display:flex;gap:6px;flex-shrink:0;flex-grow:0;">
-                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" title="View in popup">
+                                <button type="button" class="btn btn-sm btn-outline doc-modal-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-name="<?php echo htmlspecialchars($doc['original_name']); ?>" data-doc-category="Supporting Documents" title="View in popup">
                                     <i class="fas fa-expand"></i> View
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" title="Print">
+                                <button type="button" class="btn btn-sm btn-outline doc-print-btn" data-url="<?php echo htmlspecialchars($fileUrl); ?>" data-type="<?php echo $type; ?>" data-doc-category="Supporting Documents" title="Print">
                                     <i class="fas fa-print"></i>
                                 </button>
                                 <a href="<?php echo htmlspecialchars($fileUrl); ?>" download="<?php echo htmlspecialchars($doc['original_name']); ?>" class="btn btn-sm btn-primary" title="Download" style="color:#fff !important;">
@@ -1388,14 +1391,46 @@ function printDocument() {
             return;
         }
 
-        // For images: create a printable page
+        // For images: create a printable page with logos
         var printWin = window.open('', '_blank');
         if (printWin) {
-            printWin.document.write('<!DOCTYPE html><html><head><title>Print</title>');
-            printWin.document.write('<style>body{margin:0;padding:20px;text-align:center;}img{max-width:100%;height:auto;}</style>');
-            printWin.document.write('</head><body>');
-            printWin.document.write('<img src="' + PRIMARY_DOC_URL + '" onload="window.print();">');
-            printWin.document.write('</body></html>');
+            var sdoLogoPath = '/SDO-cts/assets/img/sdo-logo.jpg';
+            var bagongPilipinasLogoPath = '/SDO-cts/assets/img/bagongpilpinas-logo.png';
+            var refNumber = '<?php echo htmlspecialchars($complaint['reference_number'] ?? ''); ?>';
+            
+            printWin.document.write('<!DOCTYPE html>');
+            printWin.document.write('<html>');
+            printWin.document.write('<head>');
+            printWin.document.write('<title>Uploaded Complaint-Assisted Form</title>');
+            printWin.document.write('<style>');
+            printWin.document.write('* { margin: 0; padding: 0; box-sizing: border-box; }');
+            printWin.document.write('body { background: #fff; }');
+            printWin.document.write('.print-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; background: #fff; border-bottom: 2px solid #000; }');
+            printWin.document.write('.print-header .sdo-logo { height: 50px; width: 50px; border-radius: 50%; object-fit: cover; }');
+            printWin.document.write('.print-header .doc-type-label { flex: 1; text-align: center; }');
+            printWin.document.write('.print-header .doc-type-label h3 { margin: 0; font-family: "Times New Roman", Times, serif; font-size: 18px; font-weight: bold; color: #000; text-transform: uppercase; }');
+            printWin.document.write('.print-header .doc-type-label p { margin: 2px 0 0 0; font-family: "Times New Roman", Times, serif; font-size: 11px; color: #000; }');
+            printWin.document.write('.print-header .bp-logo { height: 50px; width: auto; object-fit: contain; }');
+            printWin.document.write('.print-content { display: flex; justify-content: center; align-items: flex-start; padding: 10px; }');
+            printWin.document.write('.print-content img { max-width: 100%; height: auto; object-fit: contain; }');
+            printWin.document.write('@media print { @page { margin: 5mm; } body { margin: 0; padding: 0; } .print-header { page-break-after: avoid; page-break-inside: avoid; } .print-content { min-height: auto; padding: 5px; } .print-content img { max-width: 100%; max-height: 90vh; height: auto; } }');
+            printWin.document.write('</style>');
+            printWin.document.write('</head>');
+            printWin.document.write('<body>');
+            // Add header with SDO logo (left, circle), document type (center), Bagong Pilipinas (right)
+            printWin.document.write('<div class="print-header">');
+            printWin.document.write('<img src="' + sdoLogoPath + '" alt="SDO Logo" class="sdo-logo" />');
+            printWin.document.write('<div class="doc-type-label">');
+            printWin.document.write('<h3>Uploaded Complaint-Assisted Form</h3>');
+            printWin.document.write('<p>' + (refNumber || '') + '</p>');
+            printWin.document.write('</div>');
+            printWin.document.write('<img src="' + bagongPilipinasLogoPath + '" alt="Bagong Pilipinas" class="bp-logo" />');
+            printWin.document.write('</div>');
+            printWin.document.write('<div class="print-content">');
+            printWin.document.write('<img src="' + PRIMARY_DOC_URL.replace(/"/g, '&quot;') + '" onload="setTimeout(function(){window.print();}, 500);">');
+            printWin.document.write('</div>');
+            printWin.document.write('</body>');
+            printWin.document.write('</html>');
             printWin.document.close();
         } else {
             alert('Pop-up blocked. Please allow pop-ups and try again.');
@@ -1440,6 +1475,10 @@ function printDocument() {
     // Create filename: ComplainantName_CTSNumber
     var pdfFilename = (sanitizedName || 'Complaint') + (refNumber ? '_' + refNumber : '');
     
+    // Logo paths
+    var sdoLogoPath = '/SDO-cts/assets/img/sdo-logo.jpg';
+    var bagongPilipinasLogoPath = '/SDO-cts/assets/img/bagongpilpinas-logo.png';
+    
     // Create print window
     var printWin = window.open('', '_blank', 'width=900,height=700');
     if (printWin) {
@@ -1447,14 +1486,30 @@ function printDocument() {
         printWin.document.write('<html><head><title>' + pdfFilename + '</title>');
         printWin.document.write(styles);
         printWin.document.write('<style>');
-        printWin.document.write('body { margin: 0; padding: 20px; background: #fff; }');
-        printWin.document.write('.form-container { margin: 0 auto 20px; width: 850px; max-width: 100%; }');
-        printWin.document.write('.additional-page { margin: 20px auto; width: 850px; max-width: 100%; padding: 30px 40px; position: relative; background: #fff; page-break-before: always; }');
+        printWin.document.write('* { box-sizing: border-box; }');
+        printWin.document.write('body { margin: 0; padding: 10px; background: #fff; }');
+        printWin.document.write('.print-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 8px 15px; background: #fff; border-bottom: 2px solid #000; }');
+        printWin.document.write('.print-header .sdo-logo { height: 50px; width: 50px; border-radius: 50%; object-fit: cover; }');
+        printWin.document.write('.print-header .doc-type-label { flex: 1; text-align: center; }');
+        printWin.document.write('.print-header .doc-type-label h3 { margin: 0; font-family: "Times New Roman", Times, serif; font-size: 18px; font-weight: bold; color: #000; text-transform: uppercase; }');
+        printWin.document.write('.print-header .doc-type-label p { margin: 2px 0 0 0; font-family: "Times New Roman", Times, serif; font-size: 11px; color: #000; }');
+        printWin.document.write('.print-header .bp-logo { height: 50px; width: auto; object-fit: contain; }');
+        printWin.document.write('.form-container { margin: 0 auto 10px; width: 850px; max-width: 100%; }');
+        printWin.document.write('.additional-page { margin: 10px auto; width: 850px; max-width: 100%; padding: 30px 40px; position: relative; background: #fff; page-break-before: always; }');
         printWin.document.write('.additional-page-header { border: 1px solid #000; border-left: 3px solid #000; border-right: 3px solid #000; border-bottom: none; padding: 10px; background: #fff; }');
         printWin.document.write('.additional-page-content { border: 1px solid #000; border-left: 3px solid #000; border-right: 3px solid #000; border-bottom: 3px solid #000; padding: 5px 10px; background: repeating-linear-gradient(transparent, transparent 27px, #000 27px, #000 28px); }');
-        printWin.document.write('@media print { body { padding: 0; margin: 0; } .form-container, .additional-page { box-shadow: none !important; } .additional-page { margin: 0 auto !important; page-break-before: always !important; } }');
+        printWin.document.write('@media print { @page { margin: 5mm; } body { padding: 0; margin: 0; } .print-header { page-break-after: avoid; page-break-inside: avoid; margin-bottom: 5px; } .form-container, .additional-page { box-shadow: none !important; } .additional-page { margin: 0 auto !important; page-break-before: always !important; } }');
         printWin.document.write('</style>');
         printWin.document.write('</head><body>');
+        // Add header with SDO logo (left, circle), document type (center), Bagong Pilipinas (right)
+        printWin.document.write('<div class="print-header">');
+        printWin.document.write('<img src="' + sdoLogoPath + '" alt="SDO Logo" class="sdo-logo" />');
+        printWin.document.write('<div class="doc-type-label">');
+        printWin.document.write('<h3>Complaint Form</h3>');
+        printWin.document.write('<p>' + (refNumber || '') + '</p>');
+        printWin.document.write('</div>');
+        printWin.document.write('<img src="' + bagongPilipinasLogoPath + '" alt="Bagong Pilipinas" class="bp-logo" />');
+        printWin.document.write('</div>');
         printWin.document.write(printContent);
         printWin.document.write('</body></html>');
         printWin.document.close();
@@ -1492,27 +1547,56 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalDownloadBtn = document.getElementById('modalDownloadBtn');
     const modalPrintBtn = document.getElementById('modalPrintBtn');
 
-    // Print document function
-    function printDocument(url, type) {
+    // Print document function (for individual documents)
+    function printDocumentFile(url, type, docCategory) {
         const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+            alert('Pop-up blocked. Please allow pop-ups and try again.');
+            return;
+        }
+        
+        // Logo paths
+        const sdoLogoPath = '/SDO-cts/assets/img/sdo-logo.jpg';
+        const bagongPilipinasLogoPath = '/SDO-cts/assets/img/bagongpilpinas-logo.png';
+        
+        // Document type label
+        const docTypeLabel = docCategory || 'Document';
+        
         if (type === 'image') {
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Print Document</title>
-                    <style>
-                        body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-                        img { max-width: 100%; max-height: 100vh; object-fit: contain; }
-                        @media print { body { margin: 0; } img { max-width: 100%; height: auto; } }
-                    </style>
-                </head>
-                <body>
-                    <img src="${url}" onload="window.print(); window.close();" />
-                </body>
-                </html>
-            `);
+            printWindow.document.write('<!DOCTYPE html>');
+            printWindow.document.write('<html>');
+            printWindow.document.write('<head>');
+            printWindow.document.write('<title>Print ' + docTypeLabel + '</title>');
+            printWindow.document.write('<style>');
+            printWindow.document.write('* { margin: 0; padding: 0; box-sizing: border-box; }');
+            printWindow.document.write('body { background: #fff; }');
+            printWindow.document.write('.print-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; background: #fff; border-bottom: 2px solid #000; }');
+            printWindow.document.write('.print-header .sdo-logo { height: 50px; width: 50px; border-radius: 50%; object-fit: cover; }');
+            printWindow.document.write('.print-header .doc-type-label { flex: 1; text-align: center; }');
+            printWindow.document.write('.print-header .doc-type-label h3 { margin: 0; font-family: "Times New Roman", Times, serif; font-size: 18px; font-weight: bold; color: #000; text-transform: uppercase; }');
+            printWindow.document.write('.print-header .bp-logo { height: 50px; width: auto; object-fit: contain; }');
+            printWindow.document.write('.print-content { display: flex; justify-content: center; align-items: flex-start; padding: 10px; }');
+            printWindow.document.write('.print-content img { max-width: 100%; height: auto; object-fit: contain; }');
+            printWindow.document.write('@media print { @page { margin: 5mm; } body { margin: 0; padding: 0; } .print-header { page-break-after: avoid; page-break-inside: avoid; } .print-content { min-height: auto; padding: 5px; } .print-content img { max-width: 100%; max-height: 90vh; height: auto; } }');
+            printWindow.document.write('</style>');
+            printWindow.document.write('</head>');
+            printWindow.document.write('<body>');
+            // Add header with SDO logo (left, circle), document type (center), Bagong Pilipinas (right)
+            printWindow.document.write('<div class="print-header">');
+            printWindow.document.write('<img src="' + sdoLogoPath + '" alt="SDO Logo" class="sdo-logo" />');
+            printWindow.document.write('<div class="doc-type-label">');
+            printWindow.document.write('<h3>' + docTypeLabel + '</h3>');
+            printWindow.document.write('</div>');
+            printWindow.document.write('<img src="' + bagongPilipinasLogoPath + '" alt="Bagong Pilipinas" class="bp-logo" />');
+            printWindow.document.write('</div>');
+            printWindow.document.write('<div class="print-content">');
+            printWindow.document.write('<img src="' + url.replace(/"/g, '&quot;') + '" onload="setTimeout(function(){window.print();}, 500);" />');
+            printWindow.document.write('</div>');
+            printWindow.document.write('</body>');
+            printWindow.document.write('</html>');
+            printWindow.document.close();
         } else if (type === 'pdf') {
+            // For PDFs, we can't easily add a header, so just open it
             printWindow.location.href = url;
             printWindow.onload = function() {
                 setTimeout(function() {
@@ -1522,7 +1606,6 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             printWindow.location.href = url;
         }
-        printWindow.document.close();
     }
 
     // Print buttons in document list
@@ -1530,7 +1613,8 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.addEventListener('click', function() {
             const url = this.getAttribute('data-url');
             const type = this.getAttribute('data-type');
-            printDocument(url, type);
+            const docCategory = this.getAttribute('data-doc-category') || 'Document';
+            printDocumentFile(url, type, docCategory);
         });
     });
 
@@ -1542,6 +1626,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let currentDocUrl = '';
         let currentDocName = '';
         let currentDocType = '';
+        let currentDocCategory = '';
 
         function applyModalZoom() {
             const inner = docModalContent.querySelector('.modal-doc-inner');
@@ -1554,10 +1639,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        function openDocModal(url, type, name) {
+        function openDocModal(url, type, name, category) {
             currentDocUrl = url;
             currentDocName = name;
             currentDocType = type;
+            currentDocCategory = category || 'Document';
             docModalTitle.textContent = name || 'Document Preview';
             
             let contentHtml = '';
@@ -1598,7 +1684,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const url = this.getAttribute('data-url');
                 const type = this.getAttribute('data-type');
                 const name = this.getAttribute('data-name');
-                openDocModal(url, type, name);
+                const category = this.getAttribute('data-doc-category') || 'Document';
+                openDocModal(url, type, name, category);
             });
         });
 
@@ -1606,7 +1693,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (modalPrintBtn) {
             modalPrintBtn.addEventListener('click', function() {
                 if (currentDocUrl) {
-                    printDocument(currentDocUrl, currentDocType);
+                    printDocumentFile(currentDocUrl, currentDocType, currentDocCategory);
                 }
             });
         }
