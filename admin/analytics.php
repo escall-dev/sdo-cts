@@ -203,8 +203,8 @@ include __DIR__ . '/includes/header.php';
             <div class="card-body">
                 <div class="unit-controls">
                     <div class="toggle-group">
-                        <button class="btn btn-secondary btn-sm active" data-view="filed">Filed by Unit</button>
-                        <button class="btn btn-secondary btn-sm" data-view="received">Received by Unit</button>
+                        <button class="btn btn-secondary btn-sm active" data-view="filed">Filed by Unit (Office Involved) </button>
+                        <button class="btn btn-secondary btn-sm" data-view="received">Received by Unit (Routed to unit)</button>
                     </div>
                     <div class="sort-group">
                         <label for="unitSort">Sort by</label>
