@@ -1534,7 +1534,7 @@ function isPrintablePdf($filename) {
         </script>
 
         <footer class="form-footer no-print">
-            <p>Complaint Tracking System - Schools Division Office of San Pedro City</p>
+            <p>© 2026 SDO CTS - Schools Division Office of San Pedro City - Complaint Tracking System</p>
             <p>Department Of Education</p>
         </footer>
     </div>

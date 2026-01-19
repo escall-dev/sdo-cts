@@ -607,7 +607,8 @@ function isChecked($field, $value) {
 
         <!-- Footer -->
         <footer class="form-footer">
-        <p>Complaint Tracking System - Schools Division Office of San Pedro City</p>
+        <p>© 2026 SDO CTS - Schools Division Office of San Pedro City - Complaint Tracking System</p>
+            <p>Developed by: Alexander Joerenz Escallente & Redgine Pinedes</p>
             <p>Department of Education</p>
         </footer>
     </div>

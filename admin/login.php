@@ -417,7 +417,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="brand-footer">
-            <p>Department of Education - Schools Division Office of San Pedro City</p>
+            <p>© 2026 SDO CTS - Schools Division Office of San Pedro City - Complaint Tracking System</p>
         </div>
     </div>
 </body>

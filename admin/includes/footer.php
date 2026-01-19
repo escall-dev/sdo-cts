@@ -3,6 +3,7 @@
             <footer class="admin-footer">
                 <p>&copy; <?php echo date('Y'); ?> SDO CTS - Schools Division Office of San Pedro City - Complaint Tracking System<br>
             Developed by: Alexander Joerenz Escallente & Redgine Pinedes</p>
+            <p>Department of Education</p>
             </footer>
         </main>
     </div>
