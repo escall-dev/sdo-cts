@@ -296,14 +296,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             
             .logo-badge {
-                width: 60px;
-                height: 60px;
+                width: 90px;
+                height: 90px;
                 margin-bottom: 12px;
             }
             
             .logo-badge img {
-                width: 55px !important;
-                height: 55px !important;
+                width: 90px !important;
+                height: 90px !important;
             }
             
             .login-header h1 {
@@ -377,7 +377,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
-                <div class="logo-badge"><img src="/SDO-cts/assets/img/sdo-logo.jpg" alt="SDO San Pedro Logo" style="width:60px;height:60px;border-radius:50%;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,0.15);"></div>
+                <div class="logo-badge"><img src="/SDO-cts/assets/img/sdo-logo.jpg" alt="SDO San Pedro Logo" style="width:90px;height:90px;border-radius:50%;margin-bottom:13px;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,0.15);"></div>
                 <h1>SDO CTS Admin</h1>
 
                 <p>Schools Division Office of San Pedro City - Complaint Tracking System</p>

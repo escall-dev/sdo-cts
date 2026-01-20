@@ -80,9 +80,10 @@ include __DIR__ . '/includes/header.php';
         margin: 0 auto;
         background: #fff;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        page-break-after: always;
+        /* Keep the entire template together on one page unless narration adds page 2 */
+        page-break-after: avoid;
         page-break-inside: avoid;
-        break-after: page;
+        break-after: avoid;
         break-inside: avoid;
     }
     
@@ -449,15 +450,19 @@ include __DIR__ . '/includes/header.php';
         
         /* Form container styling for print */
         .form-container {
-            width: 100% !important;
-            max-width: 100% !important;
-            margin: 0 !important;
+            width: 720px !important;
+            max-width: 720px !important;
+            margin: 0 auto !important;
             box-shadow: none !important;
-            page-break-after: always;
+            page-break-after: avoid !important;
+            page-break-inside: avoid !important;
+            break-after: avoid !important;
+            break-inside: avoid !important;
         }
         
         .form-background {
             width: 100% !important;
+            height: auto !important;
         }
         
         /* Additional page print styling */
@@ -1490,17 +1495,17 @@ function printDocument() {
         printWin.document.write('<style>');
         printWin.document.write('* { box-sizing: border-box; }');
         printWin.document.write('body { margin: 0; padding: 10px; background: #fff; }');
-        printWin.document.write('.print-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 8px 15px; background: #fff; border-bottom: 2px solid #000; }');
-        printWin.document.write('.print-header .sdo-logo { height: 50px; width: 50px; border-radius: 50%; object-fit: cover; }');
+        printWin.document.write('.print-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding: 6px 12px; background: #fff; border-bottom: 2px solid #000; }');
+        printWin.document.write('.print-header .sdo-logo { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; }');
         printWin.document.write('.print-header .doc-type-label { flex: 1; text-align: center; }');
-        printWin.document.write('.print-header .doc-type-label h3 { margin: 0; font-family: "Times New Roman", Times, serif; font-size: 18px; font-weight: bold; color: #000; text-transform: uppercase; }');
-        printWin.document.write('.print-header .doc-type-label p { margin: 2px 0 0 0; font-family: "Times New Roman", Times, serif; font-size: 11px; color: #000; }');
-        printWin.document.write('.print-header .bp-logo { height: 50px; width: auto; object-fit: contain; }');
-        printWin.document.write('.form-container { margin: 0 auto 10px; width: 850px; max-width: 100%; }');
+        printWin.document.write('.print-header .doc-type-label h3 { margin: 0; font-family: "Times New Roman", Times, serif; font-size: 16px; font-weight: bold; color: #000; text-transform: uppercase; }');
+        printWin.document.write('.print-header .doc-type-label p { margin: 1px 0 0 0; font-family: "Times New Roman", Times, serif; font-size: 10px; color: #000; }');
+        printWin.document.write('.print-header .bp-logo { height: 40px; width: auto; object-fit: contain; }');
+        printWin.document.write('.form-container { margin: 0 auto 8px; width: 720px; max-width: 720px; page-break-inside: avoid; page-break-after: avoid; break-inside: avoid; break-after: avoid; }');
         printWin.document.write('.additional-page { margin: 10px auto; width: 850px; max-width: 100%; padding: 30px 40px; position: relative; background: #fff; page-break-before: always; }');
         printWin.document.write('.additional-page-header { border: 1px solid #000; border-left: 3px solid #000; border-right: 3px solid #000; border-bottom: none; padding: 10px; background: #fff; }');
         printWin.document.write('.additional-page-content { border: 1px solid #000; border-left: 3px solid #000; border-right: 3px solid #000; border-bottom: 3px solid #000; padding: 5px 10px; background: repeating-linear-gradient(transparent, transparent 27px, #000 27px, #000 28px); }');
-        printWin.document.write('@media print { @page { margin: 5mm; } body { padding: 0; margin: 0; } .print-header { page-break-after: avoid; page-break-inside: avoid; margin-bottom: 5px; } .form-container, .additional-page { box-shadow: none !important; } .additional-page { margin: 0 auto !important; page-break-before: always !important; } }');
+        printWin.document.write('@media print { @page { margin: 5mm; } body { padding: 0; margin: 0; } .print-header { page-break-after: avoid; page-break-inside: avoid; margin-bottom: 5px; } .form-container { page-break-inside: avoid !important; page-break-after: avoid !important; break-inside: avoid !important; break-after: avoid !important; box-shadow: none !important; } .additional-page { margin: 0 auto !important; page-break-before: always !important; box-shadow: none !important; } }');
         printWin.document.write('</style>');
         printWin.document.write('</head><body>');
         // Add header with SDO logo (left, circle), document type (center), Bagong Pilipinas (right)
