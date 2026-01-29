@@ -139,7 +139,7 @@ Example Record:
 // In admin/complaint-view.php and other views
 
 // NEW APPROACH - Uses relative path from database
-$fileUrl = !empty($doc['file_path']) 
+$fileUrl = !empty($doc['file_path'])
     ? "/SDO-cts/" . $doc['file_path']
     : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
 
