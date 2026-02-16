@@ -6,7 +6,9 @@ const analyticsState = {
     charts: {},
     data: null,
     view: 'filed',
-    sort: 'volume'
+    sort: 'volume',
+    officeFilter: '',
+    unitFilter: ''
 };
 
 function buildQueryParams(form) {
@@ -266,6 +268,20 @@ function updateUnitPerformance(unitsData) {
         }));
     }
 
+    // Apply office/unit filter from the units tab controls
+    const officeUnits = window.analyticsConfig.officeUnits || {};
+    const selectedOffice = analyticsState.officeFilter;
+    const selectedUnit = analyticsState.unitFilter;
+
+    if (selectedUnit) {
+        // Filter to a specific unit
+        rows = rows.filter(row => row.unit === selectedUnit);
+    } else if (selectedOffice && officeUnits[selectedOffice]) {
+        // Filter to all units belonging to the selected office
+        const allowedUnits = officeUnits[selectedOffice];
+        rows = rows.filter(row => allowedUnits.includes(row.unit));
+    }
+
     const totalRowIndex = rows.findIndex(row => row.unit === '-' || row.unit === '');
     const totalRow = totalRowIndex >= 0 ? rows.splice(totalRowIndex, 1)[0] : null;
 
@@ -277,9 +293,18 @@ function updateUnitPerformance(unitsData) {
         rows.sort((a, b) => (b.total ?? 0) - (a.total ?? 0));
     }
 
-    const displayRows = rows.slice(0, totalRow ? 9 : 10);
-    if (totalRow) {
+    // When filtering by office or unit, don't show a total row and show all results
+    const isFiltered = selectedOffice || selectedUnit;
+    const displayRows = isFiltered ? rows : rows.slice(0, totalRow ? 9 : 10);
+    if (!isFiltered && totalRow) {
         displayRows.push(totalRow);
+    }
+
+    if (displayRows.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="4" style="text-align:center;color:var(--text-muted);">No data for selected filter</td>';
+        tableBody.appendChild(tr);
+        return;
     }
 
     displayRows.forEach(row => {
@@ -442,6 +467,53 @@ function bindUnitControls() {
             updateUnitPerformance(analyticsState.data.units);
         }
     });
+
+    // Cascading Office → Unit filter
+    const officeSelect = document.getElementById('unitOfficeFilter');
+    const unitSelect = document.getElementById('unitUnitFilter');
+
+    if (officeSelect && unitSelect) {
+        officeSelect.addEventListener('change', () => {
+            const office = officeSelect.value;
+            analyticsState.officeFilter = office;
+            analyticsState.unitFilter = '';
+
+            console.log('Office selected:', office);
+            console.log('Available officeUnits:', window.analyticsConfig.officeUnits);
+
+            // Reset and populate unit dropdown
+            unitSelect.innerHTML = '';
+
+            if (!office) {
+                // No office selected — disable unit dropdown
+                unitSelect.innerHTML = '<option value="">-- Select Office First --</option>';
+                unitSelect.disabled = true;
+            } else {
+                // Office selected — populate with matching units
+                const units = (window.analyticsConfig.officeUnits || {})[office] || [];
+                console.log('Units for', office, ':', units);
+                unitSelect.innerHTML = '<option value="">All Units</option>';
+                units.forEach(u => {
+                    const opt = document.createElement('option');
+                    opt.value = u;
+                    opt.textContent = u;
+                    unitSelect.appendChild(opt);
+                });
+                unitSelect.disabled = false;
+            }
+
+            if (analyticsState.data) {
+                updateUnitPerformance(analyticsState.data.units);
+            }
+        });
+
+        unitSelect.addEventListener('change', () => {
+            analyticsState.unitFilter = unitSelect.value;
+            if (analyticsState.data) {
+                updateUnitPerformance(analyticsState.data.units);
+            }
+        });
+    }
 }
 
 function bindFilters() {

@@ -105,6 +105,40 @@ define('UNITS', [
     'Legal' => 'Legal Unit'
 ]);
 
+// Office-to-Unit hierarchy for analytics filtering
+define('OFFICE_UNITS', [
+    'OSDS' => [
+        'Personnel',
+        'Property and Supply',
+        'Records',
+        'Procurement',
+        'General Services',
+        'Legal',
+        'Information and Communication Technology',
+        'Cash',
+        'Finance (Accounting)',
+        'Finance (Budget)',
+        'Administrative'
+    ],
+    'CID' => [
+        'Instructional Management',
+        'Learning Resource Management',
+        'Alternative Learning System',
+        'District Instructional Supervision'
+    ],
+    'SGOD' => [
+        'School Management Monitoring and Evaluation',
+        'Human Resource Development',
+        'Social Mobilization and Networking',
+        'Planning and Research',
+        'Disaster Risk Reduction and Management',
+        'Education Facilities',
+        'School Health and Nutrition',
+        'School Health and Nutrition (Dental)',
+        'School Health and Nutrition (Medical)'
+    ]
+]);
+
 // Complaint type mapping (derived from referred_to + referred_to_other)
 define('COMPLAINT_TYPE_MAP', [
     'OSDS' => 'admin',

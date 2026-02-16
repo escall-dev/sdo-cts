@@ -62,20 +62,23 @@ include __DIR__ . '/includes/header.php';
                 <select class="filter-select" id="filterUnit" name="unit">
                     <option value="">All Units</option>
                     <?php foreach (UNITS as $unitCode => $unitLabel): ?>
-                    <option value="<?php echo htmlspecialchars($unitCode); ?>"><?php echo htmlspecialchars($unitLabel); ?></option>
+                        <option value="<?php echo htmlspecialchars($unitCode); ?>">
+                            <?php echo htmlspecialchars($unitLabel); ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>
             <div class="filter-group">
                 <label for="filterSchool">School / Section</label>
-                <input type="text" class="filter-input" id="filterSchool" name="school" placeholder="Type school or section">
+                <input type="text" class="filter-input" id="filterSchool" name="school"
+                    placeholder="Type school or section">
             </div>
             <div class="filter-group">
                 <label for="filterStatus">Status</label>
                 <select class="filter-select" id="filterStatus" name="status">
                     <option value="">All Statuses</option>
                     <?php foreach (STATUS_CONFIG as $statusKey => $statusConfig): ?>
-                    <option value="<?php echo $statusKey; ?>"><?php echo $statusConfig['label']; ?></option>
+                        <option value="<?php echo $statusKey; ?>"><?php echo $statusConfig['label']; ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -203,8 +206,30 @@ include __DIR__ . '/includes/header.php';
             <div class="card-body">
                 <div class="unit-controls">
                     <div class="toggle-group">
-                        <button class="btn btn-secondary btn-sm active" data-view="filed">Filed by Unit (Office Involved) </button>
-                        <button class="btn btn-secondary btn-sm" data-view="received">Received by Unit (Routed to unit)</button>
+                        <label>View Type</label>
+                        <div class="btn-row">
+                            <button class="btn btn-secondary btn-sm active" data-view="filed">Filed by Unit</button>
+                            <button class="btn btn-secondary btn-sm" data-view="received">Received by Unit</button>
+                        </div>
+                    </div>
+                    <div class="unit-filters">
+                        <div class="filter-group">
+                            <label for="unitOfficeFilter">Office</label>
+                            <select id="unitOfficeFilter" class="filter-select">
+                                <option value="">All Offices</option>
+                                <?php foreach (array_keys(OFFICE_UNITS) as $office): ?>
+                                    <option value="<?php echo htmlspecialchars($office); ?>">
+                                        <?php echo htmlspecialchars($office); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="unitUnitFilter">Unit</label>
+                            <select id="unitUnitFilter" class="filter-select" disabled>
+                                <option value="">-- Select Office First --</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="sort-group">
                         <label for="unitSort">Sort by</label>
@@ -276,7 +301,8 @@ include __DIR__ . '/includes/header.php';
                 <h2><i class="fas fa-file-export"></i> Export & Reporting</h2>
             </div>
             <div class="card-body report-summary" id="reportSummary">
-                <p class="report-note">Use the export buttons above to download filtered analytics for management reporting.</p>
+                <p class="report-note">Use the export buttons above to download filtered analytics for management
+                    reporting.</p>
                 <div class="summary-grid">
                     <div class="summary-card">
                         <span class="summary-label">Total Complaints</span>
@@ -297,22 +323,23 @@ include __DIR__ . '/includes/header.php';
 </div>
 
 <script>
-<?php
-$statusLabels = [];
-foreach (STATUS_CONFIG as $statusKey => $statusConfig) {
-    $statusLabels[$statusKey] = $statusConfig['label'];
-}
-?>
-window.analyticsConfig = {
-    statusLabels: <?php echo json_encode($statusLabels); ?>,
-    statusOrder: <?php echo json_encode(array_keys(STATUS_CONFIG)); ?>,
-    unitLabels: <?php echo json_encode(UNITS); ?>,
-    typeLabels: <?php echo json_encode(COMPLAINT_TYPE_LABELS); ?>
-};
+    <?php
+    $statusLabels = [];
+    foreach (STATUS_CONFIG as $statusKey => $statusConfig) {
+        $statusLabels[$statusKey] = $statusConfig['label'];
+    }
+    ?>
+    window.analyticsConfig = {
+        statusLabels: <?php echo json_encode($statusLabels); ?>,
+        statusOrder: <?php echo json_encode(array_keys(STATUS_CONFIG)); ?>,
+        unitLabels: <?php echo json_encode(UNITS); ?>,
+        officeUnits: <?php echo json_encode(OFFICE_UNITS); ?>,
+        typeLabels: <?php echo json_encode(COMPLAINT_TYPE_LABELS); ?>
+    };
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
-<script src="/SDO-cts/admin/assets/js/analytics.js"></script>
+<script src="/SDO-cts/admin/assets/js/analytics.js?v=<?php echo time(); ?>"></script>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>
