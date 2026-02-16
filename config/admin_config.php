@@ -15,9 +15,13 @@ $__envFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . '.env';
 if (is_readable($__envFile)) {
     $lines = file($__envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
-        if (str_starts_with(trim($line), '#')) { continue; }
+        if (str_starts_with(trim($line), '#')) {
+            continue;
+        }
         $pos = strpos($line, '=');
-        if ($pos === false) { continue; }
+        if ($pos === false) {
+            continue;
+        }
         $key = trim(substr($line, 0, $pos));
         $val = trim(substr($line, $pos + 1));
         // Remove optional surrounding quotes
@@ -38,7 +42,7 @@ define('GOOGLE_CLIENT_SECRET', $GOOGLE_CLIENT_SECRET);
 define('GOOGLE_REDIRECT_URI', $GOOGLE_REDIRECT_URI);
 
 // Allowed email domains for Google OAuth (leave empty to allow all)
-define('ALLOWED_EMAIL_DOMAINS', ['deped-sanpedro.ph', 'deped.gov.ph' , 'gmail.com' ]);
+define('ALLOWED_EMAIL_DOMAINS', ['deped-sanpedro.ph', 'deped.gov.ph', 'gmail.com']);
 
 // Admin panel settings
 define('ADMIN_TITLE', 'SDO CTS Admin');
@@ -97,14 +101,8 @@ define('STATUS_CONFIG', [
 
 // Unit/Section configuration
 define('UNITS', [
-    'SDS' => 'SDS: Schools Division Superintendent',
-    'ASDS' => 'ASDS: Assistant Schools Division Superintendent',
-    'Admin' => 'Admin: Cash, Personnel, Records, Supply, General Services, Procurement',
-    'CID' => 'CID: Curriculum Implementation Division (LRMS, Instructional Management, PSDS)',
-    'Finance' => 'Finance: Accounting, Budget',
-    'ICTO' => 'Information and Communication Technology Office',
-    'Legal' => 'Legal Office',
-    'SGOD' => 'SGOD: School Governance and Operations Division (M&E, SocMob, Planning & Research, HRD, Facilities, School Health)'
+    'PAC' => 'PAC: Public Assistance Order',
+    'Legal' => 'Legal Unit'
 ]);
 
 // Complaint type mapping (derived from referred_to + referred_to_other)
@@ -123,7 +121,15 @@ define('COMPLAINT_TYPE_LABELS', [
 ]);
 
 define('COMPLAINT_TYPE_KEYWORDS', [
-    'it', 'ict', 'computer', 'network', 'internet', 'wifi', 'email', 'system', 'server'
+    'it',
+    'ict',
+    'computer',
+    'network',
+    'internet',
+    'wifi',
+    'email',
+    'system',
+    'server'
 ]);
 
 // Permission definitions
@@ -144,7 +150,8 @@ define('PERMISSIONS', [
 
 // Helper function to get unit display name
 if (!function_exists('getUnitDisplayName')) {
-    function getUnitDisplayName($unitCode) {
+    function getUnitDisplayName($unitCode)
+    {
         if (empty($unitCode)) {
             return '-';
         }
@@ -153,9 +160,10 @@ if (!function_exists('getUnitDisplayName')) {
 }
 
 if (!function_exists('getComplaintType')) {
-    function getComplaintType($referredTo, $referredOther = '') {
+    function getComplaintType($referredTo, $referredOther = '')
+    {
         $type = COMPLAINT_TYPE_MAP[$referredTo] ?? 'admin';
-        $other = strtolower(trim((string)$referredOther));
+        $other = strtolower(trim((string) $referredOther));
         if ($referredTo === 'Others' && $other !== '') {
             foreach (COMPLAINT_TYPE_KEYWORDS as $keyword) {
                 if (strpos($other, $keyword) !== false) {
