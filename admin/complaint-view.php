@@ -551,11 +551,12 @@ include __DIR__ . '/includes/header.php';
             <?php echo $statusConfig[$complaint['status']]['icon'] . ' ' . $statusConfig[$complaint['status']]['label']; ?>
         </span>
                     <button type="button" class="btn btn-outline" onclick="printDocument()">
-                        <i class="fas fa-print"></i> Print or Saved as PDF
-        </button>
-        <!--<button type="button" class="btn btn-primary" onclick="saveAsPDF(this)">
-            <i class="fas fa-file-download"></i> Save Document
-        </button> -->
+                        <i class="fas fa-print"></i> Print</button>
+        <?php if (!$isUploadedForm): ?>
+        <a href="/SDO-cts/admin/api/generate-form.php?id=<?php echo $complaint['id']; ?>" class="btn btn-primary" title="Download filled PDF form">
+            <i class="fas fa-file-pdf"></i> Download PDF
+        </a>
+        <?php endif; ?>
     </div>
 </div>
 
