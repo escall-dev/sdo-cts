@@ -9,27 +9,31 @@ require_once __DIR__ . '/../../config/admin_config.php';
 require_once __DIR__ . '/../../models/AdminUser.php';
 require_once __DIR__ . '/../../models/ActivityLog.php';
 
-class AdminAuth {
+class AdminAuth
+{
     private static $instance = null;
     private $user = null;
     private $adminUserModel;
     private $activityLog;
 
-    private function __construct() {
+    private function __construct()
+    {
         $this->startSession();
         $this->adminUserModel = new AdminUser();
         $this->activityLog = new ActivityLog();
         $this->loadUser();
     }
 
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (self::$instance === null) {
             self::$instance = new self();
         }
         return self::$instance;
     }
 
-    private function startSession() {
+    private function startSession()
+    {
         if (session_status() === PHP_SESSION_NONE) {
             session_name(ADMIN_SESSION_NAME);
             session_set_cookie_params([
@@ -43,7 +47,8 @@ class AdminAuth {
         }
     }
 
-    private function loadUser() {
+    private function loadUser()
+    {
         if (isset($_SESSION['admin_user_id'])) {
             $this->user = $this->adminUserModel->getById($_SESSION['admin_user_id']);
             if (!$this->user || !$this->user['is_active']) {
@@ -55,15 +60,16 @@ class AdminAuth {
     /**
      * Login with email and password
      */
-    public function login($email, $password) {
+    public function login($email, $password)
+    {
         $user = $this->adminUserModel->authenticate($email, $password);
-        
+
         if ($user) {
             $this->setSession($user);
             $this->activityLog->log($user['id'], 'login', 'auth', null, 'User logged in via email/password');
             return true;
         }
-        
+
         return false;
     }
 
@@ -71,9 +77,10 @@ class AdminAuth {
      * Login with Google OAuth
      * @param bool $autoRegister If true, automatically register new users
      */
-    public function loginWithGoogle($googleId, $email, $name, $avatar = null, $autoRegister = false) {
+    public function loginWithGoogle($googleId, $email, $name, $avatar = null, $autoRegister = false)
+    {
         $user = $this->adminUserModel->authenticateGoogle($googleId, $email, $name, $avatar, $autoRegister);
-        
+
         if ($user) {
             $this->setSession($user);
             // Check if this is a new registration or existing login
@@ -82,14 +89,15 @@ class AdminAuth {
             $this->activityLog->log($user['id'], 'login', 'auth', null, $logMessage);
             return true;
         }
-        
+
         return false;
     }
 
     /**
      * Set session data after successful login
      */
-    private function setSession($user) {
+    private function setSession($user)
+    {
         $_SESSION['admin_user_id'] = $user['id'];
         $_SESSION['admin_user_email'] = $user['email'];
         $_SESSION['admin_user_name'] = $user['full_name'];
@@ -101,21 +109,27 @@ class AdminAuth {
     /**
      * Logout user
      */
-    public function logout() {
+    public function logout()
+    {
         if ($this->user) {
             $this->activityLog->log($this->user['id'], 'logout', 'auth', null, 'User logged out');
         }
-        
+
         $_SESSION = [];
-        
+
         if (ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000,
-                $params["path"], $params["domain"],
-                $params["secure"], $params["httponly"]
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
             );
         }
-        
+
         session_destroy();
         $this->user = null;
     }
@@ -123,35 +137,40 @@ class AdminAuth {
     /**
      * Check if user is logged in
      */
-    public function isLoggedIn() {
+    public function isLoggedIn()
+    {
         return $this->user !== null;
     }
 
     /**
      * Get current user
      */
-    public function getUser() {
+    public function getUser()
+    {
         return $this->user;
     }
 
     /**
      * Get current user ID
      */
-    public function getUserId() {
+    public function getUserId()
+    {
         return $this->user ? $this->user['id'] : null;
     }
 
     /**
      * Get current user name
      */
-    public function getUserName() {
+    public function getUserName()
+    {
         return $this->user ? $this->user['full_name'] : null;
     }
 
     /**
      * Check if user has permission
      */
-    public function hasPermission($permission) {
+    public function hasPermission($permission)
+    {
         if (!$this->user) {
             return false;
         }
@@ -161,7 +180,8 @@ class AdminAuth {
     /**
      * Check if current user is Super Admin
      */
-    public function isSuperAdmin() {
+    public function isSuperAdmin()
+    {
         if (!$this->user) {
             return false;
         }
@@ -171,7 +191,8 @@ class AdminAuth {
     /**
      * Require login - redirect to login page if not authenticated
      */
-    public function requireLogin() {
+    public function requireLogin()
+    {
         if (!$this->isLoggedIn()) {
             $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
             header('Location: /SDO-cts/admin/login.php');
@@ -182,9 +203,10 @@ class AdminAuth {
     /**
      * Require specific permission
      */
-    public function requirePermission($permission) {
+    public function requirePermission($permission)
+    {
         $this->requireLogin();
-        
+
         if (!$this->hasPermission($permission)) {
             header('HTTP/1.1 403 Forbidden');
             include __DIR__ . '/../403.php';
@@ -195,7 +217,8 @@ class AdminAuth {
     /**
      * Generate CSRF token
      */
-    public function generateCsrfToken() {
+    public function generateCsrfToken()
+    {
         if (empty($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
@@ -205,14 +228,16 @@ class AdminAuth {
     /**
      * Verify CSRF token
      */
-    public function verifyCsrfToken($token) {
+    public function verifyCsrfToken($token)
+    {
         return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
     }
 
     /**
      * Log activity
      */
-    public function logActivity($actionType, $entityType, $entityId = null, $description = null, $oldValue = null, $newValue = null) {
+    public function logActivity($actionType, $entityType, $entityId = null, $description = null, $oldValue = null, $newValue = null)
+    {
         return $this->activityLog->log(
             $this->getUserId(),
             $actionType,
@@ -226,7 +251,8 @@ class AdminAuth {
 }
 
 // Helper function to get auth instance
-function auth() {
+function auth()
+{
     return AdminAuth::getInstance();
 }
 

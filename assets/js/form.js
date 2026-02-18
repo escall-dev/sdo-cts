@@ -420,18 +420,25 @@ function initFormValidation() {
             // Validate Valid ID / Credentials (required)
             const validIdInput = document.getElementById('validIdInput');
             const validIdFileList = document.getElementById('validIdFileList');
+
+            // Check newly selected files (in the file input or rendered list)
             const hasValidIdFiles = (validIdInput && validIdInput.files && validIdInput.files.length > 0) ||
                                    (validIdFileList && validIdFileList.querySelectorAll('.file-item').length > 0);
-            
-            // Check if there are previously uploaded valid ID files in the session (shown in the green box)
-            const previouslyUploadedValidId = document.querySelector('div[style*="background: #d4edda"]') && 
-                                             document.querySelector('div[style*="background: #d4edda"]').textContent.includes('Previously uploaded ID/Credentials');
-            
+
+            // Check if there are previously uploaded valid ID files shown in the green session box
+            const validIdSection = document.querySelector('#validIdDropZone') &&
+                                   document.querySelector('#validIdDropZone').closest('.form-group');
+            const previouslyUploadedBox = validIdSection &&
+                                          validIdSection.closest('.section-content') &&
+                                          validIdSection.closest('.section-content').querySelector('div[style*="background: #d4edda"]');
+            const previouslyUploadedValidId = previouslyUploadedBox &&
+                                              previouslyUploadedBox.textContent.includes('Previously uploaded ID');
+
             if (!hasValidIdFiles && !previouslyUploadedValidId) {
                 isValid = false;
-                const validIdSection = document.querySelector('#validIdDropZone').closest('.form-group');
                 if (validIdSection) {
-                    validIdSection.querySelector('#validIdDropZone').style.borderColor = '#dc3545';
+                    const dropZone = validIdSection.querySelector('#validIdDropZone');
+                    if (dropZone) dropZone.style.borderColor = '#dc3545';
                     showError(validIdSection, 'Please upload at least one valid ID or credential. This field is required.');
                 }
             }
@@ -534,10 +541,137 @@ function performReset() {
             // After clearing session, reload the page with clear flag
             // so that ALL fields (including file inputs and any client-side state)
             // are fully reset to their initial empty state.
-            window.location.href = 'index.php?clear=1';
+        window.location.href = 'index.php?clear=1';
         })
         .catch(() => {
             // Fallback: just reload the page with clear parameter
             window.location.href = 'index.php?clear=1';
         });
 }
+
+/**
+ * ── Camera Capture Module ────────────────────────────────────────────
+ * Shared modal camera for all three upload sections.
+ * Each "Use Camera" button carries data-camera-target="<inputId>".
+ */
+(function initCamera() {
+    const overlay    = document.getElementById('cameraModalOverlay');
+    const video      = document.getElementById('cameraVideo');
+    const canvas     = document.getElementById('cameraCanvas');
+    const preview    = document.getElementById('cameraPreviewImg');
+    const status     = document.getElementById('cameraStatus');
+    const btnClose   = document.getElementById('btnCloseCamera');
+    const btnCapture = document.getElementById('btnCapture');
+    const btnRetake  = document.getElementById('btnRetake');
+    const btnUsePhoto= document.getElementById('btnUsePhoto');
+
+    if (!overlay) return; // camera modal not present on this page
+
+    let stream       = null;
+    let capturedBlob = null;
+    let targetInputId= null;
+
+    // ── helpers ──────────────────────────────────────────────────────
+    function showLive() {
+        video.style.display   = 'block';
+        preview.style.display = 'none';
+        btnCapture.style.display  = 'flex';
+        btnRetake.style.display   = 'none';
+        btnUsePhoto.style.display = 'none';
+        status.innerHTML = '📷 Position your document and press <strong>Capture</strong>.';
+        capturedBlob = null;
+    }
+
+    function showPreview(blob) {
+        capturedBlob = blob;
+        const url = URL.createObjectURL(blob);
+        preview.src = url;
+        video.style.display   = 'none';
+        preview.style.display = 'block';
+        btnCapture.style.display  = 'none';
+        btnRetake.style.display   = 'flex';
+        btnUsePhoto.style.display = 'flex';
+        status.innerHTML = '✅ Photo captured! Press <strong>Use Photo</strong> to add it, or <strong>Retake</strong>.';
+    }
+
+    async function openCamera(inputId) {
+        targetInputId = inputId;
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        showLive();
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
+                audio: false
+            });
+            video.srcObject = stream;
+        } catch (err) {
+            status.textContent = '⚠️ Camera access denied or unavailable. Please allow camera permission and try again.';
+            btnCapture.style.display = 'none';
+        }
+    }
+
+    function closeCamera() {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+        if (stream) {
+            stream.getTracks().forEach(t => t.stop());
+            stream = null;
+        }
+        video.srcObject = null;
+        capturedBlob = null;
+        targetInputId = null;
+    }
+
+    function captureFrame() {
+        if (!stream) return;
+        canvas.width  = video.videoWidth  || 1280;
+        canvas.height = video.videoHeight || 720;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(blob => {
+            if (blob) showPreview(blob);
+        }, 'image/jpeg', 0.92);
+    }
+
+    function usePhoto() {
+        if (!capturedBlob || !targetInputId) return;
+
+        const now  = new Date();
+        const ts   = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}${String(now.getSeconds()).padStart(2,'0')}`;
+        const file = new File([capturedBlob], `camera_capture_${ts}.jpg`, { type: 'image/jpeg' });
+
+        const input = document.getElementById(targetInputId);
+        if (!input) { closeCamera(); return; }
+
+        // Build a DataTransfer and merge with existing files
+        const dt = new DataTransfer();
+        if (input.files) {
+            Array.from(input.files).forEach(f => dt.items.add(f));
+        }
+        dt.items.add(file);
+        input.files = dt.files;
+
+        // Fire the change event so the existing handleFiles listeners pick it up
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+
+        closeCamera();
+    }
+
+    // ── event wiring ─────────────────────────────────────────────────
+    btnClose.addEventListener('click', closeCamera);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeCamera(); });
+    btnCapture.addEventListener('click', captureFrame);
+    btnRetake.addEventListener('click', showLive);
+    btnUsePhoto.addEventListener('click', usePhoto);
+
+    // Close on Escape
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && overlay.classList.contains('active')) closeCamera();
+    });
+
+    // Wire every "Use Camera" button on the page
+    document.querySelectorAll('.camera-btn[data-camera-target]').forEach(btn => {
+        btn.addEventListener('click', () => openCamera(btn.dataset.cameraTarget));
+    });
+})();
+

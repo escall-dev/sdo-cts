@@ -141,14 +141,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Validate that at least one valid ID/credential file is present (required)
-    $validIdFilesInSubmission = array_filter($tempFiles, function($file) {
-        return isset($file['category']) && $file['category'] === 'valid_id';
-    });
-    
-    if (empty($validIdFilesInSubmission)) {
-        $_SESSION['form_error'] = 'Please upload at least one valid ID or credential. This field is required.';
-        header('Location: index.php');
-        exit;
+    // Skip this check if the user submitted a handwritten completed form (bypass/Option B mode)
+    if (!$handwrittenAdded) {
+        $validIdFilesInSubmission = array_filter($tempFiles, function($file) {
+            return isset($file['category']) && $file['category'] === 'valid_id';
+        });
+
+        if (empty($validIdFilesInSubmission)) {
+            $_SESSION['form_error'] = 'Please upload at least one valid ID or credential. This field is required.';
+            header('Location: index.php');
+            exit;
+        }
     }
 
     $_SESSION['form_files'] = $tempFiles;
@@ -287,6 +290,9 @@ function isChecked($field, $value) {
                                 accept=".pdf,.jpg,.jpeg,.png"
                             >
                         </div>
+                        <button type="button" class="camera-btn" data-camera-target="handwritten_form">
+                            <i class="fas fa-camera"></i> Use Camera
+                        </button>
                         <div class="file-list" id="handwrittenFileList"></div>
                     </div>
                 </div>
@@ -334,6 +340,9 @@ function isChecked($field, $value) {
                                    accept=".pdf,.jpg,.jpeg,.png" multiple 
                                    data-required="true">
                         </div>
+                        <button type="button" class="camera-btn" data-camera-target="validIdInput">
+                            <i class="fas fa-camera"></i> Use Camera
+                        </button>
                         <div class="file-list" id="validIdFileList"></div>
                         <small style="color: var(--text-muted);">At least one valid ID or credential is required.</small>
                     </div>
@@ -526,6 +535,9 @@ function isChecked($field, $value) {
                             <input type="file" name="documents[]" id="fileInput" 
                                    accept=".pdf,.jpg,.jpeg,.png" multiple>
                         </div>
+                        <button type="button" class="camera-btn" data-camera-target="fileInput">
+                            <i class="fas fa-camera"></i> Use Camera
+                        </button>
                         <div class="file-list" id="fileList"></div>
                     </div>
                 </div>
@@ -654,6 +666,27 @@ function isChecked($field, $value) {
                 <button type="button" class="btn btn-danger" id="confirmRemoveHandwrittenBtn">
                     <i class="fas fa-trash-alt"></i> Remove File
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Camera Capture Modal (shared for all upload sections) -->
+    <div class="camera-modal-overlay" id="cameraModalOverlay">
+        <div class="camera-modal">
+            <div class="camera-modal-header">
+                <span><i class="fas fa-camera" style="margin-right:0.5rem;"></i>Take a Photo</span>
+                <button type="button" id="btnCloseCamera" title="Close">✕</button>
+            </div>
+            <div class="camera-modal-body">
+                <video id="cameraVideo" autoplay playsinline muted></video>
+                <canvas id="cameraCanvas"></canvas>
+                <img id="cameraPreviewImg" alt="Captured photo preview">
+                <p class="camera-status" id="cameraStatus">📷 Position your document and press <strong>Capture</strong>.</p>
+            </div>
+            <div class="camera-modal-footer">
+                <button type="button" id="btnRetake"><i class="fas fa-redo"></i> Retake</button>
+                <button type="button" id="btnCapture"><i class="fas fa-camera"></i> Capture</button>
+                <button type="button" id="btnUsePhoto"><i class="fas fa-check"></i> Use Photo</button>
             </div>
         </div>
     </div>
