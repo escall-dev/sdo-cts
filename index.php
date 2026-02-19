@@ -439,18 +439,10 @@ function isChecked($field, $value) {
                         <label class="form-label" for="involved_school_office_unit">
                             School/Office/Unit <span class="required">*</span>
                         </label>
-                        <select class="form-control" id="involved_school_office_unit" 
-                                name="involved_school_office_unit" required>
-                            <option value="">-- Select Unit --</option>
-                            <option value="SDS" <?php echo getValue('involved_school_office_unit') === 'SDS' ? 'selected' : ''; ?>>SDS: Schools Division Superintendent</option>
-                            <option value="ASDS" <?php echo getValue('involved_school_office_unit') === 'ASDS' ? 'selected' : ''; ?>>ASDS: Assistant Schools Division Superintendent</option>
-                            <option value="Admin" <?php echo getValue('involved_school_office_unit') === 'Admin' ? 'selected' : ''; ?>>Admin: Cash, Personnel, Records, Supply, General Services, Procurement</option>
-                            <option value="CID" <?php echo getValue('involved_school_office_unit') === 'CID' ? 'selected' : ''; ?>>CID: Curriculum Implementation Division (LRMS, Instructional Management, PSDS)</option>
-                            <option value="Finance" <?php echo getValue('involved_school_office_unit') === 'Finance' ? 'selected' : ''; ?>>Finance: Accounting, Budget</option>
-                            <option value="ICTO" <?php echo getValue('involved_school_office_unit') === 'ICTO' ? 'selected' : ''; ?>>Information and Communication Technology Office</option>
-                            <option value="Legal" <?php echo getValue('involved_school_office_unit') === 'Legal' ? 'selected' : ''; ?>>Legal Office</option>
-                            <option value="SGOD" <?php echo getValue('involved_school_office_unit') === 'SGOD' ? 'selected' : ''; ?>>SGOD: School Governance and Operations Division (M&E, SocMob, Planning & Research, HRD, Facilities, School Health)</option>
-                        </select>
+                        <input type="text" class="form-control" id="involved_school_office_unit" 
+                               name="involved_school_office_unit" 
+                               placeholder="Enter the school/office/unit involved"
+                               value="<?php echo getValue('involved_school_office_unit'); ?>" required>
                     </div>
                 </div>
             </section>
