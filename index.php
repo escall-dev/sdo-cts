@@ -212,7 +212,7 @@ function isChecked($field, $value) {
             <p class="subtitle">Region IV-A - CALABARZON | Schools Division Office of San Pedro City</p>
         </header>
 
-        <?php if ($formError): ?>
+        <?php if ($formError): ?>   
         <div style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
             <strong><i class="fas fa-exclamation-circle"></i> Error:</strong> <?php echo htmlspecialchars($formError); ?>
         </div>

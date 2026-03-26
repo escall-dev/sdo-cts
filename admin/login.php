@@ -23,7 +23,7 @@ $email = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
-    
+
     if (empty($email) || empty($password)) {
         $error = 'Please enter both email and password.';
     } else {
@@ -41,13 +41,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login - SDO CTS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
@@ -64,13 +66,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             --error: #ef4444;
             --success: #10b981;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-dark);
@@ -83,8 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             overflow-x: hidden;
             overflow-y: auto;
         }
-        
-        
+
+
         .login-container {
             width: 100%;
             max-width: 420px;
@@ -92,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             z-index: 1;
             margin: auto;
         }
-        
+
         .login-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -100,12 +102,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding: 32px 28px;
             backdrop-filter: blur(20px);
         }
-        
+
         .login-header {
             text-align: center;
             margin-bottom: 28px;
         }
-        
+
         .logo-badge {
             display: inline-flex;
             align-items: center;
@@ -118,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-bottom: 16px;
             position: relative;
         }
-        
+
         .logo-badge::after {
             content: '';
             position: absolute;
@@ -128,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             z-index: -1;
             opacity: 0.5;
         }
-        
+
         .login-header h1 {
             color: var(--text);
             font-size: 1.5rem;
@@ -136,16 +138,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-bottom: 6px;
             letter-spacing: -0.5px;
         }
-        
+
         .login-header p {
             color: var(--text-muted);
             font-size: 0.85rem;
         }
-        
+
         .form-group {
             margin-bottom: 16px;
         }
-        
+
         .form-label {
             display: block;
             color: var(--text);
@@ -153,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-weight: 500;
             margin-bottom: 6px;
         }
-        
+
         .form-control {
             width: 100%;
             padding: 12px 14px;
@@ -165,17 +167,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: var(--text);
             transition: all 0.2s ease;
         }
-        
+
         .form-control::placeholder {
             color: var(--text-muted);
         }
-        
+
         .form-control:focus {
             outline: none;
             border-color: var(--primary-light);
             background: rgba(0, 0, 0, 0.4);
         }
-        
+
         .error-message {
             background: rgba(239, 68, 68, 0.1);
             border: 1px solid rgba(239, 68, 68, 0.3);
@@ -188,7 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             align-items: center;
             gap: 10px;
         }
-        
+
         .btn {
             display: flex;
             align-items: center;
@@ -205,20 +207,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: none;
             text-decoration: none;
         }
-        
+
         .btn-primary {
             background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
             color: white;
         }
-        
+
         .btn-primary:hover {
             transform: translateY(-2px);
         }
-        
+
         .btn-primary:active {
             transform: translateY(0);
         }
-        
+
         .divider {
             display: flex;
             align-items: center;
@@ -227,7 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: var(--text-muted);
             font-size: 0.8rem;
         }
-        
+
         .divider::before,
         .divider::after {
             content: '';
@@ -235,31 +237,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             height: 1px;
             background: var(--border);
         }
-        
+
         .btn-google {
             background: white;
             color: #333;
             border: 2px solid #e5e7eb;
             font-weight: 600;
         }
-        
+
         .btn-google:hover {
             background: #f9fafb;
             border-color: #d1d5db;
             transform: translateY(-2px);
         }
-        
+
         .btn-google svg {
             margin-right: 4px;
         }
-        
+
         .login-footer {
             text-align: center;
             margin-top: 24px;
             padding-top: 20px;
             border-top: 1px solid var(--border);
         }
-        
+
         .login-footer a {
             color: var(--accent);
             text-decoration: none;
@@ -269,115 +271,118 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             align-items: center;
             gap: 6px;
         }
-        
+
         .login-footer a:hover {
             color: white;
         }
-        
+
         .brand-footer {
             text-align: center;
             margin-top: 20px;
             color: var(--text-muted);
             font-size: 0.8rem;
         }
-        
+
         @media (max-width: 480px) {
             body {
                 padding: 16px;
             }
-            
+
             .login-card {
                 padding: 24px 20px;
                 border-radius: 16px;
             }
-            
+
             .login-header {
                 margin-bottom: 20px;
             }
-            
+
             .logo-badge {
                 width: 90px;
                 height: 90px;
                 margin-bottom: 12px;
             }
-            
+
             .logo-badge img {
                 width: 90px !important;
                 height: 90px !important;
             }
-            
+
             .login-header h1 {
                 font-size: 1.25rem;
             }
-            
+
             .login-header p {
                 font-size: 0.8rem;
             }
-            
+
             .form-group {
                 margin-bottom: 12px;
             }
-            
+
             .form-control {
                 padding: 10px 12px;
             }
-            
+
             .btn {
                 padding: 10px 16px;
                 font-size: 0.9rem;
             }
-            
+
             .divider {
                 margin: 16px 0;
             }
-            
+
             .login-footer {
                 margin-top: 16px;
                 padding-top: 16px;
             }
-            
+
             .brand-footer {
                 margin-top: 16px;
             }
         }
-        
+
         @media (max-height: 700px) {
             body {
                 align-items: flex-start;
                 padding-top: 16px;
                 padding-bottom: 16px;
             }
-            
+
             .login-card {
                 padding: 24px 24px;
             }
-            
+
             .login-header {
                 margin-bottom: 20px;
             }
-            
+
             .logo-badge {
                 width: 56px;
                 height: 56px;
                 margin-bottom: 12px;
             }
-            
+
             .logo-badge img {
                 width: 52px !important;
                 height: 52px !important;
             }
-            
+
             .brand-footer {
                 margin-top: 12px;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
-                <div class="logo-badge"><img src="/SDO-cts/assets/img/sdo-logo.jpg" alt="SDO San Pedro Logo" style="width:90px;height:90px;border-radius:50%;margin-bottom:13px;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,0.15);"></div>
+                <div class="logo-badge"><img src="/SDO-cts/assets/img/sdo-logo.jpg" alt="SDO San Pedro Logo"
+                        style="width:90px;height:90px;border-radius:50%;margin-bottom:13px;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+                </div>
                 <h1>SDO CTS Admin</h1>
 
                 <p>Schools Division Office of San Pedro City - Complaint Tracking System</p>
@@ -385,27 +390,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <?php if ($error): ?>
-            <div class="error-message">
-                <span><i class="fas fa-exclamation-triangle"></i></span>
-                <?php echo htmlspecialchars($error); ?>
-            </div>
+                <div class="error-message">
+                    <span><i class="fas fa-exclamation-triangle"></i></span>
+                    <?php echo htmlspecialchars($error); ?>
+                </div>
             <?php endif; ?>
 
             <!-- Email/Password Login Form -->
             <form method="POST" action="">
                 <div class="form-group">
                     <label class="form-label" for="email">Email Address</label>
-                    <input type="email" class="form-control" id="email" name="email" 
-                           value="<?php echo htmlspecialchars($email); ?>"
-                           placeholder="your.email@deped.gov.ph" required>
+                    <input type="email" class="form-control" id="email" name="email"
+                        value="<?php echo htmlspecialchars($email); ?>" placeholder="your.email@deped.gov.ph" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label" for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" 
-                           placeholder="Enter your password" required>
+                    <input type="password" class="form-control" id="password" name="password"
+                        placeholder="Enter your password" required>
                 </div>
-                
+
                 <button type="submit" class="btn btn-primary">
                     <i class=""></i> Sign In
                 </button>
@@ -418,9 +422,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="brand-footer">
             <p>DepEd — Schools Division Office of San Pedro City</p>
-             <span>&copy; <?php echo date('Y'); ?> ICT Unit</span> 
+            <span>&copy; <?php echo date('Y'); ?> ICT Unit</span>
         </div>
     </div>
 </body>
-</html>
 
+</html>
