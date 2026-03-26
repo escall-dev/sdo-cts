@@ -37,7 +37,8 @@ $pageTitles = [
     'settings' => 'Settings',
     'profile' => 'My Profile',
     'email-settings' => 'Email Settings',
-    'email-logs' => 'Email Logs'
+    'email-logs' => 'Email Logs',
+    'contact' => 'Need Help?'
 ];
 
 $pageTitle = $pageTitles[$currentPage] ?? 'Admin Panel';
@@ -142,6 +143,11 @@ $pageTitle = $pageTitles[$currentPage] ?? 'Admin Panel';
                     <span class="nav-icon"><i class="fas fa-globe"></i></span>
                     <span class="nav-text">View CTS</span>
                 </a>
+
+                <a href="/SDO-cts/admin/contact.php" class="nav-item <?php echo $currentPage === 'contact' ? 'active' : ''; ?>" data-tooltip="Need Help?">
+                    <span class="nav-icon"><i class="fas fa-headset"></i></span>
+                    <span class="nav-text">Need Help?</span>
+                </a>
             </nav>
 
             <div class="sidebar-footer">
@@ -175,9 +181,42 @@ $pageTitle = $pageTitles[$currentPage] ?? 'Admin Panel';
                     </button>
                     <h1 class="page-title"><?php echo $pageTitle; ?></h1>
                 </div>
-                <div class="top-bar-right">
-                    <span class="current-date"><?php echo date('l, F j, Y'); ?></span>
+                <div class="top-bar-right" style="display: flex; align-items: center; gap: 16px;">
+                    <span id="liveDate" style="color: #64748b; font-size: 0.95rem; margin-right: 4px;"><?php echo date('l, F j, Y'); ?></span>
+                    <span id="liveTime" style="color: #000000; font-size: 1.05rem; font-weight: 600; letter-spacing: 0.5px;"><?php echo date('h:i:s A'); ?></span>
                 </div>
+                <script>
+                    function updateClock() {
+                        const now = new Date();
+                        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                        
+                        const dayName = days[now.getDay()];
+                        const monthName = months[now.getMonth()];
+                        const date = now.getDate();
+                        const year = now.getFullYear();
+                        
+                        let hours = now.getHours();
+                        const minutes = now.getMinutes().toString().padStart(2, '0');
+                        const seconds = now.getSeconds().toString().padStart(2, '0');
+                        const ampm = hours >= 12 ? 'PM' : 'AM';
+                        
+                        hours = hours % 12;
+                        hours = hours ? hours : 12;
+                        
+                        const dateString = `${dayName}, ${monthName} ${date}, ${year}`;
+                        const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
+                        
+                        const dateEl = document.getElementById('liveDate');
+                        const timeEl = document.getElementById('liveTime');
+                        
+                        if(dateEl) dateEl.textContent = dateString;
+                        if(timeEl) timeEl.textContent = timeString;
+                    }
+                    setInterval(updateClock, 1000);
+                    // Initialize immediately to replace PHP generated static date
+                    updateClock();
+                </script>
             </header>
 
             <div class="content-wrapper">
