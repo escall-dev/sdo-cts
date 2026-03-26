@@ -209,7 +209,7 @@ function isChecked($field, $value) {
                 <i class="fas fa-landmark"></i> Department of Education Schools Division Office of San Pedro City
             </div>
             <h1>Complaints-Assisted Form</h1>
-            <p class="subtitle">Region IVA - CALABARZON | Schools Division Office of San Pedro City</p>
+            <p class="subtitle">Region IV-A - CALABARZON | Schools Division Office of San Pedro City</p>
         </header>
 
         <?php if ($formError): ?>
@@ -611,9 +611,8 @@ function isChecked($field, $value) {
 
         <!-- Footer -->
         <footer class="form-footer">
-        <p>© 2026 SDO CTS - Schools Division Office of San Pedro City - Complaint Tracking System</p>
-            <p>Developed by: Alexander Joerenz Escallente & Redgine Pinedes</p>
-            <p>Department of Education</p>
+        <p>DepEd — Schools Division Office of San Pedro City</p>
+             <span>&copy; <?php echo date('Y'); ?> ICT Unit</span> 
         </footer>
     </div>
 
