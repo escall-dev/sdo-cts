@@ -206,7 +206,7 @@ $statusLabels = [
                                 Reference Number <span class="required">*</span>
                             </label>
                             <input type="text" class="form-control" id="reference_number" 
-                                   name="reference_number" placeholder="e.g., CTS-2025-00001"
+                                name="reference_number" placeholder="e.g., CTR9P-202504-001"
                                    value="<?php echo htmlspecialchars($_POST['reference_number'] ?? $_GET['ref'] ?? ''); ?>" 
                                    required>
                         </div>

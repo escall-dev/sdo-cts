@@ -143,8 +143,8 @@ unset($_SESSION['submission_success']);
 
         <!-- Footer -->
         <footer class="form-footer">
-            <p>SDO CTS - The Schools Division Office of San Pedro City Complaint Tracking System</p>
-            <p>Department of Education - San Pedro Division</p>
+             <p>DepEd — Schools Division Office of San Pedro City</p>
+             <span>&copy; <?php echo date('Y'); ?> ICT Unit</span> 
         </footer>
     </div>
 

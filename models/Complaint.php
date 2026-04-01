@@ -16,25 +16,46 @@ class Complaint {
 
     /**
      * Generate unique reference number
-     * Format: CTS-YYYY-XXXXX
+     * Format: CT[A-Z0-9]{3}-YYYYMM-XXX
      */
     public function generateReferenceNumber() {
-        $year = date('Y');
-        $prefix = "CTS-{$year}-";
-        
-        $sql = "SELECT reference_number FROM complaints 
-                WHERE reference_number LIKE ? 
+        $yearMonth = date('Ym');
+
+        $sql = "SELECT reference_number FROM complaints
+                WHERE reference_number LIKE ?
                 ORDER BY id DESC LIMIT 1";
-        $result = $this->db->query($sql, [$prefix . '%'])->fetch();
-        
+        $result = $this->db->query($sql, ["CT___-{$yearMonth}-%"])->fetch();
+
         if ($result) {
-            $lastNumber = intval(substr($result['reference_number'], -5));
-            $newNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+            $lastSeries = intval(substr($result['reference_number'], -3));
+            $nextSeries = $lastSeries + 1;
         } else {
-            $newNumber = '00001';
+            $nextSeries = 1;
         }
-        
-        return $prefix . $newNumber;
+
+        if ($nextSeries > 999) {
+            throw new Exception("Monthly reference limit reached for {$yearMonth}.");
+        }
+
+        $series = str_pad((string)$nextSeries, 3, '0', STR_PAD_LEFT);
+        $randomPart = $this->generateRandomAlphaNumeric(3);
+
+        return "CT{$randomPart}-{$yearMonth}-{$series}";
+    }
+
+    /**
+     * Generate random uppercase alphanumeric string.
+     */
+    private function generateRandomAlphaNumeric($length = 3) {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $maxIndex = strlen($characters) - 1;
+        $random = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $random .= $characters[random_int(0, $maxIndex)];
+        }
+
+        return $random;
     }
 
     /**
