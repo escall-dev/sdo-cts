@@ -224,7 +224,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['install'])) {
             background: rgba(17, 29, 46, 0.95);
             border-radius: 16px;
             padding: 40px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18);
             border: 1px solid rgba(187, 225, 250, 0.1);
         }
         

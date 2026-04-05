@@ -57,7 +57,8 @@ $pageTitle = $pageTitles[$currentPage] ?? 'Admin Panel';
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/SDO-cts/admin/assets/css/admin.css">
+    <?php $adminCssVersion = @filemtime(__DIR__ . '/../assets/css/admin.css') ?: time(); ?>
+    <link rel="stylesheet" href="/SDO-cts/admin/assets/css/admin.css?v=<?php echo $adminCssVersion; ?>">
 </head>
 
 <body>

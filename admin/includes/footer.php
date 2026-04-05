@@ -1,9 +1,8 @@
             </div><!-- .content-wrapper -->
             
             <footer class="admin-footer">
-            <p>DepEd — Schools Division Office of San Pedro City</p>
-             <span>&copy; <?php echo date('Y'); ?> ICT Unit</span> 
-            
+                <p>DepEd — Schools Division Office of San Pedro City</p>
+                <span>&copy; <?php echo date('Y'); ?> ICT Unit</span>
             </footer>
         </main>
     </div>

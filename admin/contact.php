@@ -7,7 +7,7 @@
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div class="detail-card" style="max-width: 600px; margin: 40px auto; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0;">
+<div class="detail-card" style="max-width: 600px; margin: 40px auto; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04); border: 1px solid #e2e8f0;">
     <div class="detail-card-header">
         <h3><i class="fas fa-headset"></i> Need Help?</h3>
     </div>

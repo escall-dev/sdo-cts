@@ -15,7 +15,7 @@ echo "<link rel='preconnect' href='https://fonts.googleapis.com'>";
 echo "<link href='https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap' rel='stylesheet'>";
 echo "<style>";
 echo "body { font-family: 'DM Sans', sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; background: #f4f7f6; }";
-echo ".card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }";
+echo ".card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.06); }";
 echo "h1 { color: #1a5f7a; margin-bottom: 20px; }";
 echo ".success { background: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin: 10px 0; }";
 echo ".error { background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin: 10px 0; }";

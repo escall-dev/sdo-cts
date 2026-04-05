@@ -381,7 +381,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="login-card">
             <div class="login-header">
                 <div class="logo-badge"><img src="/SDO-cts/assets/img/sdo-logo.jpg" alt="SDO San Pedro Logo"
-                        style="width:90px;height:90px;border-radius:50%;margin-bottom:13px;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+                    style="width:90px;height:90px;border-radius:50%;margin-bottom:13px;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
                 </div>
                 <h1>SDO CTS Admin</h1>
 

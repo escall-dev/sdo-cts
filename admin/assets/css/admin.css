@@ -37,12 +37,12 @@
     --border-color: #e2e8f0;
     --border-light: #f1f5f9;
     
-    /* Shadows - Strong visible shadows for card pop effect */
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.08);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.18), 0 4px 8px rgba(0, 0, 0, 0.12);
-    --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.22), 0 6px 12px rgba(0, 0, 0, 0.15);
-    --shadow-2xl: 0 20px 48px rgba(0, 0, 0, 0.28), 0 10px 20px rgba(0, 0, 0, 0.18);
+    /* Shadows - Softer elevation for lighter section containers */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 3px 10px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 6px 18px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.06);
+    --shadow-xl: 0 10px 24px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(0, 0, 0, 0.08);
+    --shadow-2xl: 0 14px 32px rgba(0, 0, 0, 0.14), 0 6px 14px rgba(0, 0, 0, 0.09);
     
     /* Layout */
     --sidebar-width: 260px;
@@ -740,7 +740,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 50;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: none;
 }
 
 .top-bar-left {
@@ -845,14 +845,14 @@ body {
     display: flex;
     align-items: center;
     gap: 16px;
-    border: 2px solid rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.08);
     transition: all var(--transition-base);
-    box-shadow: 0 6px 28px 4px rgba(0, 0, 0, 0.35), 0 3px 12px 2px rgba(0, 0, 0, 0.25);
+    box-shadow: none;
 }
 
 .stat-card:hover {
-    border-color: rgba(0, 0, 0, 0.20);
-    box-shadow: 0 10px 40px 6px rgba(0, 0, 0, 0.4), 0 5px 18px 3px rgba(0, 0, 0, 0.3);
+    border-color: rgba(0, 0, 0, 0.12);
+    box-shadow: none;
     transform: translateY(-4px);
 }
 
@@ -913,15 +913,15 @@ body {
 .dashboard-card {
     background: var(--card-bg);
     border-radius: var(--radius-lg);
-    border: 2px solid rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.08);
     overflow: hidden;
     transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 6px 32px 5px rgba(0, 0, 0, 0.35), 0 3px 14px 3px rgba(0, 0, 0, 0.25);
+    box-shadow: none;
 }
 
 .dashboard-card:hover {
-    border-color: rgba(0, 0, 0, 0.18);
-    box-shadow: 0 10px 44px 8px rgba(0, 0, 0, 0.4), 0 5px 20px 4px rgba(0, 0, 0, 0.3);
+    border-color: rgba(0, 0, 0, 0.12);
+    box-shadow: none;
     transform: translateY(-4px);
 }
 
@@ -933,10 +933,10 @@ body {
 
 @keyframes card-glow {
     0%, 100% {
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: none;
     }
     50% {
-        box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        box-shadow: none;
     }
 }
 
@@ -999,13 +999,13 @@ body {
     text-decoration: none;
     transition: all var(--transition-base);
     border: 1px solid var(--border-light);
-    box-shadow: var(--shadow-sm);
+    box-shadow: none;
 }
 
 .complaint-item:hover {
     background: var(--bg-tertiary);
     border-color: var(--border-color);
-    box-shadow: var(--shadow-md);
+    box-shadow: none;
     transform: translateX(4px);
 }
 
@@ -1298,7 +1298,7 @@ body {
     border-radius: var(--radius-lg);
     padding: 20px;
     margin-bottom: 24px;
-    box-shadow: 0 6px 28px 4px rgba(0, 0, 0, 0.35), 0 3px 12px 2px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 14px 2px rgba(0, 0, 0, 0.16), 0 2px 8px 1px rgba(0, 0, 0, 0.1);
 }
 
 .filter-form {
@@ -1351,13 +1351,13 @@ body {
     border: 2px solid rgba(0, 0, 0, 0.12);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 6px 32px 5px rgba(0, 0, 0, 0.35), 0 3px 14px 3px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 16px 2px rgba(0, 0, 0, 0.18), 0 2px 8px 1px rgba(0, 0, 0, 0.11);
     transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
 }
 
 .data-card:hover {
     border-color: rgba(0, 0, 0, 0.18);
-    box-shadow: 0 10px 44px 8px rgba(0, 0, 0, 0.4), 0 5px 20px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 28px 4px rgba(0, 0, 0, 0.22), 0 4px 14px 2px rgba(0, 0, 0, 0.14);
 }
 
 .table-responsive {
@@ -1686,7 +1686,7 @@ textarea.form-control {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.22);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1859,20 +1859,20 @@ textarea.form-control {
     border: 2px solid rgba(0, 0, 0, 0.12);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 6px 32px 5px rgba(0, 0, 0, 0.35), 0 3px 14px 3px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 16px 2px rgba(0, 0, 0, 0.18), 0 2px 8px 1px rgba(0, 0, 0, 0.11);
     transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .detail-card:hover {
     border-color: rgba(0, 0, 0, 0.18);
-    box-shadow: 0 10px 44px 8px rgba(0, 0, 0, 0.4), 0 5px 20px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 28px 4px rgba(0, 0, 0, 0.22), 0 4px 14px 2px rgba(0, 0, 0, 0.14);
 }
 
 .ref-card {
     background: var(--primary-gradient);
     color: white;
     border: 3px solid rgba(15, 76, 117, 0.3);
-    box-shadow: 0 6px 32px 5px rgba(15, 76, 117, 0.5), 0 3px 14px 3px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 4px 16px 2px rgba(15, 76, 117, 0.28), 0 2px 8px 1px rgba(0, 0, 0, 0.16);
 }
 
 .ref-header {
@@ -2402,5 +2402,17 @@ textarea.form-control {
     font-weight: 700;
     color: var(--text-primary);
     font-size: 0.95rem;
+}
+
+/* Hard override: remove dashboard shadows completely */
+.top-bar,
+.stats-row .stat-card,
+.stats-row .stat-card:hover,
+.dashboard-content .dashboard-card,
+.dashboard-content .dashboard-card:hover,
+.complaints-list .complaint-item,
+.complaints-list .complaint-item:hover,
+.dashboard-card.card-highlight {
+    box-shadow: none !important;
 }
 

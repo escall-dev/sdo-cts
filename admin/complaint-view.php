@@ -79,7 +79,7 @@ include __DIR__ . '/includes/header.php';
         max-width: 100%;
         margin: 0 auto;
         background: #fff;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 6px rgba(0,0,0,0.08);
         /* Keep the entire template together on one page unless narration adds page 2 */
         page-break-after: avoid;
         page-break-inside: avoid;
@@ -315,7 +315,7 @@ include __DIR__ . '/includes/header.php';
         max-width: 100%;
         margin: 30px auto 0;
         background: #fff;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 6px rgba(0,0,0,0.08);
         padding: 30px 40px;
         min-height: 1100px;
         page-break-before: always;
@@ -1796,8 +1796,8 @@ document.addEventListener('DOMContentLoaded', function () {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(2px);
 }
 
 .doc-modal-container {
@@ -1807,7 +1807,7 @@ document.addEventListener('DOMContentLoaded', function () {
     height: 90vh;
     background: #fff;
     border-radius: 12px;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -1853,7 +1853,7 @@ document.addEventListener('DOMContentLoaded', function () {
 .doc-modal-content img {
     max-width: 100%;
     height: auto;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
 }
 

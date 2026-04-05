@@ -29,10 +29,10 @@
     --success-color: #198754;
     
     /* Shadows */
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
-    --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
-    --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.07);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.09);
+    --shadow-xl: 0 16px 40px rgba(0,0,0,0.11);
     
     /* Spacing */
     --section-gap: 1.5rem;
@@ -1207,7 +1207,7 @@ select.form-control {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.75);
+    background: rgba(0,0,0,0.28);
     z-index: 9999;
     align-items: center;
     justify-content: center;
@@ -1219,7 +1219,7 @@ select.form-control {
     border-radius: 16px;
     overflow: hidden;
     width: min(480px, 95vw);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.18);
     display: flex;
     flex-direction: column;
 }
