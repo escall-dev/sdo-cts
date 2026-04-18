@@ -188,9 +188,11 @@ include __DIR__ . '/includes/header.php';
                 <h2><i class="fas fa-layer-group"></i> Category & Type Analysis</h2>
             </div>
             <div class="card-body analytics-two-col">
-                <div class="chart-card">
+                <div class="chart-card compact-chart-card">
                     <h3>Complaint Distribution by Type</h3>
-                    <canvas id="typeDistributionChart"></canvas>
+                    <div class="type-chart-wrap">
+                        <canvas id="typeDistributionChart"></canvas>
+                    </div>
                 </div>
                 <div class="chart-card">
                     <h3>Type Trends Over Time</h3>

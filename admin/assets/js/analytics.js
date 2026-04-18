@@ -124,6 +124,7 @@ function buildDoughnutConfig(labels, data) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: { legend: { position: 'bottom' } }
         }
     };

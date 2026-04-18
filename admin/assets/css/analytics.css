@@ -73,6 +73,24 @@
     border: 1px solid var(--border-light);
 }
 
+.compact-chart-card {
+    width: 360px;
+    max-width: 100%;
+    justify-self: start;
+}
+
+.type-chart-wrap {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+}
+
+#typeDistributionChart {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 auto;
+}
+
 .chart-card h3,
 .analytics-table-card h3 {
     font-size: 0.95rem;
@@ -246,6 +264,10 @@
 }
 
 @media (max-width: 768px) {
+    .compact-chart-card {
+        width: 100%;
+    }
+
     .page-actions {
         width: 100%;
     }
