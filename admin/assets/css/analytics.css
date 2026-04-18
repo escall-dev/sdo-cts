@@ -84,7 +84,23 @@
     aspect-ratio: 1 / 1;
 }
 
+.location-chart-card {
+    width: 100%;
+}
+
+.location-chart-wrap {
+    width: 100%;
+    height: clamp(280px, 42vh, 420px);
+}
+
 #typeDistributionChart {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 auto;
+}
+
+#locationChart {
     display: block;
     width: 100% !important;
     height: 100% !important;
@@ -266,6 +282,10 @@
 @media (max-width: 768px) {
     .compact-chart-card {
         width: 100%;
+    }
+
+    .location-chart-wrap {
+        height: clamp(240px, 38vh, 340px);
     }
 
     .page-actions {

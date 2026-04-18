@@ -338,7 +338,44 @@ function updateLocationChart(locations) {
     const orderedRows = totalRow ? [...normalRows, totalRow] : normalRows;
     const labels = orderedRows.map(row => row.label);
     const totals = orderedRows.map(row => row.total);
-    const config = buildBarConfig(labels, totals, 'Complaints by Location', '#1b6ca8');
+    const config = {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Complaints by Location',
+                data: totals,
+                backgroundColor: '#1b6ca8',
+                borderRadius: 4,
+                maxBarThickness: 34
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 10,
+                        minRotation: 0,
+                        maxRotation: 35,
+                        callback: function(value) {
+                            const rawLabel = this.getLabelForValue(value) || '';
+                            return rawLabel.length > 18 ? `${rawLabel.slice(0, 18)}...` : rawLabel;
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 }
+                }
+            }
+        }
+    };
 
     if (!analyticsState.charts.location) {
         analyticsState.charts.location = createChart('locationChart', config);

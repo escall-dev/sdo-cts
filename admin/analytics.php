@@ -263,9 +263,11 @@ include __DIR__ . '/includes/header.php';
                 <h2><i class="fas fa-map-marker-alt"></i> Location / Section Analysis</h2>
             </div>
             <div class="card-body">
-                <div class="chart-card">
+                <div class="chart-card location-chart-card">
                     <h3>Complaints by School or Section</h3>
-                    <canvas id="locationChart"></canvas>
+                    <div class="location-chart-wrap">
+                        <canvas id="locationChart"></canvas>
+                    </div>
                 </div>
             </div>
         </section>
