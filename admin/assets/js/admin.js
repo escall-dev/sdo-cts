@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initFlashMessages();
     initFormValidation();
     initFilterEnterSubmit();
+    initResponsiveTables();
 });
 
 /**
@@ -72,6 +73,50 @@ function initFilterEnterSubmit() {
 }
 
 /**
+ * Add data-label attributes so mobile stacked tables remain readable.
+ */
+function initResponsiveTables() {
+    const applyLabels = function(table) {
+        const headers = Array.from(table.querySelectorAll('thead th')).map(function(th) {
+            return (th.textContent || '').trim();
+        });
+
+        if (!headers.length) {
+            return;
+        }
+
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach(function(row) {
+            const cells = row.querySelectorAll('td');
+            cells.forEach(function(cell, index) {
+                if (!cell.getAttribute('data-label')) {
+                    cell.setAttribute('data-label', headers[index] || 'Field');
+                }
+            });
+        });
+    };
+
+    const tables = document.querySelectorAll('.table-responsive .data-table');
+    tables.forEach(function(table) {
+        applyLabels(table);
+
+        const tbody = table.querySelector('tbody');
+        if (!tbody) {
+            return;
+        }
+
+        const observer = new MutationObserver(function() {
+            applyLabels(table);
+        });
+
+        observer.observe(tbody, {
+            childList: true,
+            subtree: true
+        });
+    });
+}
+
+/**
  * Sidebar Toggle
  */
 function initSidebar() {
@@ -87,7 +132,8 @@ function initSidebar() {
         adminLayout.classList.add('sidebar-collapsed');
     }
     
-    if (mobileToggle) {
+    if (mobileToggle && !mobileToggle.dataset.sidebarToggleBound) {
+        mobileToggle.dataset.sidebarToggleBound = '1';
         mobileToggle.addEventListener('click', function() {
             sidebar.classList.toggle('open');
         });
@@ -354,6 +400,21 @@ async function ajaxRequest(url, options = {}) {
             transform: translateX(120%);
             transition: transform 0.3s ease;
             max-width: 400px;
+        }
+
+        @media (max-width: 640px) {
+            .notification {
+                left: 12px;
+                right: 12px;
+                top: 12px;
+                width: auto;
+                max-width: none;
+                transform: translateY(-120%);
+            }
+
+            .notification.show {
+                transform: translateY(0);
+            }
         }
         
         .notification.show {

@@ -541,6 +541,126 @@ include __DIR__ . '/includes/header.php';
             font-size: 18px;
         }
     }
+
+    @media (max-width: 768px) {
+        .complaint-detail-grid,
+        .complaint-main,
+        .complaint-sidebar {
+            min-width: 0;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .form-container,
+        .additional-page {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            overflow: hidden;
+        }
+
+        .additional-page {
+            box-sizing: border-box;
+            padding: 12px 8px !important;
+            min-height: auto;
+        }
+
+        .additional-page-header,
+        .additional-page-content {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .additional-page-header {
+            padding: 8px 6px;
+            border-left-width: 2px;
+            border-right-width: 2px;
+        }
+
+        .additional-page-header h2 {
+            font-size: 13px;
+            line-height: 1.3;
+        }
+
+        .additional-page-header p {
+            font-size: 11px;
+            line-height: 1.35;
+        }
+
+        .additional-page-content {
+            min-height: 520px;
+            font-size: 13px;
+            line-height: 24px;
+            padding: 4px 8px;
+            border-left-width: 2px;
+            border-right-width: 2px;
+            border-bottom-width: 2px;
+            background: repeating-linear-gradient(
+                transparent,
+                transparent 23px,
+                #000 23px,
+                #000 24px
+            );
+        }
+
+        .page-number-label {
+            text-align: center;
+            font-size: 10px;
+            margin-bottom: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .form-background {
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        .page-indicator {
+            font-size: 0.78rem;
+        }
+
+        .admin-view-header,
+        .header-actions {
+            width: 100%;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .header-actions .btn,
+        .header-actions .reference-badge,
+        .header-actions .status-badge {
+            width: 100%;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .complainant-contact-card {
+            flex-wrap: wrap !important;
+        }
+
+        .complainant-contact-card > a.btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .attached-notice li {
+            flex-wrap: wrap !important;
+        }
+
+        .attached-notice li > div:last-child {
+            width: 100%;
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 8px !important;
+        }
+
+        .attached-notice li > div:last-child .btn {
+            flex: 1 1 100%;
+            justify-content: center;
+        }
+    }
 </style>
 
 <div class="admin-view-header no-print">

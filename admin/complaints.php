@@ -106,7 +106,7 @@ include __DIR__ . '/includes/header.php';
     </div>
     <?php else: ?>
     <div class="table-responsive">
-        <table class="data-table">
+        <table class="data-table complaints-table">
             <thead>
                 <tr>
                     <th>Reference</th>
@@ -163,47 +163,59 @@ include __DIR__ . '/includes/header.php';
                 ?>
                 <tr>
                     <td>
-                        <a href="/SDO-cts/admin/complaint-view.php?id=<?php echo $complaint['id']; ?>" class="ref-link">
-                            <?php echo htmlspecialchars($complaint['reference_number']); ?>
-                        </a>
-                    </td>
-                    <td>
-                        <div class="cell-primary"><?php echo htmlspecialchars($complainantName); ?></div>
-                        <?php if ($complainantEmail): ?>
-                        <div class="cell-secondary"><?php echo htmlspecialchars($complainantEmail); ?></div>
-                        <?php endif; ?>
-                    </td>
-                    <td>
-                        <?php if (!empty($unitDisplay)): ?>
-                        <div class="cell-primary">
-                            <span class="unit-badge"><?php echo htmlspecialchars($unitDisplay); ?></span>
+                        <div class="td-value">
+                            <a href="/SDO-cts/admin/complaint-view.php?id=<?php echo $complaint['id']; ?>" class="ref-link">
+                                <?php echo htmlspecialchars($complaint['reference_number']); ?>
+                            </a>
                         </div>
-                        <?php endif; ?>
-                        <?php if (!empty($involvedName)): ?>
-                        <div class="cell-secondary"><?php echo htmlspecialchars($involvedName); ?></div>
-                        <?php elseif (empty($unitDisplay)): ?>
-                        <div class="cell-secondary text-muted">-</div>
-                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <div class="td-value">
+                            <div class="cell-primary"><?php echo htmlspecialchars($complainantName); ?></div>
+                            <?php if ($complainantEmail): ?>
+                            <div class="cell-secondary"><?php echo htmlspecialchars($complainantEmail); ?></div>
+                            <?php endif; ?>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="td-value">
+                            <?php if (!empty($unitDisplay)): ?>
+                            <div class="cell-primary">
+                                <span class="unit-badge"><?php echo htmlspecialchars($unitDisplay); ?></span>
+                            </div>
+                            <?php endif; ?>
+                            <?php if (!empty($involvedName)): ?>
+                            <div class="cell-secondary"><?php echo htmlspecialchars($involvedName); ?></div>
+                            <?php elseif (empty($unitDisplay)): ?>
+                            <div class="cell-secondary text-muted">-</div>
+                            <?php endif; ?>
+                        </div>
                     </td>
                    
                     <td>
-                        <span class="status-badge status-<?php echo $complaint['status']; ?>">
-                            <?php echo $statusConfig[$complaint['status']]['icon'] . ' ' . $statusConfig[$complaint['status']]['label']; ?>
-                        </span>
+                        <div class="td-value">
+                            <span class="status-badge status-<?php echo $complaint['status']; ?>">
+                                <?php echo $statusConfig[$complaint['status']]['icon'] . ' ' . $statusConfig[$complaint['status']]['label']; ?>
+                            </span>
+                        </div>
                     </td>
                     <td>
-                        <div class="cell-primary"><?php echo date('M j, Y', strtotime($complaint['date_petsa'])); ?></div>
-                        <div class="cell-secondary"><?php echo date('g:i A', strtotime($complaint['date_petsa'])); ?></div>
+                        <div class="td-value">
+                            <div class="cell-primary"><?php echo date('M j, Y', strtotime($complaint['date_petsa'])); ?></div>
+                            <div class="cell-secondary"><?php echo date('g:i A', strtotime($complaint['date_petsa'])); ?></div>
+                        </div>
                     </td>
                     <td>
-                        <div class="action-buttons">
-                            <a href="/SDO-cts/admin/complaint-view.php?id=<?php echo $complaint['id']; ?>" 
-                               class="btn btn-sm btn-outline" title="View Details">View</a>
-                            <?php if ($auth->hasPermission('complaints.update')): ?>
-                            <button type="button" class="btn btn-sm btn-outline" 
-                                    onclick="openStatusModal(<?php echo $complaint['id']; ?>, '<?php echo $complaint['status']; ?>')"
-                                    title="Update Status">Edit</button>
-                            <?php endif; ?>
+                        <div class="td-value">
+                            <div class="action-buttons">
+                                <a href="/SDO-cts/admin/complaint-view.php?id=<?php echo $complaint['id']; ?>" 
+                                   class="btn btn-sm btn-outline" title="View Details">View</a>
+                                <?php if ($auth->hasPermission('complaints.update')): ?>
+                                <button type="button" class="btn btn-sm btn-outline" 
+                                        onclick="openStatusModal(<?php echo $complaint['id']; ?>, '<?php echo $complaint['status']; ?>')"
+                                        title="Update Status">Edit</button>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </td>
                 </tr>

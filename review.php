@@ -461,6 +461,13 @@ function isPrintablePdf($filename) {
             gap: 8px;
             flex-shrink: 0;
         }
+
+        .bypass-contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 0;
+        }
         
         @media print {
             .no-print { display: none !important; }
@@ -482,6 +489,94 @@ function isPrintablePdf($filename) {
             }
             .signature-box {
                 font-size: 14px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .review-banner {
+                padding-bottom: 0.75rem;
+            }
+
+            .doc-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .doc-info {
+                width: 100%;
+            }
+
+            .doc-actions {
+                width: 100%;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .doc-actions .btn {
+                flex: 1 1 calc(50% - 10px);
+                justify-content: center;
+            }
+
+            .bypass-contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .complainant-info-table,
+            .complainant-info-table tbody,
+            .complainant-info-table tr,
+            .complainant-info-table td {
+                display: block;
+                width: 100% !important;
+            }
+
+            .complainant-info-table tr {
+                border-bottom: 1px solid #bae6fd;
+            }
+
+            .complainant-info-table tr:last-child {
+                border-bottom: none;
+            }
+
+            .complainant-info-table td {
+                padding: 10px 12px !important;
+            }
+
+            .form-actions {
+                gap: 0.75rem;
+            }
+
+            .form-actions .review-action-group {
+                width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+
+            .form-actions .review-action-group .btn {
+                flex: 1 1 100%;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .additional-page {
+                padding: 20px 14px;
+                min-height: auto;
+            }
+
+            .additional-page-content {
+                min-height: 560px;
+                line-height: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .doc-actions .btn {
+                flex: 1 1 100%;
+            }
+
+            .form-container,
+            .additional-page {
+                box-shadow: none;
             }
         }
     </style>
@@ -873,7 +968,7 @@ function isPrintablePdf($filename) {
                     <p style="margin: 0;"><strong><i class="fas fa-info-circle"></i> Important:</strong> Since you uploaded a completed form, please provide your contact information so we can send you confirmation and updates about your complaint.</p>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 0;">
+                <div class="bypass-contact-grid">
                     <!-- Name Field -->
                     <div class="form-group">
                         <label class="form-label" style="font-weight: 600; color: #92400e;">
@@ -963,7 +1058,7 @@ function isPrintablePdf($filename) {
                 <strong>Complainant Information</strong>
             </div>
             <div class="section-content">
-                <table style="width: 100%; border-collapse: collapse;">
+                <table class="complainant-info-table" style="width: 100%; border-collapse: collapse;">
                     <tr>
                         <td style="padding: 10px 12px; border-bottom: 1px solid #bae6fd; background: #eff6ff; color: #0c4a6e; width: 25%;"><strong>Name:</strong></td>
                         <td style="padding: 10px 12px; border-bottom: 1px solid #bae6fd; background: #f0f9ff;">
@@ -1008,7 +1103,7 @@ function isPrintablePdf($filename) {
 
         <!-- Action Buttons -->
         <div class="form-actions" style="margin-top:20px;">
-            <div style="display:flex;gap:10px;">
+            <div class="review-action-group" style="display:flex;gap:10px;">
                 <a href="index.php?edit=1" class="btn btn-secondary">⬅️ Go Back & Edit</a>
                 <button type="button" 
                         class="btn btn-outline" 
@@ -1017,7 +1112,7 @@ function isPrintablePdf($filename) {
                     🖨️ Print Form
                 </button>
             </div>
-            <div style="display:flex;gap:10px;">
+            <div class="review-action-group" style="display:flex;gap:10px;">
                 <button type="submit" 
                         name="confirm_submit" 
                         class="btn btn-success btn-lg" 

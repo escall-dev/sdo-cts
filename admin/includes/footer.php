@@ -179,7 +179,8 @@
         }
         
         // Mobile menu toggle
-        if (mobileToggle) {
+        if (mobileToggle && !mobileToggle.dataset.sidebarToggleBound) {
+            mobileToggle.dataset.sidebarToggleBound = '1';
             mobileToggle.addEventListener('click', function(e) {
                 e.preventDefault();
                 sidebar.classList.toggle('open');

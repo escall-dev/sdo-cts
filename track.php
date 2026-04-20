@@ -166,9 +166,45 @@ $statusLabels = [
                 flex-direction: column;
                 text-align: center;
             }
+
+            .status-card .ref-info .ref-number {
+                font-size: 1.15rem;
+                word-break: break-all;
+            }
+
             .current-status {
                 text-align: center;
             }
+
+            .current-status .badge {
+                padding: 0.6rem 0.95rem;
+                font-size: 0.9rem;
+            }
+
+            .progress-tracker {
+                gap: 0.75rem;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+                justify-content: flex-start;
+                scroll-snap-type: x proximity;
+            }
+
+            .progress-tracker::before {
+                display: none;
+            }
+
+            .progress-step {
+                flex: 0 0 88px;
+                min-width: 88px;
+                scroll-snap-align: start;
+            }
+
+            .progress-step .step-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+
             .progress-step .step-label {
                 font-size: 0.65rem;
             }

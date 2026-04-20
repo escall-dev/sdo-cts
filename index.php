@@ -257,7 +257,7 @@ function isChecked($field, $value) {
                     });
                     if (!empty($handwrittenFiles)): ?>
                     <div style="background: #d4edda; padding: 15px; border-radius: 8px; margin-bottom: 15px;" id="handwrittenFileSection">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 10px;">
                             <div style="flex: 1;">
                                 <strong><i class="fas fa-file-signature"></i> Previously uploaded completed form:</strong>
                                 <ul style="margin: 10px 0 0 20px;">

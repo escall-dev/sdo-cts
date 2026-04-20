@@ -268,7 +268,7 @@ MAIL_FROM_NAME=SDO CTS - San Pedro Division Office</pre>
 <style>
 .settings-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 1.5rem;
 }
 .config-table {
@@ -323,7 +323,9 @@ MAIL_FROM_NAME=SDO CTS - San Pedro Division Office</pre>
     background: #f1f5f9;
     padding: 1rem;
     border-radius: 6px;
-    overflow-x: auto;
+    overflow-x: hidden;
+    white-space: pre-wrap;
+    word-break: break-word;
     font-size: 0.875rem;
     margin: 0.5rem 0;
 }
@@ -351,6 +353,30 @@ MAIL_FROM_NAME=SDO CTS - San Pedro Division Office</pre>
 .badge-danger { background: #fee2e2; color: #991b1b; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; }
 .badge-warning { background: #fef3c7; color: #92400e; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; }
 .text-danger { color: #dc2626; }
+
+@media (max-width: 640px) {
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .config-table,
+    .config-table tbody,
+    .config-table tr,
+    .config-table td {
+        display: block;
+        width: 100% !important;
+    }
+
+    .config-table tr {
+        border-bottom: 1px solid #e2e8f0;
+        padding: 0.25rem 0;
+    }
+
+    .config-table td {
+        border-bottom: none;
+        padding: 0.5rem 0.75rem;
+    }
+}
 </style>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>
