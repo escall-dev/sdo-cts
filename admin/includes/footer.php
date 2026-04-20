@@ -7,7 +7,8 @@
         </main>
     </div>
 
-    <script src="/SDO-cts/admin/assets/js/admin.js"></script>
+    <?php $adminJsVersion = @filemtime(__DIR__ . '/../assets/js/admin.js') ?: time(); ?>
+    <script src="/SDO-cts/admin/assets/js/admin.js?v=<?php echo $adminJsVersion; ?>"></script>
     <script>
     // Real-time notification polling for new complaints
     (function() {

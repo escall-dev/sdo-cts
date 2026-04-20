@@ -682,6 +682,7 @@ function isChecked($field, $value) {
         </div>
     </div>
 
+    <script src="assets/js/global.js?v=<?php echo time(); ?>"></script>
     <script src="assets/js/form.js?v=<?php echo time(); ?>"></script>
     <script>
     // Handle remove handwritten form button

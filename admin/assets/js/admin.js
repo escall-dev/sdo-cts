@@ -2,6 +2,38 @@
  * SDO CTS Admin Panel JavaScript
  */
 
+// Disable right-click and common inspect shortcuts on admin pages.
+(function() {
+    function blockInteraction(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (typeof event.stopImmediatePropagation === 'function') {
+            event.stopImmediatePropagation();
+        }
+        return false;
+    }
+
+    // Capture phase ensures this runs even if other handlers stop bubbling.
+    window.addEventListener('contextmenu', blockInteraction, true);
+    document.addEventListener('contextmenu', blockInteraction, true);
+
+    // Fallback handlers for older browsers and inline event checks.
+    window.oncontextmenu = function() { return false; };
+    document.oncontextmenu = function() { return false; };
+
+    document.addEventListener('keydown', function(event) {
+        const key = (event.key || '').toLowerCase();
+        const isInspectShortcut =
+            event.key === 'F12' ||
+            (event.ctrlKey && event.shiftKey && (key === 'i' || key === 'j' || key === 'c')) ||
+            (event.ctrlKey && key === 'u');
+
+        if (isInspectShortcut) {
+            blockInteraction(event);
+        }
+    }, true);
+})();
+
 document.addEventListener('DOMContentLoaded', function() {
     initSidebar();
     initFlashMessages();

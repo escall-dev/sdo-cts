@@ -397,5 +397,6 @@ $statusLabels = [
             <span>&copy; <?php echo date('Y'); ?> ICT Unit</span>
         </footer>
     </div>
+    <script src="assets/js/global.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>
