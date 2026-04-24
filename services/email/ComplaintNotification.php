@@ -135,7 +135,7 @@ class ComplaintNotification {
         // Build attachment list for email body if there are attachments
         $attachmentListHtml = '';
         if (!empty($attachments)) {
-            $attachmentListHtml = '<h3 style="color: #0f4c75; margin-top: 25px;">Attached Documents</h3>';
+            $attachmentListHtml = '<h3 style="color: #1b4a9a; margin-top: 25px;">Attached Documents</h3>';
             $attachmentListHtml .= '<p style="color: #475569; margin-bottom: 10px;">The following documents you provided are attached to this email for your records:</p>';
             $attachmentListHtml .= '<ul style="color: #475569; margin-left: 20px;">';
             foreach ($attachments as $attachment) {
@@ -335,25 +335,25 @@ class ComplaintNotification {
         switch ($templateName) {
             case 'complaint_submitted_complainant':
                 return $header . '
-                <h2 style="color: #1e40af; margin-bottom: 20px;">Complaint Submitted Successfully</h2>
+                <h2 style="color: #1b4a9a; margin-bottom: 20px;">Complaint Submitted Successfully</h2>
                 
                 <p>Dear <strong>{{name}}</strong>,</p>
                 
                 <p>Your complaint has been successfully submitted to  The Schools Division Office of San Pedro City Complaint Tracking System.</p>
                 
-                <div style="background: #f0f9ff; border-left: 4px solid #0284c7; padding: 15px; margin: 20px 0;">
-                    <p style="margin: 0; font-size: 14px; color: #64748b;"><strong>Event Type:</strong> Complaint Submission</p>
-                    <p style="margin: 5px 0 0 0; font-size: 14px; color: #64748b;"><strong>Date & Time:</strong> {{date}}</p>
-                    <p style="margin: 10px 0 0 0;"><strong>Reference Number:</strong></p>
-                    <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #0284c7; font-family: monospace;">{{reference_number}}</p>
+                <div style="background: #1b4a9a; border-left: 4px solid #1b4a9a; padding: 15px; margin: 20px 0;">
+                    <p style="margin: 0; font-size: 14px; color: #ffffff;"><strong>Event Type:</strong> Complaint Submission</p>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; color: #ffffff;"><strong>Date & Time:</strong> {{date}}</p>
+                    <p style="margin: 10px 0 0 0; color: #ffffff;"><strong>Reference Number:</strong></p>
+                    <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #ffffff; font-family: monospace;">{{reference_number}}</p>
                 </div>
                 
                 <p><strong>Important:</strong> Please save this reference number. You will need it to track the status of your complaint.</p>
                 
                 <p>You can track your complaint status at any time by visiting:</p>
-                <p><a href="{{tracking_url}}" style="color: #0284c7;">{{tracking_url}}</a></p>
+                <p><a href="{{tracking_url}}" style="color: #1b4a9a;">{{tracking_url}}</a></p>
                 
-                <h3 style="color: #1e40af; margin-top: 30px;">Complainant Information</h3>
+                <h3 style="color: #1b4a9a; margin-top: 30px;">Complainant Information</h3>
                 <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                     <tr>
                         <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; color: #64748b; width: 35%;"><strong>Name:</strong></td>
@@ -361,7 +361,7 @@ class ComplaintNotification {
                     </tr>
                     <tr>
                         <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; color: #64748b;"><strong>Email:</strong></td>
-                        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; background: #fff;"><a href="mailto:{{complaint_email}}" style="color: #0284c7;">{{complaint_email}}</a></td>
+                        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; background: #fff;"><a href="mailto:{{complaint_email}}" style="color: #1b4a9a;">{{complaint_email}}</a></td>
                     </tr>
                     <tr>
                         <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; color: #64748b;"><strong>Contact:</strong></td>
@@ -371,7 +371,7 @@ class ComplaintNotification {
                 
                 {{attachment_list}}
                 
-                <h3 style="color: #1e40af; margin-top: 30px;">What Happens Next?</h3>
+                <h3 style="color: #1b4a9a; margin-top: 30px;">What Happens Next?</h3>
                 <ol style="color: #475569;">
                     <li>Your complaint will be reviewed by the appropriate office.</li>
                     <li>You may be contacted for additional information if needed.</li>
@@ -381,18 +381,18 @@ class ComplaintNotification {
 
             case 'complaint_submitted_admin':
                 return $header . '
-                <h2 style="color: #1e40af; margin-bottom: 20px;">New Complaint Received</h2>
+                <h2 style="color: #1b4a9a; margin-bottom: 20px;">New Complaint Received</h2>
                 
                 <p>A new complaint has been submitted to the system and requires attention.</p>
                 
-                <div style="background: #f0f9ff; border-left: 4px solid #0284c7; padding: 15px; margin: 20px 0;">
-                    <p style="margin: 0; font-size: 14px; color: #64748b;"><strong>Event Type:</strong> New Complaint Submission</p>
-                    <p style="margin: 5px 0 0 0; font-size: 14px; color: #64748b;"><strong>Date & Time:</strong> {{date}}</p>
-                    <p style="margin: 10px 0 0 0;"><strong>Reference Number:</strong></p>
-                    <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #0284c7; font-family: monospace;">{{reference_number}}</p>
+                <div style="background: #1b4a9a; border-left: 4px solid #1b4a9a; padding: 15px; margin: 20px 0;">
+                    <p style="margin: 0; font-size: 14px; color: #ffffff;"><strong>Event Type:</strong> New Complaint Submission</p>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; color: #ffffff;"><strong>Date & Time:</strong> {{date}}</p>
+                    <p style="margin: 10px 0 0 0; color: #ffffff;"><strong>Reference Number:</strong></p>
+                    <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #ffffff; font-family: monospace;">{{reference_number}}</p>
                 </div>
                 
-                <h3 style="color: #1e40af;">Complainant Information</h3>
+                <h3 style="color: #1b4a9a;">Complainant Information</h3>
                 <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                     <tr>
                         <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; color: #64748b; width: 35%;"><strong>Name:</strong></td>
@@ -400,7 +400,7 @@ class ComplaintNotification {
                     </tr>
                     <tr>
                         <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; color: #64748b;"><strong>Email:</strong></td>
-                        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; background: #fff;"><a href="mailto:{{complaint_email}}" style="color: #0284c7;">{{complaint_email}}</a></td>
+                        <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; background: #fff;"><a href="mailto:{{complaint_email}}" style="color: #1b4a9a;">{{complaint_email}}</a></td>
                     </tr>
                     <tr>
                         <td style="padding: 10px 12px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; color: #64748b;"><strong>Contact:</strong></td>
@@ -408,11 +408,11 @@ class ComplaintNotification {
                     </tr>
                 </table>
                 
-                <h3 style="color: #1e40af;">Complaint Preview</h3>
-                <p style="background: #f0f9ff; padding: 15px; border-radius: 6px; color: #475569; border: 1px solid #bae6fd;">{{complaint_preview}}</p>
+                <h3 style="color: #1b4a9a;">Complaint Preview</h3>
+                <p style="background: #1b4a9a; padding: 15px; border-radius: 6px; color: #ffffff; border: 1px solid #1b4a9a;">{{complaint_preview}}</p>
                 
                 <p style="margin-top: 25px; text-align: center;">
-                    <a href="{{admin_url}}" style="display: inline-block; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 14px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 15px;">View in Admin Panel</a>
+                    <a href="{{admin_url}}" style="display: inline-block; background: linear-gradient(135deg, #1b4a9a 0%, #1b4a9a 100%); color: white; padding: 14px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 15px;">View in Admin Panel</a>
                 </p>
                 ' . $footer;
 
@@ -431,37 +431,37 @@ class ComplaintNotification {
                     <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #059669; font-family: monospace;">{{reference_number}}</p>
                 </div>
                 
-                <h3 style="color: #1e40af;">Resolution Details</h3>
+                <h3 style="color: #1b4a9a;">Resolution Details</h3>
                 <p style="background: #f8fafc; padding: 15px; border-radius: 4px; color: #475569;">{{resolution_notes}}</p>
                 
                 <p>You can view the complete details and history of your complaint at:</p>
-                <p><a href="{{tracking_url}}" style="color: #0284c7;">{{tracking_url}}</a></p>
+                <p><a href="{{tracking_url}}" style="color: #1b4a9a;">{{tracking_url}}</a></p>
                 
                 <p style="margin-top: 20px;">Thank you for using the SDO CTS complaint tracking system. If you have any further concerns, please do not hesitate to file another complaint.</p>
                 ' . $footer;
 
             case 'status_update':
                 return $header . '
-                <h2 style="color: #1e40af; margin-bottom: 20px;">Complaint Status Update</h2>
+                <h2 style="color: #1b4a9a; margin-bottom: 20px;">Complaint Status Update</h2>
                 
                 <p>Dear <strong>{{name}}</strong>,</p>
                 
                 <p>The status of your complaint has been updated.</p>
                 
-                <div style="background: #f0f9ff; border-left: 4px solid #0284c7; padding: 15px; margin: 20px 0;">
-                    <p style="margin: 0; font-size: 14px; color: #64748b;"><strong>Event Type:</strong> Status Update</p>
-                    <p style="margin: 5px 0 0 0; font-size: 14px; color: #64748b;"><strong>Date & Time:</strong> {{date}}</p>
-                    <p style="margin: 10px 0 0 0;"><strong>Reference Number:</strong></p>
-                    <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #0284c7; font-family: monospace;">{{reference_number}}</p>
-                    <p style="margin: 15px 0 0 0;"><strong>New Status:</strong></p>
-                    <p style="margin: 5px 0 0 0; font-size: 18px; font-weight: bold; color: #1e40af;">{{status}}</p>
+                <div style="background: #1b4a9a; border-left: 4px solid #1b4a9a; padding: 15px; margin: 20px 0;">
+                    <p style="margin: 0; font-size: 14px; color: #ffffff;"><strong>Event Type:</strong> Status Update</p>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; color: #ffffff;"><strong>Date & Time:</strong> {{date}}</p>
+                    <p style="margin: 10px 0 0 0; color: #ffffff;"><strong>Reference Number:</strong></p>
+                    <p style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #ffffff; font-family: monospace;">{{reference_number}}</p>
+                    <p style="margin: 15px 0 0 0; color: #ffffff;"><strong>New Status:</strong></p>
+                    <p style="margin: 5px 0 0 0; font-size: 18px; font-weight: bold; color: #ffffff;">{{status}}</p>
                 </div>
                 
-                <h3 style="color: #1e40af;">Notes</h3>
+                <h3 style="color: #1b4a9a;">Notes</h3>
                 <p style="background: #f8fafc; padding: 15px; border-radius: 4px; color: #475569;">{{notes}}</p>
                 
                 <p>You can track the full history and status of your complaint at:</p>
-                <p><a href="{{tracking_url}}" style="color: #0284c7;">{{tracking_url}}</a></p>
+                <p><a href="{{tracking_url}}" style="color: #1b4a9a;">{{tracking_url}}</a></p>
                 ' . $footer;
 
             default:
@@ -486,7 +486,7 @@ class ComplaintNotification {
                 <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                     <!-- Header -->
                     <tr>
-                        <td style="background: linear-gradient(135deg, #0a1628 0%, #0f4c75 100%); padding: 30px; border-radius: 8px 8px 0 0;">
+                        <td style="background: linear-gradient(135deg, #1b4a9a 0%, #1b4a9a 100%); padding: 30px; border-radius: 8px 8px 0 0;">
                             <table width="100%" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td width="80" align="left" valign="middle">
@@ -494,7 +494,7 @@ class ComplaintNotification {
                                     </td>
                                     <td align="center" valign="middle">
                                         <h1 style="color: #ffffff; margin: 0; font-size: 24px;">SDO CTS</h1>
-                                        <p style="color: #bbe1fa; margin: 5px 0 0 0; font-size: 14px;">The Schools Division Office of San Pedro City<br>Complaint Tracking System</p>
+                                        <p style="color: #ffffff; margin: 5px 0 0 0; font-size: 14px;">The Schools Division Office of San Pedro City<br>Complaint Tracking System</p>
                                     </td>
                                     <td width="80" align="right" valign="middle">
                                         <img src="cid:bagongpilipinas_logo" alt="Bagong Pilipinas Logo" width="70" height="70" style="display: block;">

@@ -69,8 +69,8 @@ define('STATUS_CONFIG', [
     ],
     'accepted' => [
         'label' => 'Accepted',
-        'color' => '#3b82f6',
-        'bg' => '#dbeafe',
+        'color' => '#1b4a9a',
+        'bg' => '#ffffff',
         'icon' => '<i class="fas fa-check-circle"></i>'
     ],
     'in_progress' => [

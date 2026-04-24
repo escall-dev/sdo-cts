@@ -63,7 +63,7 @@ function updateChart(chart, config) {
     chart.update();
 }
 
-function buildLineConfig(labels, data, label, color = '#1b6ca8') {
+function buildLineConfig(labels, data, label, color = '#1b4a9a') {
     return {
         type: 'line',
         data: {
@@ -72,7 +72,7 @@ function buildLineConfig(labels, data, label, color = '#1b6ca8') {
                 label,
                 data,
                 borderColor: color,
-                backgroundColor: 'rgba(27, 108, 168, 0.15)',
+                backgroundColor: 'rgba(27, 74, 154, 0.15)',
                 tension: 0.3,
                 fill: true
             }]
@@ -89,7 +89,7 @@ function buildLineConfig(labels, data, label, color = '#1b6ca8') {
     };
 }
 
-function buildBarConfig(labels, data, label, color = '#0f4c75') {
+function buildBarConfig(labels, data, label, color = '#1b4a9a') {
     return {
         type: 'bar',
         data: {
@@ -119,7 +119,7 @@ function buildDoughnutConfig(labels, data) {
             labels,
             datasets: [{
                 data,
-                backgroundColor: ['#1b6ca8', '#10b981', '#f59e0b', '#8b5cf6']
+                backgroundColor: ['#1b4a9a', '#10b981', '#f59e0b', '#8b5cf6']
             }]
         },
         options: {
@@ -139,8 +139,8 @@ function updateVolumeCharts(volume) {
     const monthlyTotals = volume.monthly.map(row => row.total);
 
     const dailyConfig = buildLineConfig(dailyLabels, dailyTotals, 'Daily Complaints');
-    const weeklyConfig = buildBarConfig(weeklyLabels, weeklyTotals, 'Weekly Complaints', '#4c9be8');
-    const monthlyConfig = buildBarConfig(monthlyLabels, monthlyTotals, 'Monthly Complaints', '#0f4c75');
+    const weeklyConfig = buildBarConfig(weeklyLabels, weeklyTotals, 'Weekly Complaints', '#1b4a9a');
+    const monthlyConfig = buildBarConfig(monthlyLabels, monthlyTotals, 'Monthly Complaints', '#1b4a9a');
 
     if (!analyticsState.charts.dailyVolume) {
         analyticsState.charts.dailyVolume = createChart('dailyVolumeChart', dailyConfig);
@@ -220,7 +220,7 @@ function updateTypeCharts(typesData) {
         return {
             label: getTypeLabel(type),
             data,
-            borderColor: type === 'facility' ? '#1b6ca8' : type === 'academic' ? '#10b981' : type === 'it' ? '#f59e0b' : '#8b5cf6',
+            borderColor: type === 'facility' ? '#1b4a9a' : type === 'academic' ? '#10b981' : type === 'it' ? '#f59e0b' : '#8b5cf6',
             backgroundColor: 'transparent',
             tension: 0.3
         };
@@ -345,7 +345,7 @@ function updateLocationChart(locations) {
             datasets: [{
                 label: 'Complaints by Location',
                 data: totals,
-                backgroundColor: '#1b6ca8',
+                backgroundColor: '#1b4a9a',
                 borderRadius: 4,
                 maxBarThickness: 34
             }]
@@ -409,8 +409,8 @@ function updateForecast(trends, volume) {
                 {
                     label: 'Actual',
                     data: dataActual,
-                    borderColor: '#1b6ca8',
-                    backgroundColor: 'rgba(27, 108, 168, 0.1)',
+                    borderColor: '#1b4a9a',
+                    backgroundColor: 'rgba(27, 74, 154, 0.1)',
                     tension: 0.3,
                     fill: true
                 },

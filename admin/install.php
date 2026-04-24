@@ -209,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['install'])) {
         
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #0a1628 0%, #0f4c75 100%);
+            background: linear-gradient(135deg, #1b4a9a 0%, #1b4a9a 100%);
             min-height: 100vh;
             padding: 40px 20px;
             color: #e8f1f8;
@@ -264,14 +264,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['install'])) {
         
         input:focus {
             outline: none;
-            border-color: #1b6ca8;
-            box-shadow: 0 0 0 3px rgba(27, 108, 168, 0.2);
+            border-color: #1b4a9a;
+            box-shadow: 0 0 0 3px rgba(27, 74, 154, 0.2);
         }
         
         .btn {
             width: 100%;
             padding: 14px 24px;
-            background: linear-gradient(135deg, #1b6ca8 0%, #0f4c75 100%);
+            background: linear-gradient(135deg, #1b4a9a 0%, #1b4a9a 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -283,7 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['install'])) {
         
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(15, 76, 117, 0.4);
+            box-shadow: 0 6px 20px rgba(27, 74, 154, 0.4);
         }
         
         .messages {

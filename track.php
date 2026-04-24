@@ -144,12 +144,12 @@ $statusLabels = [
         .progress-step.current .step-icon {
             background: var(--primary-color);
             color: white;
-            box-shadow: 0 0 0 4px rgba(26, 95, 122, 0.2);
+            box-shadow: 0 0 0 4px rgba(27, 74, 154, 0.2);
             animation: pulse 2s infinite;
         }
         @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 0 4px rgba(26, 95, 122, 0.2); }
-            50% { box-shadow: 0 0 0 8px rgba(26, 95, 122, 0.1); }
+            0%, 100% { box-shadow: 0 0 0 4px rgba(27, 74, 154, 0.2); }
+            50% { box-shadow: 0 0 0 8px rgba(27, 74, 154, 0.1); }
         }
         .progress-step .step-label {
             font-size: 0.75rem;

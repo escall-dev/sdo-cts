@@ -430,7 +430,7 @@ async function ajaxRequest(url, options = {}) {
         }
         
         .notification-info {
-            border-left: 4px solid #3b82f6;
+            border-left: 4px solid #1b4a9a;
         }
         
         .notification-icon {

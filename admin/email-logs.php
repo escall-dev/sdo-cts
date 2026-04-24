@@ -108,7 +108,7 @@ include __DIR__ . '/includes/header.php';
         </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon" style="background: #3b82f6;">
+        <div class="stat-icon" style="background: #1b4a9a;">
             <i class="fas fa-calendar-day"></i>
         </div>
         <div class="stat-info">
@@ -368,7 +368,7 @@ include __DIR__ . '/includes/header.php';
     display: block;
 }
 .ref-link {
-    color: #3b82f6;
+    color: #1b4a9a;
     text-decoration: none;
     font-family: monospace;
 }
@@ -378,7 +378,7 @@ include __DIR__ . '/includes/header.php';
 .badge-success { background: #d1fae5; color: #065f46; }
 .badge-danger { background: #fee2e2; color: #991b1b; }
 .badge-warning { background: #fef3c7; color: #92400e; }
-.badge-info { background: #dbeafe; color: #1e40af; }
+.badge-info { background: #1b4a9a; color: #ffffff; }
 
 /* Modal styles */
 .modal {

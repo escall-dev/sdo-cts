@@ -278,7 +278,7 @@ include __DIR__ . '/includes/header.php';
     }
     
     .reference-badge {
-        background: linear-gradient(135deg, #1a5a96, #0d3d6e);
+        background: linear-gradient(135deg, #1b4a9a, #1b4a9a);
         color: white;
         padding: 8px 16px;
         border-radius: 6px;
@@ -300,7 +300,7 @@ include __DIR__ . '/includes/header.php';
     }
     
     .attached-notice a {
-        color: #1a5a96;
+        color: #1b4a9a;
         text-decoration: none;
     }
     
@@ -727,14 +727,14 @@ include __DIR__ . '/includes/header.php';
                     <div class="uploaded-documents-section" style="padding:20px 0;">
                         <!-- Complainant Contact Info (Email captured during bypass submission) -->
                         <?php if (!empty($complaint['email_address'])): ?>
-                            <div class="complainant-contact-card" style="margin-bottom:24px;padding:16px 20px;background:linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);border:1px solid #bae6fd;border-radius:10px;display:flex;align-items:center;gap:16px;">
-                                <div style="width:44px;height:44px;background:linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <div class="complainant-contact-card" style="margin-bottom:24px;padding:16px 20px;background:linear-gradient(135deg, #1b4a9a 0%, #1b4a9a 100%);border:1px solid #1b4a9a;border-radius:10px;display:flex;align-items:center;gap:16px;">
+                                <div style="width:44px;height:44px;background:linear-gradient(135deg, #1b4a9a 0%, #1b4a9a 100%);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                                     <i class="	fas fa-envelope-open-text" style="color:#fff;font-size:18px;"></i>
                                 </div>
                                 <div style="flex:1;min-width:0;">
-                                    <div style="font-size:12px;font-weight:600;color:#0369a1;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Complainant Email</div>
-                                    <div style="font-size:15px;font-weight:500;color:#0c4a6e;">
-                                        <a href="mailto:<?php echo htmlspecialchars($complaint['email_address']); ?>" style="color:#0c4a6e;text-decoration:none;">
+                                    <div style="font-size:12px;font-weight:600;color:#ffffff;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Complainant Email</div>
+                                    <div style="font-size:15px;font-weight:500;color:#ffffff;">
+                                        <a href="mailto:<?php echo htmlspecialchars($complaint['email_address']); ?>" style="color:#ffffff;text-decoration:none;">
                                             <?php echo htmlspecialchars($complaint['email_address']); ?>
                                         </a>
                                     </div>
@@ -749,7 +749,7 @@ include __DIR__ . '/includes/header.php';
                         <?php if ($primaryDoc): ?>
                             <div class="doc-category-section" style="margin-bottom:24px;">
                                 <h4 style="margin:0 0 12px;font-size:14px;font-weight:600;color:#374151;display:flex;align-items:center;gap:8px;">
-                                    <i class="fas fa-file-alt" style="color:#0f4c75;"></i> Uploaded Complaint-Assisted Form:
+                                    <i class="fas fa-file-alt" style="color:#1b4a9a;"></i> Uploaded Complaint-Assisted Form:
                                 </h4>
                                 <ul class="doc-list" style="list-style:none;padding:0;margin:0;">
                                     <?php
@@ -801,7 +801,7 @@ include __DIR__ . '/includes/header.php';
                         <?php if (!empty($validIdDocs)): ?>
                             <div class="doc-category-section" style="margin-bottom:24px;">
                                 <h4 style="margin:0 0 12px;font-size:14px;font-weight:600;color:#374151;display:flex;align-items:center;gap:8px;">
-                                    <i class="fas fa-id-card" style="color:#0f4c75;"></i> Valid ID / Credentials:
+                                    <i class="fas fa-id-card" style="color:#1b4a9a;"></i> Valid ID / Credentials:
                                 </h4>
                                 <ul class="doc-list" style="list-style:none;padding:0;margin:0;">
                                     <?php foreach ($validIdDocs as $doc):
@@ -852,7 +852,7 @@ include __DIR__ . '/includes/header.php';
                         <?php if (!empty($supportingDocs)): ?>
                             <div class="doc-category-section" style="margin-bottom:24px;">
                                 <h4 style="margin:0 0 12px;font-size:14px;font-weight:600;color:#374151;display:flex;align-items:center;gap:8px;">
-                                    <i class="fas fa-paperclip" style="color:#0f4c75;"></i> Supporting Documents:
+                                    <i class="fas fa-paperclip" style="color:#1b4a9a;"></i> Supporting Documents:
                                 </h4>
                                 <ul class="doc-list" style="list-style:none;padding:0;margin:0;">
                                     <?php foreach ($supportingDocs as $doc):

@@ -530,7 +530,7 @@ function isPrintablePdf($filename) {
             }
 
             .complainant-info-table tr {
-                border-bottom: 1px solid #bae6fd;
+                border-bottom: 1px solid #1b4a9a;
             }
 
             .complainant-info-table tr:last-child {
@@ -598,7 +598,7 @@ function isPrintablePdf($filename) {
         <?php endif; ?>
 
         <?php if ($isHandwritten): ?>
-        <div class="no-print" style="background:#e3f2fd;color:#0d47a1;padding:15px;border-radius:8px;margin-bottom:20px;border:1px solid #90caf9;">
+        <div class="no-print" style="background:#1b4a9a;color:#ffffff;padding:15px;border-radius:8px;margin-bottom:20px;border:1px solid #1b4a9a;">
             <strong>Handwritten Form Attached:</strong>
             This submission includes an uploaded photo or scan of a fully accomplished Complaints-Assisted Form.
             On-page fields may appear blank because the official details are contained in the attached form.
@@ -1052,34 +1052,34 @@ function isPrintablePdf($filename) {
         </section>
         <?php else: ?>
         <!-- Standard Mode: Display Complainant Information -->
-        <section class="form-section" style="margin-top:20px; background: #f0f9ff; border: 1px solid #bae6fd;">
-            <div class="section-header" style="background: #f0f9ff; border: none; color: #0c4a6e; padding: 12px 15px;">
+        <section class="form-section" style="margin-top:20px; background: #ffffff; border: 1px solid #1b4a9a;">
+            <div class="section-header" style="background: #1b4a9a; border: none; color: #ffffff; padding: 12px 15px;">
                 <span class="section-icon"><i class="fas fa-info-circle"></i></span>
                 <strong>Complainant Information</strong>
             </div>
             <div class="section-content">
                 <table class="complainant-info-table" style="width: 100%; border-collapse: collapse;">
                     <tr>
-                        <td style="padding: 10px 12px; border-bottom: 1px solid #bae6fd; background: #eff6ff; color: #0c4a6e; width: 25%;"><strong>Name:</strong></td>
-                        <td style="padding: 10px 12px; border-bottom: 1px solid #bae6fd; background: #f0f9ff;">
+                        <td style="padding: 10px 12px; border-bottom: 1px solid #1b4a9a; background: #ffffff; color: #1b4a9a; width: 25%;"><strong>Name:</strong></td>
+                        <td style="padding: 10px 12px; border-bottom: 1px solid #1b4a9a; background: #ffffff;">
                             <?php echo htmlspecialchars($data['name_pangalan'] ?? 'Not provided'); ?>
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding: 10px 12px; border-bottom: 1px solid #bae6fd; background: #eff6ff; color: #0c4a6e;"><strong>Email:</strong></td>
-                        <td style="padding: 10px 12px; border-bottom: 1px solid #bae6fd; background: #f0f9ff;">
+                        <td style="padding: 10px 12px; border-bottom: 1px solid #1b4a9a; background: #ffffff; color: #1b4a9a;"><strong>Email:</strong></td>
+                        <td style="padding: 10px 12px; border-bottom: 1px solid #1b4a9a; background: #ffffff;">
                             <?php echo htmlspecialchars($data['email_address'] ?? 'Not provided'); ?>
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding: 10px 12px; border-bottom: 1px solid #bae6fd; background: #eff6ff; color: #0c4a6e;"><strong>Contact:</strong></td>
-                        <td style="padding: 10px 12px; border-bottom: 1px solid #bae6fd; background: #f0f9ff;">
+                        <td style="padding: 10px 12px; border-bottom: 1px solid #1b4a9a; background: #ffffff; color: #1b4a9a;"><strong>Contact:</strong></td>
+                        <td style="padding: 10px 12px; border-bottom: 1px solid #1b4a9a; background: #ffffff;">
                             <?php echo htmlspecialchars($data['contact_number'] ?? 'Not provided'); ?>
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding: 10px 12px; background: #eff6ff; color: #0c4a6e;"><strong>Complaint Recipient:</strong></td>
-                        <td style="padding: 10px 12px; background: #f0f9ff;">
+                        <td style="padding: 10px 12px; background: #ffffff; color: #1b4a9a;"><strong>Complaint Recipient:</strong></td>
+                        <td style="padding: 10px 12px; background: #ffffff;">
                             <?php 
                             $unitNames = [
                                 'SDS' => 'SDS: Schools Division Superintendent',
@@ -1108,7 +1108,7 @@ function isPrintablePdf($filename) {
                 <button type="button" 
                         class="btn btn-outline" 
                         onclick="window.print();"
-                        style="border-color:#0f4c75;color:#0f4c75;">
+                        style="border-color:#1b4a9a;color:#1b4a9a;">
                     🖨️ Print Form
                 </button>
             </div>
@@ -1503,7 +1503,7 @@ function isPrintablePdf($filename) {
                             <title>Print Document</title>
                             <style>
                                 body { font-family: Arial, sans-serif; margin: 40px; color: #111827; }
-                                a { color: #2563eb; }
+                                a { color: #1b4a9a; }
                             </style>
                         </head>
                         <body>

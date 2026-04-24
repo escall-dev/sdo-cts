@@ -177,7 +177,7 @@ require_once __DIR__ . '/includes/header.php';
             <h3><i class="fas fa-headset"></i> Need Help?</h3>
         </div>
         <div class="detail-card-body contact-body">
-            <i class="fas fa-question-circle contact-icon" style="color: #2563eb;"></i>
+            <i class="fas fa-question-circle contact-icon" style="color: #1b4a9a;"></i>
             <h4 class="contact-title">
                 <span class="desktop-only">ICT Helpdesk Support</span>
                 <span class="mobile-only">ICT Helpdesk</span>

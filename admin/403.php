@@ -60,7 +60,7 @@
             align-items: center;
             gap: 8px;
             padding: 12px 24px;
-            background: #3b82f6;
+            background: #1b4a9a;
             color: white;
             text-decoration: none;
             border-radius: 8px;
@@ -69,7 +69,7 @@
         }
         
         .btn:hover {
-            background: #2563eb;
+            background: #1b4a9a;
             transform: translateY(-2px);
         }
     </style>

@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_test'])) {
 <head><meta charset="UTF-8"></head>
 <body style="font-family: Arial, sans-serif; padding: 20px;">
     <div style="max-width: 600px; margin: 0 auto; background: #f8fafc; padding: 30px; border-radius: 8px;">
-        <h2 style="color: #1e40af;">Email Configuration Test</h2>
+        <h2 style="color: #1b4a9a;">Email Configuration Test</h2>
         <p>This is a test email from the SDO CTS email notification system.</p>
         <div style="background: #d1fae5; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0;">
             <p style="margin: 0; color: #065f46;"><strong>✓ Success!</strong></p>
@@ -304,7 +304,7 @@ MAIL_FROM_NAME=SDO CTS - San Pedro Division Office</pre>
     font-size: 0.875rem;
 }
 .instructions h4 {
-    color: #1e40af;
+    color: #1b4a9a;
     margin-bottom: 1rem;
 }
 .instructions h5 {
@@ -346,8 +346,8 @@ MAIL_FROM_NAME=SDO CTS - San Pedro Division Office</pre>
     color: #991b1b;
 }
 .alert-info {
-    background: #dbeafe;
-    color: #1e40af;
+    background: #1b4a9a;
+    color: #ffffff;
 }
 .badge-success { background: #d1fae5; color: #065f46; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; }
 .badge-danger { background: #fee2e2; color: #991b1b; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; }

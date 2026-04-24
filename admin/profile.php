@@ -500,12 +500,12 @@ include __DIR__ . '/includes/header.php';
 
     .upload-zone:hover {
         border-color: var(--primary);
-        background: rgba(59, 130, 246, 0.05);
+        background: rgba(27, 74, 154, 0.05);
     }
 
     .upload-zone.dragover {
         border-color: var(--primary);
-        background: rgba(59, 130, 246, 0.1);
+        background: rgba(27, 74, 154, 0.1);
     }
 
     .upload-zone svg {

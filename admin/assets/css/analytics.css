@@ -45,7 +45,7 @@
 .tab-button.active {
     background: var(--primary-gradient);
     color: #fff;
-    box-shadow: 0 3px 10px rgba(15, 76, 117, 0.2);
+    box-shadow: 0 3px 10px rgba(27, 74, 154, 0.2);
 }
 
 .page-actions {
