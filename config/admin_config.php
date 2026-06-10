@@ -53,8 +53,8 @@ define('ITEMS_PER_PAGE', 15);
 define('STATUS_WORKFLOW', [
     'pending' => ['accepted', 'returned'],
     'accepted' => ['in_progress', 'returned'],
-    'in_progress' => ['resolved'],
-    'resolved' => ['closed'],
+    'in_progress' => ['in_progress', 'closed'],
+    'resolved' => ['closed'], // Legacy: kept for any existing resolved complaints
     'returned' => ['pending'],
     'closed' => []
 ]);
@@ -79,7 +79,7 @@ define('STATUS_CONFIG', [
         'bg' => '#ede9fe',
         'icon' => '<i class="fas fa-spinner"></i>'
     ],
-    'resolved' => [
+    'resolved' => [ // Legacy: kept for existing historical data display
         'label' => 'Resolved',
         'color' => '#10b981',
         'bg' => '#d1fae5',

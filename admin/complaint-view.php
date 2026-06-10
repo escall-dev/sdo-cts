@@ -1099,7 +1099,14 @@ include __DIR__ . '/includes/header.php';
                     <h3><i class=""></i> Actions</h3>
                 </div>
                 <div class="detail-card-body">
-                    <?php $allowedTransitions = $statusWorkflow[$complaint['status']] ?? []; ?>
+                    <?php
+                    $allowedTransitions = $statusWorkflow[$complaint['status']] ?? [];
+                    // Separate progress update (self-loop) from actual status changes
+                    $statusChangeTransitions = array_filter($allowedTransitions, function($s) use ($complaint) {
+                        return $s !== $complaint['status'];
+                    });
+                    $canAddProgress = in_array($complaint['status'], $allowedTransitions);
+                    ?>
                 
                     <?php if ($complaint['status'] === 'pending' && $auth->hasPermission('complaints.accept')): ?>
                         <button type="button" class="btn btn-success btn-block" onclick="openActionModal('accept')">
@@ -1109,10 +1116,16 @@ include __DIR__ . '/includes/header.php';
                             <i class=""></i> Return Complaint
                         </button>
                     <?php endif; ?>
+
+                    <?php if ($canAddProgress): ?>
+                        <button type="button" class="btn btn-block" style="background:#8b5cf6;color:#fff;border:none;" onclick="openProgressModal()">
+                            <i class="fas fa-clipboard-list"></i> Add Progress Update
+                        </button>
+                    <?php endif; ?>
                 
-                    <?php if (!empty($allowedTransitions) && $complaint['status'] !== 'pending'): ?>
+                    <?php if (!empty($statusChangeTransitions) && $complaint['status'] !== 'pending'): ?>
                         <button type="button" class="btn btn-primary btn-block" onclick="openStatusModal()">
-                            <i class=""></i> Update Status
+                            <i class="fas fa-exchange-alt"></i> Update Status
                         </button>
                     <?php endif; ?>
                 
@@ -1130,7 +1143,7 @@ include __DIR__ . '/includes/header.php';
             </div>
             <div class="detail-card-body">
                 <?php
-                $statusOrder = ['pending', 'accepted', 'in_progress', 'resolved', 'closed'];
+                $statusOrder = ['pending', 'accepted', 'in_progress', 'closed'];
                 $currentIndex = array_search($complaint['status'], $statusOrder);
                 if ($complaint['status'] === 'returned') {
                     $currentIndex = -1;
@@ -1181,15 +1194,42 @@ include __DIR__ . '/includes/header.php';
             </div>
             <div class="detail-card-body">
                 <div class="timeline">
-                    <?php foreach ($history as $entry): ?>
-                        <div class="timeline-item">
-                            <div class="timeline-marker"></div>
+                    <?php
+                    // Track consecutive in_progress entries to label them as progress updates
+                    $prevStatus = null;
+                    $progressCount = 0;
+                    // Reverse iterate to count progress updates chronologically
+                    $historyWithMeta = [];
+                    $tempCount = 0;
+                    $reversedHistory = array_reverse($history);
+                    foreach ($reversedHistory as $entry) {
+                        if ($entry['status'] === 'in_progress') {
+                            $tempCount++;
+                            $entry['_is_progress_update'] = ($tempCount > 1);
+                            $entry['_progress_number'] = $tempCount;
+                        } else {
+                            $tempCount = 0;
+                            $entry['_is_progress_update'] = false;
+                            $entry['_progress_number'] = 0;
+                        }
+                        $historyWithMeta[] = $entry;
+                    }
+                    $historyWithMeta = array_reverse($historyWithMeta);
+                    ?>
+                    <?php foreach ($historyWithMeta as $entry): ?>
+                        <?php $isProgressNote = $entry['_is_progress_update']; ?>
+                        <div class="timeline-item <?php echo $isProgressNote ? 'timeline-progress-update' : ''; ?>">
+                            <div class="timeline-marker" <?php if ($isProgressNote): ?>style="background:#8b5cf6;border-color:#8b5cf6;"<?php endif; ?>></div>
                             <div class="timeline-content">
                                 <div class="timeline-status">
-                                    <?php echo $statusConfig[$entry['status']]['icon'] . ' ' . $statusConfig[$entry['status']]['label']; ?>
+                                    <?php if ($isProgressNote): ?>
+                                        <span style="color:#8b5cf6;"><i class="fas fa-clipboard-list"></i> Progress Update #<?php echo $entry['_progress_number'] - 1; ?></span>
+                                    <?php else: ?>
+                                        <?php echo $statusConfig[$entry['status']]['icon'] . ' ' . $statusConfig[$entry['status']]['label']; ?>
+                                    <?php endif; ?>
                                 </div>
                                 <?php if ($entry['notes']): ?>
-                                    <div class="timeline-notes"><?php echo htmlspecialchars($entry['notes']); ?></div>
+                                    <div class="timeline-notes" <?php if ($isProgressNote): ?>style="background:#f5f3ff;border-left:3px solid #8b5cf6;padding:8px 12px;border-radius:0 6px 6px 0;margin-top:6px;"<?php endif; ?>><?php echo htmlspecialchars($entry['notes']); ?></div>
                                 <?php endif; ?>
                                 <div class="timeline-meta">
                                     <span><?php echo htmlspecialchars($entry['admin_name'] ?? $entry['updated_by']); ?></span>
@@ -1237,7 +1277,7 @@ include __DIR__ . '/includes/header.php';
 <div class="modal-overlay" id="statusModal">
     <div class="modal">
         <div class="modal-header">
-            <h3>Update Status</h3>
+            <h3><i class="fas fa-exchange-alt"></i> Update Status</h3>
             <button type="button" class="modal-close" onclick="closeModal('statusModal')">&times;</button>
         </div>
         <form method="POST" action="/SDO-cts/admin/api/update-status.php">
@@ -1248,7 +1288,12 @@ include __DIR__ . '/includes/header.php';
                 <div class="form-group">
                     <label class="form-label">New Status</label>
                     <select name="status" class="form-control" required>
-                        <?php foreach ($allowedTransitions as $status): ?>
+                        <?php
+                        // Only show actual status changes (not self-loop) in this modal
+                        $statusChangeOnly = array_filter($allowedTransitions, function($s) use ($complaint) {
+                            return $s !== $complaint['status'];
+                        });
+                        foreach ($statusChangeOnly as $status): ?>
                             <option value="<?php echo $status; ?>">
                                 <?php echo $statusConfig[$status]['label']; ?>
                             </option>
@@ -1264,6 +1309,41 @@ include __DIR__ . '/includes/header.php';
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline" onclick="closeModal('statusModal')">Cancel</button>
                 <button type="submit" class="btn btn-primary">Update Status</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Progress Update Modal -->
+<div class="modal-overlay" id="progressModal">
+    <div class="modal">
+        <div class="modal-header" style="border-bottom:2px solid #8b5cf6;">
+            <h3 style="color:#8b5cf6;"><i class="fas fa-clipboard-list"></i> Add Progress Update</h3>
+            <button type="button" class="modal-close" onclick="closeModal('progressModal')">&times;</button>
+        </div>
+        <form method="POST" action="/SDO-cts/admin/api/update-status.php">
+            <div class="modal-body">
+                <input type="hidden" name="complaint_id" value="<?php echo $complaint['id']; ?>">
+                <input type="hidden" name="status" value="in_progress">
+                <input type="hidden" name="csrf_token" value="<?php echo $auth->generateCsrfToken(); ?>">
+                
+                <div style="background:#f5f3ff;border:1px solid #e9e5ff;border-radius:8px;padding:14px 16px;margin-bottom:16px;">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                        <i class="fas fa-info-circle" style="color:#8b5cf6;"></i>
+                        <span style="font-weight:600;color:#6d28d9;font-size:13px;">Progress Note</span>
+                    </div>
+                    <p style="margin:0;font-size:13px;color:#5b21b6;line-height:1.5;">The complaint will stay <strong>In Progress</strong>. Your note will be recorded in the activity log as a progress update.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Progress Note <span style="color:#ef4444;">*</span></label>
+                    <textarea name="notes" class="form-control" rows="4" placeholder="Describe the current progress, actions taken, findings, or next steps..." required></textarea>
+                    <small style="color:#6b7280;margin-top:4px;display:block;">This note will be visible in the activity log and complaint tracking.</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('progressModal')">Cancel</button>
+                <button type="submit" class="btn" style="background:#8b5cf6;color:#fff;border:none;"><i class="fas fa-plus"></i> Add Progress Update</button>
             </div>
         </form>
     </div>
@@ -1306,6 +1386,10 @@ function openActionModal(action) {
 
 function openStatusModal() {
     document.getElementById('statusModal').classList.add('active');
+}
+
+function openProgressModal() {
+    document.getElementById('progressModal').classList.add('active');
 }
 
 function closeModal(modalId) {

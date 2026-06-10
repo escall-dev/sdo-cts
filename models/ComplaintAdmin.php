@@ -191,11 +191,17 @@ class ComplaintAdmin {
             throw new Exception('Invalid status transition');
         }
 
-        // Update complaint
-        $sql = "UPDATE complaints SET status = ?, handled_by = ? WHERE id = ?";
-        $this->db->query($sql, [$status, $adminUserId, $id]);
+        // Only update the complaint status if it's actually changing
+        if ($complaint['status'] !== $status) {
+            $sql = "UPDATE complaints SET status = ?, handled_by = ? WHERE id = ?";
+            $this->db->query($sql, [$status, $adminUserId, $id]);
+        } else {
+            // Same-status update (progress note) — just update the handler
+            $sql = "UPDATE complaints SET handled_by = ? WHERE id = ?";
+            $this->db->query($sql, [$adminUserId, $id]);
+        }
 
-        // Add history entry
+        // Add history entry (always — this records each progress update)
         $this->addStatusHistory($id, $status, $notes, $adminName, $adminUserId);
 
         return true;
