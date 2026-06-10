@@ -21,7 +21,7 @@ A PHP/MySQL-based complaint tracking system for the Department of Education - Sa
 
 1. **Clone or copy files** to your XAMPP htdocs folder:
    ```
-   C:\xampp\htdocs\SDO-cts\
+   C:\xampp\htdocs\CTS\
    ```
 
 2. **Start XAMPP** services (Apache and MySQL)
@@ -29,19 +29,19 @@ A PHP/MySQL-based complaint tracking system for the Department of Education - Sa
 3. **Run the installation script**:
    - Open your browser and navigate to:
    ```
-   http://localhost/SDO-cts/install.php
+   http://localhost/CTS/install.php
    ```
    - This will create the database, tables, and upload directories
 
 4. **Access the system**:
    ```
-   http://localhost/SDO-cts/
+   http://localhost/CTS/
    ```
 
 ## File Structure
 
 ```
-SDO-cts/
+CTS/
 ├── assets/
 │   ├── css/
 │   │   └── style.css          # Main stylesheet
@@ -136,7 +136,7 @@ MAIL_FROM_NAME=SDO CTS - San Pedro Division Office
 ADMIN_EMAIL_RECIPIENTS=admin@your-domain.com,supervisor@your-domain.com
 
 # System Base URL (for links in emails)
-SYSTEM_BASE_URL=http://localhost/SDO-cts
+SYSTEM_BASE_URL=http://localhost/CTS
 ```
 
 ### Gmail/Google Workspace Setup
@@ -153,7 +153,7 @@ SYSTEM_BASE_URL=http://localhost/SDO-cts
 ### Email Logs Migration
 Run the migration to create the email_logs table:
 ```
-http://localhost/SDO-cts/migrate_email_logs.php
+http://localhost/CTS/migrate_email_logs.php
 ```
 
 ```

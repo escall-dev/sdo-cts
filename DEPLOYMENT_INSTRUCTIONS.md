@@ -6,7 +6,7 @@ Before deploying the code changes, you must run the database migration to add th
 
 ### Option A: Using MySQL CLI
 ```bash
-cd /path/to/SDO-cts
+cd /path/to/CTS
 mysql -u root -p sdo_cts < database/migration_add_complaint_contact_fields.sql
 ```
 

@@ -716,7 +716,7 @@
 ## Directory Structure
 
 ```
-SDO-cts/
+CTS/
 ├── admin/                          # Admin Panel
 │   ├── api/                        # REST API Endpoints
 │   │   ├── analytics.php           # Analytics data API

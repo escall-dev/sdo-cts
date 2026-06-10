@@ -61,7 +61,7 @@
 ## Directory Structure
 
 ```
-SDO-cts/
+CTS/
 │
 ├── assets/
 │   └── uploads/                    ← NEW CENTRALIZED LOCATION
@@ -140,12 +140,12 @@ Example Record:
 
 // NEW APPROACH - Uses relative path from database
 $fileUrl = !empty($doc['file_path'])
-    ? "/SDO-cts/" . $doc['file_path']
-    : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
+    ? "/CTS/" . $doc['file_path']
+    : "/CTS/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
 
 // Examples:
-// New file: /SDO-cts/assets/uploads/images/complaint_1023_supporting_123.jpg
-// Old file: /SDO-cts/uploads/complaints/1023/original_filename.jpg (fallback)
+// New file: /CTS/assets/uploads/images/complaint_1023_supporting_123.jpg
+// Old file: /CTS/uploads/complaints/1023/original_filename.jpg (fallback)
 ```
 
 ## Advantages of New System

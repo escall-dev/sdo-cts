@@ -9,7 +9,7 @@ $auth = auth();
 
 // Check for authorization code
 if (!isset($_GET['code'])) {
-    header('Location: /SDO-cts/admin/login.php?error=google_auth_failed');
+    header('Location: /CTS/admin/login.php?error=google_auth_failed');
     exit;
 }
 
@@ -80,26 +80,26 @@ try {
     if (!empty(ALLOWED_EMAIL_DOMAINS)) {
         $emailDomain = substr(strrchr($email, "@"), 1);
         if (!in_array($emailDomain, ALLOWED_EMAIL_DOMAINS)) {
-            header('Location: /SDO-cts/admin/login.php?error=email_domain_not_allowed');
+            header('Location: /CTS/admin/login.php?error=email_domain_not_allowed');
             exit;
         }
     }
 
     // Try to authenticate/login (with auto-registration enabled)
     if ($auth->loginWithGoogle($googleId, $email, $name, $avatar, true)) {
-        $redirect = $_SESSION['redirect_after_login'] ?? '/SDO-cts/admin/';
+        $redirect = $_SESSION['redirect_after_login'] ?? '/CTS/admin/';
         unset($_SESSION['redirect_after_login']);
         header('Location: ' . $redirect);
         exit;
     } else {
         // Registration/login failed
-        header('Location: /SDO-cts/admin/login.php?error=google_auth_failed');
+        header('Location: /CTS/admin/login.php?error=google_auth_failed');
         exit;
     }
 
 } catch (Exception $e) {
     error_log('Google OAuth Error: ' . $e->getMessage());
-    header('Location: /SDO-cts/admin/login.php?error=google_auth_failed');
+    header('Location: /CTS/admin/login.php?error=google_auth_failed');
     exit;
 }
 

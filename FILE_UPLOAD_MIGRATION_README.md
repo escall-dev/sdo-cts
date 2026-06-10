@@ -92,7 +92,7 @@ complaint_1023_supporting_1736832000_abc123.jpg
 ### Path Storage
 ```
 Database: assets/uploads/images/complaint_1023_supporting_1736832000_abc123.jpg
-URL: /SDO-cts/assets/uploads/images/complaint_1023_supporting_1736832000_abc123.jpg
+URL: /CTS/assets/uploads/images/complaint_1023_supporting_1736832000_abc123.jpg
 ```
 
 ## 🔧 Technical Details
@@ -111,8 +111,8 @@ The system includes fallback logic for old files:
 ```php
 // Uses new path if available, falls back to old structure
 $fileUrl = !empty($doc['file_path']) 
-    ? "/SDO-cts/" . $doc['file_path']
-    : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
+    ? "/CTS/" . $doc['file_path']
+    : "/CTS/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
 ```
 
 ## 🧪 Testing Checklist

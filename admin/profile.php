@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $filepath = $avatarDir . $filename;
 
             // Delete old avatar if exists and is a local file
-            if (!empty($user['avatar_url']) && strpos($user['avatar_url'], '/SDO-cts/uploads/avatars/') !== false) {
+            if (!empty($user['avatar_url']) && strpos($user['avatar_url'], '/CTS/uploads/avatars/') !== false) {
                 $oldFilename = basename($user['avatar_url']);
                 $oldFilepath = $avatarDir . $oldFilename;
                 if (file_exists($oldFilepath)) {
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             }
 
             if (move_uploaded_file($file['tmp_name'], $filepath)) {
-                $avatarUrl = '/SDO-cts/uploads/avatars/' . $filename;
+                $avatarUrl = '/CTS/uploads/avatars/' . $filename;
                 $userModel->update($user['id'], ['avatar_url' => $avatarUrl]);
                 $auth->logActivity('update', 'user', $user['id'], 'Changed profile avatar');
 
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $avatarError = 'Invalid security token. Please try again.';
     } else {
         // Delete old avatar file if it's a local file
-        if (!empty($user['avatar_url']) && strpos($user['avatar_url'], '/SDO-cts/uploads/avatars/') !== false) {
+        if (!empty($user['avatar_url']) && strpos($user['avatar_url'], '/CTS/uploads/avatars/') !== false) {
             $oldFilename = basename($user['avatar_url']);
             $oldFilepath = $avatarDir . $oldFilename;
             if (file_exists($oldFilepath)) {

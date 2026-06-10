@@ -71,12 +71,12 @@ $complaint->addDocument($complaintId, $newFileName, $originalName, $fileType, $f
 ### Key Changes in admin/complaint-view.php
 ```php
 // OLD: Hardcoded path
-$fileUrl = "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
+$fileUrl = "/CTS/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
 
 // NEW: Uses file_path column with fallback
 $fileUrl = !empty($doc['file_path']) 
-    ? "/SDO-cts/" . $doc['file_path'] 
-    : "/SDO-cts/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
+    ? "/CTS/" . $doc['file_path'] 
+    : "/CTS/uploads/complaints/" . $complaint['id'] . "/" . $doc['file_name'];
 ```
 
 ## Benefits

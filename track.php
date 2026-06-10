@@ -41,7 +41,7 @@ $statusLabels = [
     'pending' => ['label' => 'Pending', 'icon' => 'fas fa-hourglass-half'],
     'accepted' => ['label' => 'Accepted', 'icon' => 'fas fa-check-square'],
     'in_progress' => ['label' => 'In Progress', 'icon' => 'fas fa-cog'],
-    'resolved' => ['label' => 'Resolved', 'icon' => 'fas fa-check-circle'],
+    'resolved' => ['label' => 'Resolved', 'icon' => 'fas fa-check-circle'], // Legacy fallback
     'returned' => ['label' => 'Returned', 'icon' => 'fas fa-undo'],
     'closed' => ['label' => 'Closed', 'icon' => 'fas fa-folder']
 ];
@@ -295,7 +295,7 @@ $statusLabels = [
             </div>
             <div class="section-content">
                 <?php
-                $statusOrder = ['pending', 'accepted', 'in_progress', 'resolved', 'closed'];
+                $statusOrder = ['pending', 'accepted', 'in_progress', 'closed'];
                 $currentIndex = array_search($complaint['status'], $statusOrder);
                 if ($complaint['status'] === 'returned') {
                     $currentIndex = -1; // Show returned status separately
@@ -393,16 +393,40 @@ $statusLabels = [
             </div>
             <div class="section-content">
                 <div class="timeline">
-                    <?php foreach ($history as $entry): ?>
-                    <div class="timeline-item">
+                    <?php
+                    // Track consecutive in_progress entries to label as progress updates
+                    $historyWithMeta = [];
+                    $tempCount = 0;
+                    $reversedHistory = array_reverse($history);
+                    foreach ($reversedHistory as $entry) {
+                        if ($entry['status'] === 'in_progress') {
+                            $tempCount++;
+                            $entry['_is_progress_update'] = ($tempCount > 1);
+                            $entry['_progress_number'] = $tempCount;
+                        } else {
+                            $tempCount = 0;
+                            $entry['_is_progress_update'] = false;
+                            $entry['_progress_number'] = 0;
+                        }
+                        $historyWithMeta[] = $entry;
+                    }
+                    $historyWithMeta = array_reverse($historyWithMeta);
+                    ?>
+                    <?php foreach ($historyWithMeta as $entry): ?>
+                    <?php $isProgressNote = $entry['_is_progress_update']; ?>
+                    <div class="timeline-item" <?php if ($isProgressNote): ?>style="border-left-color:#8b5cf6;"<?php endif; ?>>
                         <div class="time">
                             <?php echo date('M j, Y \a\t g:i A', strtotime($entry['created_at'])); ?>
                         </div>
                         <div class="status">
-                            <i class="<?php echo $statusLabels[$entry['status']]['icon']; ?>"></i> <?php echo $statusLabels[$entry['status']]['label']; ?>
+                            <?php if ($isProgressNote): ?>
+                                <i class="fas fa-clipboard-list" style="color:#8b5cf6;"></i> <span style="color:#8b5cf6;font-weight:600;">Progress Update #<?php echo $entry['_progress_number'] - 1; ?></span>
+                            <?php else: ?>
+                                <i class="<?php echo $statusLabels[$entry['status']]['icon']; ?>"></i> <?php echo $statusLabels[$entry['status']]['label']; ?>
+                            <?php endif; ?>
                         </div>
                         <?php if (!empty($entry['notes'])): ?>
-                        <div class="notes"><?php echo htmlspecialchars($entry['notes']); ?></div>
+                        <div class="notes" <?php if ($isProgressNote): ?>style="background:#f5f3ff;border-left:3px solid #8b5cf6;padding:8px 12px;border-radius:0 6px 6px 0;margin-top:6px;"<?php endif; ?>><?php echo htmlspecialchars($entry['notes']); ?></div>
                         <?php endif; ?>
                         <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
                             Updated by: <?php echo htmlspecialchars($entry['updated_by']); ?>

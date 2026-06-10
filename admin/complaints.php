@@ -92,7 +92,7 @@ include __DIR__ . '/includes/header.php';
         
         <div class="filter-actions">
             <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-search"></i> Filter</button>
-            <a href="/SDO-cts/admin/complaints.php" class="btn btn-outline btn-sm">Clear</a>
+            <a href="/CTS/admin/complaints.php" class="btn btn-outline btn-sm">Clear</a>
         </div>
     </form>
 </div>
@@ -164,7 +164,7 @@ include __DIR__ . '/includes/header.php';
                 <tr>
                     <td>
                         <div class="td-value">
-                            <a href="/SDO-cts/admin/complaint-view.php?id=<?php echo $complaint['id']; ?>" class="ref-link">
+                            <a href="/CTS/admin/complaint-view.php?id=<?php echo $complaint['id']; ?>" class="ref-link">
                                 <?php echo htmlspecialchars($complaint['reference_number']); ?>
                             </a>
                         </div>
@@ -208,7 +208,7 @@ include __DIR__ . '/includes/header.php';
                     <td>
                         <div class="td-value">
                             <div class="action-buttons">
-                                <a href="/SDO-cts/admin/complaint-view.php?id=<?php echo $complaint['id']; ?>" 
+                                <a href="/CTS/admin/complaint-view.php?id=<?php echo $complaint['id']; ?>" 
                                    class="btn btn-sm btn-outline" title="View Details">View</a>
                                 <?php if ($auth->hasPermission('complaints.update')): ?>
                                 <button type="button" class="btn btn-sm btn-outline" 
@@ -261,7 +261,7 @@ include __DIR__ . '/includes/header.php';
             <h3>Update Status</h3>
             <button type="button" class="modal-close" onclick="closeModal('statusModal')">&times;</button>
         </div>
-        <form method="POST" action="/SDO-cts/admin/api/update-status.php" id="statusForm">
+        <form method="POST" action="/CTS/admin/api/update-status.php" id="statusForm">
             <div class="modal-body">
                 <input type="hidden" name="complaint_id" id="statusComplaintId">
                 <input type="hidden" name="csrf_token" value="<?php echo $auth->generateCsrfToken(); ?>">
@@ -331,7 +331,7 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
     const REFRESH_INTERVAL = 15000; // Check every 15 seconds
     
     function checkForNewComplaints() {
-        fetch('/SDO-cts/admin/api/notification-count.php', {
+        fetch('/CTS/admin/api/notification-count.php', {
             method: 'GET',
             credentials: 'same-origin',
             headers: {

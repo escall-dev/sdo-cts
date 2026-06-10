@@ -75,7 +75,7 @@ include __DIR__ . '/includes/header.php';
         <div class="dashboard-card recent-complaints" id="recent-complaints-card">
             <div class="card-header">
                 <h2><i class="fas fa-clipboard-list"></i> Recent Complaints</h2>
-                <a href="/SDO-cts/admin/complaints.php" class="btn btn-sm btn-outline">View All →</a>
+                <a href="/CTS/admin/complaints.php" class="btn btn-sm btn-outline">View All →</a>
             </div>
             <div class="card-body">
                 <?php if (empty($recentComplaints)): ?>
@@ -86,7 +86,7 @@ include __DIR__ . '/includes/header.php';
                 <?php else: ?>
                 <div class="complaints-list">
                     <?php foreach ($recentComplaints as $complaint): ?>
-                    <a href="/SDO-cts/admin/complaint-view.php?id=<?php echo $complaint['id']; ?>" class="complaint-item">
+                    <a href="/CTS/admin/complaint-view.php?id=<?php echo $complaint['id']; ?>" class="complaint-item">
                         <div class="complaint-info">
                             <span class="complaint-ref"><?php echo htmlspecialchars($complaint['reference_number']); ?></span>
                             <span class="complaint-name"><?php echo htmlspecialchars($complaint['name_pangalan']); ?></span>
@@ -237,7 +237,7 @@ include __DIR__ . '/includes/header.php';
     const REFRESH_INTERVAL = 15000;
     
     function checkDashboardUpdates() {
-        fetch('/SDO-cts/admin/api/notification-count.php', {
+        fetch('/CTS/admin/api/notification-count.php', {
             method: 'GET',
             credentials: 'same-origin',
             headers: { 'X-Requested-With': 'XMLHttpRequest' }

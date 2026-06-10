@@ -10,7 +10,7 @@ $auth = auth();
 
 // Redirect if already logged in
 if ($auth->isLoggedIn()) {
-    $redirect = $_SESSION['redirect_after_login'] ?? '/SDO-cts/admin/';
+    $redirect = $_SESSION['redirect_after_login'] ?? '/CTS/admin/';
     unset($_SESSION['redirect_after_login']);
     header('Location: ' . $redirect);
     exit;
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Please enter both email and password.';
     } else {
         if ($auth->login($email, $password)) {
-            $redirect = $_SESSION['redirect_after_login'] ?? '/SDO-cts/admin/';
+            $redirect = $_SESSION['redirect_after_login'] ?? '/CTS/admin/';
             unset($_SESSION['redirect_after_login']);
             header('Location: ' . $redirect);
             exit;
@@ -380,7 +380,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
-                <div class="logo-badge"><img src="/SDO-cts/assets/img/sdo-logo.jpg" alt="SDO San Pedro Logo"
+                <div class="logo-badge"><img src="/CTS/assets/img/sdo-logo.jpg" alt="SDO San Pedro Logo"
                     style="width:90px;height:90px;border-radius:50%;margin-bottom:13px;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
                 </div>
                 <h1>SDO CTS Admin</h1>
@@ -416,7 +416,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
 
             <div class="login-footer">
-                <a href="/SDO-cts/"><i class="fas fa-arrow-left"></i> Back to CTS</a>
+                <a href="/CTS/"><i class="fas fa-arrow-left"></i> Back to CTS</a>
             </div>
         </div>
 

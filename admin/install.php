@@ -185,7 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['install'])) {
         $messages[] = "";
         $messages[] = "[WARNING] IMPORTANT: Delete this file (install.php) for security!";
         $messages[] = "";
-        $messages[] = "You can now login at: /SDO-cts/admin/login.php";
+        $messages[] = "You can now login at: /CTS/admin/login.php";
         
     } catch (Exception $e) {
         $errors[] = "Installation error: " . $e->getMessage();
@@ -383,7 +383,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['install'])) {
                 <button type="submit" name="install" class="btn">🚀 Install Admin Panel</button>
             </form>
             
-            <a href="/SDO-cts/" class="back-link">← Back to Public Site</a>
+            <a href="/CTS/" class="back-link">← Back to Public Site</a>
         </div>
     </div>
 </body>

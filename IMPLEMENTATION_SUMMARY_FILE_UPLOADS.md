@@ -84,7 +84,7 @@ Or for Apache on Windows (XAMPP):
 ## 📁 File Structure
 
 ```
-SDO-cts/
+CTS/
 ├── assets/
 │   └── uploads/
 │       ├── images/          ← New: All image files
@@ -114,7 +114,7 @@ SDO-cts/
    - Relative path saved in database: `assets/uploads/images/...`
 4. When viewing:
    - System reads `file_path` from database
-   - Constructs URL: `/SDO-cts/assets/uploads/images/...`
+   - Constructs URL: `/CTS/assets/uploads/images/...`
    - Falls back to old structure if `file_path` is empty
 
 ### Example Database Record:

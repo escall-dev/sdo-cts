@@ -44,24 +44,42 @@ try {
     // Get complaint data before update for email notification
     $complaint = $complaintModel->getById($complaintId);
     
+    // Determine if this is a progress update (same status) or a status change
+    $isProgressUpdate = ($complaint && $complaint['status'] === $status);
+    
+    // Require notes for progress updates
+    if ($isProgressUpdate && empty($notes)) {
+        $_SESSION['flash_error'] = 'Please provide a progress note.';
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/SDO-cts/admin/complaints.php';
+        header('Location: ' . $referer);
+        exit;
+    }
+    
     $complaintModel->updateStatus($complaintId, $status, $notes, $user['id'], $user['full_name']);
     
     // Log activity
-    $auth->logActivity('status_change', 'complaint', $complaintId, 
-        "Changed status to " . STATUS_CONFIG[$status]['label'] . " for " . $complaint['reference_number']);
+    if ($isProgressUpdate) {
+        $auth->logActivity('progress_update', 'complaint', $complaintId, 
+            "Added progress update for " . $complaint['reference_number']);
+    } else {
+        $auth->logActivity('status_change', 'complaint', $complaintId, 
+            "Changed status to " . STATUS_CONFIG[$status]['label'] . " for " . $complaint['reference_number']);
+    }
     
-    // Send email notification when complaint is resolved
-    if ($status === 'resolved' && !empty($complaint['email_address'])) {
+    // Send email notification when complaint is closed
+    if ($status === 'closed' && !empty($complaint['email_address'])) {
         try {
             $emailNotification = new ComplaintNotification();
             $emailNotification->sendComplaintResolvedNotification($complaint, $notes);
         } catch (Exception $emailError) {
             // Log email error but don't interrupt the status update process
-            error_log("Email notification error on resolve: " . $emailError->getMessage());
+            error_log("Email notification error on close: " . $emailError->getMessage());
         }
     }
     
-    $_SESSION['flash_success'] = 'Status updated successfully.';
+    $_SESSION['flash_success'] = $isProgressUpdate 
+        ? 'Progress update added successfully.' 
+        : 'Status updated successfully.';
     
 } catch (Exception $e) {
     $_SESSION['flash_error'] = $e->getMessage();

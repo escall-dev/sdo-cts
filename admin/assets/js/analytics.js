@@ -465,7 +465,7 @@ function updateSummary(analytics) {
 async function loadAnalytics() {
     const form = document.getElementById('analyticsFilterForm');
     const params = buildQueryParams(form);
-    const url = `/SDO-cts/admin/api/analytics.php${params ? `?${params}` : ''}`;
+    const url = `/CTS/admin/api/analytics.php${params ? `?${params}` : ''}`;
 
     const response = await fetch(url, { credentials: 'same-origin' });
     const data = await response.json();
@@ -600,7 +600,7 @@ function bindExports() {
 
     csvBtn.addEventListener('click', () => {
         const params = buildQueryParams(form);
-        window.location.href = `/SDO-cts/admin/api/analytics-export.php${params ? `?${params}` : ''}`;
+        window.location.href = `/CTS/admin/api/analytics-export.php${params ? `?${params}` : ''}`;
     });
 
     pdfBtn.addEventListener('click', () => {

@@ -195,7 +195,7 @@ class AdminAuth
     {
         if (!$this->isLoggedIn()) {
             $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-            header('Location: /SDO-cts/admin/login.php');
+            header('Location: /CTS/admin/login.php');
             exit;
         }
     }

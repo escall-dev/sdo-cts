@@ -8,7 +8,7 @@
     </div>
 
     <?php $adminJsVersion = @filemtime(__DIR__ . '/../assets/js/admin.js') ?: time(); ?>
-    <script src="/SDO-cts/admin/assets/js/admin.js?v=<?php echo $adminJsVersion; ?>"></script>
+    <script src="/CTS/admin/assets/js/admin.js?v=<?php echo $adminJsVersion; ?>"></script>
     <script>
     // Real-time notification polling for new complaints
     (function() {
@@ -30,7 +30,7 @@
         
         // Fetch notification counts from API
         function fetchNotificationCount() {
-            fetch('/SDO-cts/admin/api/notification-count.php', {
+            fetch('/CTS/admin/api/notification-count.php', {
                 method: 'GET',
                 credentials: 'same-origin',
                 headers: {

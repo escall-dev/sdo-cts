@@ -19,7 +19,7 @@ if (!$auth->hasPermission('reports.view') && !$auth->hasPermission('complaints.v
 include __DIR__ . '/includes/header.php';
 ?>
 
-<link rel="stylesheet" href="/SDO-cts/admin/assets/css/analytics.css">
+<link rel="stylesheet" href="/CTS/admin/assets/css/analytics.css">
 
 <div class="analytics-page" id="analytics-page">
     <div class="page-header">
@@ -344,6 +344,6 @@ include __DIR__ . '/includes/header.php';
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
-<script src="/SDO-cts/admin/assets/js/analytics.js?v=<?php echo time(); ?>"></script>
+<script src="/CTS/admin/assets/js/analytics.js?v=<?php echo time(); ?>"></script>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>

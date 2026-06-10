@@ -79,7 +79,7 @@
         <div class="error-icon"><i class="fas fa-ban"></i></div>
         <h1>Access Denied!</h1>
         <p>You don't have permission to access this page. Please contact the administrator if you believe this is an error.</p>
-        <a href="/SDO-cts/admin/" class="btn"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <a href="/CTS/admin/" class="btn"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
     </div>
 </body>
 </html>

@@ -11,21 +11,21 @@ $auth = auth();
 
 // Check authentication
 if (!$auth->isLoggedIn()) {
-    header('Location: /SDO-cts/admin/login.php');
+    header('Location: /CTS/admin/login.php');
     exit;
 }
 
 // Only Super Admin can manage user status
 if (!$auth->isSuperAdmin()) {
     $_SESSION['flash_error'] = 'Access denied. Only Super Admin can manage users.';
-    header('Location: /SDO-cts/admin/users.php');
+    header('Location: /CTS/admin/users.php');
     exit;
 }
 
 // Verify CSRF token
 if (!$auth->verifyCsrfToken($_POST['csrf_token'] ?? '')) {
     $_SESSION['flash_error'] = 'Invalid security token. Please try again.';
-    header('Location: /SDO-cts/admin/users.php');
+    header('Location: /CTS/admin/users.php');
     exit;
 }
 
@@ -34,14 +34,14 @@ $action = $_POST['action'] ?? '';
 
 if (!$userId || !in_array($action, ['activate', 'deactivate'])) {
     $_SESSION['flash_error'] = 'Invalid request.';
-    header('Location: /SDO-cts/admin/users.php');
+    header('Location: /CTS/admin/users.php');
     exit;
 }
 
 // Prevent self-deactivation
 if ($userId === $auth->getUserId()) {
     $_SESSION['flash_error'] = 'You cannot deactivate your own account.';
-    header('Location: /SDO-cts/admin/users.php');
+    header('Location: /CTS/admin/users.php');
     exit;
 }
 
@@ -67,6 +67,6 @@ try {
     $_SESSION['flash_error'] = $e->getMessage();
 }
 
-header('Location: /SDO-cts/admin/users.php');
+header('Location: /CTS/admin/users.php');
 exit;
 

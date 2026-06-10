@@ -110,7 +110,7 @@ include __DIR__ . '/includes/header.php';
         
         <div class="filter-actions">
             <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-search"></i> Filter</button>
-            <a href="/SDO-cts/admin/logs.php" class="btn btn-outline btn-sm">Clear</a>
+            <a href="/CTS/admin/logs.php" class="btn btn-outline btn-sm">Clear</a>
         </div>
     </form>
 </div>
